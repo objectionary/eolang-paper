@@ -1,11 +1,7 @@
 name: latexmk
 on:
   push:
-    branches: master
-    paths: 'paper/**'
   pull_request:
-    branches: master
-    paths: 'paper/**'
 concurrency:
   group: latexmk-${{ github.ref }}
   cancel-in-progress: true
@@ -18,4 +14,4 @@ jobs:
         with:
           path: paper
           opts: -pdf
-          depends: paper/DEPENDS.txt
+          depends: DEPENDS.txt
