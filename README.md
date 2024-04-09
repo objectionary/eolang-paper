@@ -1,9 +1,9 @@
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 [![arXiv](https://img.shields.io/badge/arXiv-2111.13384-green.svg)](https://arxiv.org/abs/2111.13384)
-[![make](https://github.com/objectionary/eo/actions/workflows/latexmk.yml/badge.svg)](https://github.com/objectionary/eo/actions/workflows/latexmk.yml)
+[![make](https://github.com/objectionary/eolang-paper/actions/workflows/latexmk.yml/badge.svg)](https://github.com/objectionary/eolang-paper/actions/workflows/latexmk.yml)
 
-This is a more or less formal description of EOLANG and φ-calculus.
+This is the first paper about [EOLANG](https://www.eolang.org) and φ-calculus.
 
 To build it, just run:
 
@@ -22,7 +22,7 @@ and
 installed.
 
 You may also want to check whether your LaTeX installation has
-all the packages required [in here](https://github.com/objectionary/eo/blob/master/.github/workflows/latexmk.yml).
+all the packages required [in here](https://github.com/objectionary/eolang-paper/blob/master/.github/workflows/latexmk.yml).
 If you miss any of them, install, for example, with the help of
 [`tlmgr`](https://tug.org/texlive/tlmgr.html).
 
