@@ -1,344 +1,212 @@
 The proposed \phic{} is based on set theory~\citep{jech2013set} and lambda calculus,
 representing objects as sets of pairs and their internals as \(\lambda\)-terms.
-The rest of the section contains formal definitions of
-data, objects, attributes, formation, application, decoration, and dataization.
+\Cref{fig:ebnf} presents formal syntax of \phic{}.
 
-\subsection{Objects and Data}
+\begin{figure*}
+\begin{mdframed}
+\raggedright
+\begin{ebnf}[8em]
+<Program> := "\(\Phi\)" "\(\mapsto\)" <Object> \\
+<Object> := <Formation> | <Application> | <Dispatch> | "\(\Phi\)" | "\(\xi\)" | "\(\perp\)" \\
+<Formation> := "\(\llbracket\)" <Bindings> "\(\rrbracket\)" \\
+<Application> := <Object> "\(\lparen\)" <Bindings> "\(\rparen\)" \\
+<Dispatch> := <Object> "." <Attribute> \\
+<Bindings> := <Bindings> "," <Binding> | \(\epsilon\) \\
+<Binding> := <\(\tau\)-Binding> | <\(\Delta\)-Binding> | <\(\lambda\)-Binding> \\
+<\(\tau\)-Binding> := <Attribute> "\(\mapsto\)" ( <Object> | "\(\varnothing\)" ) \\
+<\(\Delta\)-Binding> := "\(\Delta\)" "\(\phiDotted\)" ( <Data> | "\(\varnothing\)" ) \\
+<\(\lambda\)-Binding> := "\(\lambda\)" "\(\phiDotted\)" <Function> \\
+\end{ebnf}
+\end{mdframed}
+\caption{Syntax as a context-free grammar, in EBNF}
+\label{fig:ebnf}
+\end{figure*}
 
-\begin{definition}\label{def:object}
-An \textbf{object} is a set of ordered pairs \((a_i, v_i)\) such that
-\(a_i\) is an identifier, all \(a_i\) are different, and \(v_i\) is an object.
+Besides the literals mentioned in the grammar in blue color, the alphabet includes three non-terminals that rewrite to terminals as such:
+\begin{itemize}
+\item \EbnfNonTerminal{Attribute}: either \begin{inparaenum}[1)]
+    \item one of two Greek letters \(\varphi\) and \(\rho\),
+    \item a Greek letter \(\alpha\) with an optional index,
+    or
+    \item a string of English letters starting with a lowercase letter, e.g. ``\ff{price}'' or ``\ff{color}'';
+\end{inparaenum}
+\item \EbnfNonTerminal{Data}: a sequence of bytes in hexadecimal format, e.g. ``\texttt{EF-41-5C}'' is a sequence of three bytes, ``\texttt{42-}'' is a one-byte sequence (with a tailing dash in order to avoid confusion with integers), and ``\texttt{-{}-}'' (double dash) is an empty sequence of bytes;
+\item \EbnfNonTerminal{Function}: a string of English letters where the first letter is uppercase, e.g. ``\ff{Sqrt}''.
+\end{itemize}
+
+\subsection{Bindings}
+
+\begin{definition}[Binding]
+\textbf{Binding}, ranging by \(B\), is a possibly empty map of key-value pairs, where all keys are unique, denoted as $k_1 -> v_1, k_2 -> v_2, \dots, k_n -> v_n$.
 \end{definition}
 
-An identifier is either \(\varphi\), \(\rho\), \(\sigma\), \(\nu\), or, by convention, a text without
-spaces starting with a small-case English letter in typewriter font.
-
-The object at \lref{book} may be represented as
-\begin{equation}\label{eq:book}
-\begin{split}
-\ff{book} & = \left\{\begin{matrix*}[l]
-  (\ff{isbn}, \varnothing) \\
-\end{matrix*}\right\},
-\end{split}
-\end{equation}
-where \ff{isbn} is an identifier and \(\varnothing\) is an empty
-set, which is a proper object, according to~\cref{def:object}.
-
-\begin{definition}\label{def:data}
-An object may have properties of \textbf{data},
-which is a computation platform dependable entity and is not
-decomposable any further within the scope of \phic{}.
-\end{definition}
-
-What exactly is data may depend on the
-implementation platform, but most certainly would include
-byte arrays, integers, floating-point numbers,
-string literals, and boolean values.
-
-The object at \lrefs{book2}{book2-end} may be represented as
-\begin{equation}\label{eq:book2}
-\begin{split}
-\ff{book2} & = \left\{\begin{matrix*}[l]
-  (\ff{isbn}, \varnothing) \\
-  (\ff{title}, \ff{"Object Thinking"}) \\
-  (\ff{price}, \ff{memory}) \\
-\end{matrix*}\right\}, \\
-\end{split}
-\end{equation}
-where \ff{isbn}, \ff{title}, and \ff{price} are identifiers,
-\ff{memory} is an object defined somewhere else,
-and the text in double quotes is data.
+The following operations can be performed on a binding:
+\begin{itemize}
+\item The statement \(k \in B\) evaluates to true if the key \(k\) is present within the map;
+% \item The operation \(B-k\) results in a new binding that excludes the key-value pair with the key \(k\) (if such a pair exists);
+\item The expression \(B[k]\) returns the value associated with the key \(k\).
+\end{itemize}
 
 \subsection{Attributes}
 
-\begin{definition}\label{def:attribute}
-In an object \(x\), \(a\) is a void \textbf{attribute}
-with the \textbf{name} \(a\)
-iff \((a, \varnothing) \in x\); it is an attached attribute
-with the \textbf{value} \(v\)
-iff \(\exists (a, v)\in x\) and \(v\not=\varnothing\);
+\begin{definition}[Attribute]
+\textbf{Attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\), is an identifier that is either
+\begin{inparaenum}[1)]
+    \item a text string that starts with a lower-case English letter,
+    \item \(\alpha\) with an index,
+    or
+    \item one of the following two Greek letters:
+    \(\varphi\),
+    and
+    \(\rho\).
+\end{inparaenum}
 \end{definition}
 
-In \cref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
-are the attributes of the object \ff{book2}.
-The attribute \ff{isbn} is void, while the other two are attached.
+\subsection{Asset}
 
-\begin{definition}\label{def:dot}
-If \(x\) is an object and \(\exists (a, v) \in x\), then \(v\) may be referenced as \(x.a\);
-this referencing mechanism is called \textbf{dot notation}.
+\begin{definition}[Asset]
+\textbf{Asset} is either \(\Delta\) or \(\lambda\) Greek letter.
 \end{definition}
 
-Both void and attached attributes of an object are accessible using
-the dot notation. There is no such thing as
-visibility restriction in \phic{}:
-all attributes are visible to all objects outside of the one they belong to.
+\subsection{Data}
 
-It is possible to chain attribute references using dot notation, for example
-\(\ff{book2}.\ff{price}.\ff{neg}\) is a valid expression, which means
-``taking the attribute \ff{price} from the object \ff{book2} and then
-taking the attribute \ff{neg} from it.''
-
-\begin{definition}\label{def:scope}
-If \(x(a_i, v_i)\) is an object, then \(\hat{x}\), a set consisting of all \(a_i\),
-is its \textbf{scope} and the cardinality of \(|\hat{x}|\) is
-the \textbf{arity} of \(x\).
+\begin{definition}[Data]
+\textbf{Data} is a possibly empty sequence of 8-bit bytes, ranged over \(\mathcal{D}\) by \(\delta_i\).
 \end{definition}
 
-For example, the scope of the object at~\cref{eq:book2} consists of three identifiers:
-\ff{isbn}, \ff{title}, and \ff{price}.
+\subsection{Objects}
+
+\begin{definition}[Object]
+\textbf{Object} is either an terminator, denoted as \(\perp\), or a binding where keys are attributes or assets and the following conditions hold:
+\begin{inparaenum}[1)]
+\item if a key is \(\Delta\), then the value is a data or \(\varnothing\),
+\item if a key is \(\lambda\), then the value is a function,
+\item otherwise, the value is either an object or \(\varnothing\).
+\end{inparaenum}
+Objects range over \(\mathcal{B}\) by \(b_i\).
+\end{definition}
+
+The following expression is an example of an object:
+\begin{phiquation}
+\label{eq:object-example}
+b_1 = [[ D> 42, 0-> b_2(|foo| -> b_3).|bar|, 1-> [[ L> Sqrt ]], 5-> \perp ]]
+\end{phiquation}
+
+The arrow ``\(\mapsto\)'' denotes an attachment of an object (right-hand side) to the attributes (left-hand side). The arrow ``\(\phiDotted\)'' denotes an attachment of a data or a function to either \(\Delta\) or \(\lambda\) assets respectively.
+
+\begin{definition}[Domain]
+\textbf{Domain} of an object is a set of all attributes of the object.
+\end{definition}
+
+The domain of the object of \cref{eq:object-example} is the following set:
+\(\{ \alpha_0, \alpha_1, \alpha_5 \}\). The asset \(\Delta\) does not belong to the domain.
+
+\begin{definition}[Abstract Object]
+An object is \textbf{abstract} if at least one of its attribute is attached to \(\varnothing\), otherwise the object is \textbf{closed}.
+\end{definition}
+
+The object of \cref{eq:object-example} is abstract, because its attribute \ff{price} is attached to \(\varnothing\). The object of \cref{eq:simple-application} was abstract before the application, but the object that it was reduced to by the application, is a closed object since its attribute \(\alpha_1\) is attached to \(b_2\).
+
+Even though \(\varnothing\) may be attached to an attribute of an object, it is not an object by itself. Instead, \(\varnothing\) is a ``placeholder'' for an object, which is attached to an attribute until an object is attached to it.
 
 \subsection{Formation}
 
-\begin{definition}\label{def:abstraction}
-An object \(x\) is \textbf{abstract} iff at least one of its attributes is void,
-i.e. \(\exists (a, \varnothing)\in x\).
+\begin{definition}[Formation]
+Object \textbf{formation}, denoted as $[[B]]$, is a construction of a new object.
 \end{definition}
 
-An alternative ``arrow notation'' may be used to denote an object \(x\) in a more
-compact way, where void attributes stay in the parentheses on the left side of the
-mapping symbol \(\mapsto\) and pairs,
-which represent attached attributes, stay on the right side, in double-square brackets.
-\Cref{eq:book2} may be written as
-\begin{equation}\label{eq:book2-compact}
-\begin{split}
-& \ff{book2}(\ff{isbn}) \mapsto \llbracket \br
-& \quad \ff{title} \mapsto \ff{"Object Thinking"}, \br
-& \quad \ff{price} \mapsto \ff{memory} \br
-& \rrbracket. \\
-\end{split}
-\end{equation}
+We introduce the term ``object formation'' rather than using a more convenient
+term ``construction'' because the latter generally implies a presence of a
+class from which an object is being constructed or instantiated. Instead,
+object formation is closer to the creation of a prototype, which may either be
+used ``as is'' or copied.
+
+\Cref{eq:price-color} is an example of object formation, where the binding of
+the abstract object being formed consists of two pairs: $price -> ?$ and
+$color -> [[D>"red"]]$. The object attached to the \ff{color} attribute is a
+formation of a closed object.
 
 \subsection{Application}
 
-\begin{definition}\label{def:application}
-If \(x\) is an abstract object and \(y\) is an object
-  where \(\hat{y}\subseteq\hat{x}\),
-  then an \textbf{application} of \(y\) to \(x\) is
-  a \textbf{copy} of \(x\), a new object that consists of pairs \((a\in\hat{x},v)\) such that
-  \(v=y.a\) if \(x.a=\varnothing\) and \(v=x.a\) otherwise.
+\begin{definition}[Application]
+Object \textbf{application}, denoted as $b(B)$, is a copy of an existing abstract object \(b\), with new values attached to some of its attributes and/or assets.
 \end{definition}
 
-Application makes some void attributes of \(x\) attached---by binding objects to them.
-The produced object has exactly the same set of attributes, but some of them,
-which were void before, become attached.
+\Cref{eq:simple-application} demonstrates object application, where the binding $( 1-> b_2 )$ is applied to the formation of an abstract object $[[ 1-> ?]]$. The application creates a new object $[[ 1-> b_2 ]]$, while the existing abstract object remains intact.
 
-It is not expected that all void attributes turn into attached ones during application.
-Some of them may remain void, which will lead
-to creating a new abstract object. To the contrary,
-if all void attributes are substituted with \emph{arguments} during copying,
-a newly created object will be \emph{closed}.
+\subsection{Forma}
 
-Once set, attached attributes may not be reset.
-This may be interpreted as \emph{immutability} property of objects.
+\begin{definition}[Forma]
+A \textbf{forma} of an object \(b\), denoted as \(\mathbb{F}(b)\), is the abstract object that was copied in order to create \(b\). A forma of a formation is the formation itself.
+\end{definition}
 
-Arrow notation may also be used to denote object copying,
-where the names of the attributes, which remain void, stay in the brackets
-on the left side of the mapping symbol \(\mapsto\),
-while objects \(P\) provided as arguments stay on the right side,
-in the brackets. For example, the object at \lref{point-copy} may be written as
-\begin{equation}\label{eq:point}
-\begin{split}
-& \ff{point}(\ff{x} \mapsto \ff{5}, \ff{y} \mapsto \ff{-3}).\ff{distance}(\br
-& \quad \ff{to} \mapsto \ff{point}(\ff{x} \mapsto \ff{13}, \ff{y} \mapsto \ff{3.9}) \br
-& ),
-\end{split}
-\end{equation}
-and may further be simplified since the order of parameters is obvious:
-\begin{equation}
-\begin{split}
-\ff{point}(\ff{5}, \ff{-3}).\ff{distance}(\ff{point}(\ff{13}, \ff{3.9})).
-\end{split}
-\end{equation}
+In \cref{eq:simple-application}, the forma of $[[ 1-> b_2 ]]$ is the abstract object $[[ 1->? ]]$, while the forma of $[[ 1->? ]]$ is $[[ 1->? ]]$.
 
-An application without arguments is a copy of an object. For example,
-in these expressions the attribute \ff{p1} is attached to the same object
-as the attribute \ff{p}, while the attribute \ff{p2} is attached to a new
-object, a copy of \ff{p}:
+\subsection{Programs}
+
+\begin{definition}[Program]
+\textbf{Program} is an object attached to \(\Phi\) attribute of \emph{Universe}.
+\end{definition}
+
+The Universe resembles an object with the only attribute \(\Phi\), but it is not an object since it may not be attached to any attribute of any other object.
+
+\subsection{Scope}
+
+\begin{definition}[Scope]
+Object \textbf{scope} is either the formation where the object is attached to an attribute, or the scope of the application where the object is used in a binding.
+\end{definition}
+
+In simpler terms, scope is the formation that is the ``closest'' to the object, moving to the left. In the following object formation, the scope of \(b_1\) is the formation where the \ff{source} attribute stays, while the scope of \(b_2\) is the formation where the \ff{ref} attribute stays:
+\begin{phiquation}
+    [[ ref -> [[ source -> Q.book( author -> b_1 ) ]], cite -> b_2 ]]
+\end{phiquation}
+
+\subsection{Dispatch}
+
+\begin{definition}[Dispatch]
+Object \textbf{dispatch} (also known as ``dot notation''), denoted as $x.\tau_1$, is a retrieval of an object attached to attribute \(\tau_1\) of \(x\), where \(x\) (the ``subject'') may be an object, \(\Phi\), or \(\xi\); and then attaching its \(\rho\) attribute to the subject, if it is not attached yet.
+\end{definition}
+
+The subject \(\Phi\) means the program.
+
+The subject \(\xi\) means the scope of the dispatch.
+
+\Cref{eq:dot-notation} demonstrates how dot notation works in a combination with object application. First, the scope \(\xi\) denotes the object formation, where \(x\) stays. Then, the \(.\ff{p}\) retrieves the object attached to \(\ff{p}\) attribute---this object is the formation where \(|t|\) stays. Then, the application of the $|t|->b$ binding makes a copy of the formation and attaches \(b\) to \(|t|\). Then, \(.|y|\) retrieves the object attached to \(|y|\) attribute of the copy: it is \(\xi.|t|\), where \(\xi\) means the nearest object formation, which is the copy itself. Finally, the dispatch retrieves what is the attached to \(b\) of the copy, which is \(b\).
+
+\subsection{Terminator}
+
+\begin{definition}[Terminator]
+The \textbf{terminator} object, denoted as \(\perp\), equals to itself when being a subject of a dispatch or an application:
 \begin{equation*}
-\begin{split}
-& \ff{p} \mapsto \ff{point}(\ff{5}, \ff{-3}),\\
-& \ff{p1} \mapsto \ff{p},\\
-& \ff{p2} \mapsto \ff{p}().\\
-\end{split}
+\forall \tau : \perp.\tau \leadsto \perp \qquad \forall B : \perp(B) \leadsto \perp.
 \end{equation*}
-
-\subsection{Formation}
-
-\begin{definition}\label{def:formation}
-The process of creating an object that is not a copy of another object
-is called \textbf{formation}.
 \end{definition}
 
-Syntactically, object formation is denoted by double square brackets,
-as in \cref{eq:book2-compact}, to the contrary of object application,
-which is denoted by round brackets, as in \cref{eq:point}.
-Object abstraction is a special case of object formation.
-The following expression is a formation of the object \(x\):
+\subsection{Immutability}
+
+\begin{definition}[Immutability]
+Every object is \textbf{immutable}, meaning that an application of its already attached attribute or asset equals to \(\perp\):
 \begin{equation*}
-x \mapsto [[ y -> t ]].
+\forall \tau, b_1, b_2 : \llbracket \tau \mapsto b_1 \rrbracket ( \tau \mapsto b_2 ) \leadsto \perp
 \end{equation*}
-
-\subsection{Parent and Home}
-
-\begin{definition}\label{def:parent}
-If \(x\) is an object, then \(x.\rho\) is its \textbf{parent},
-which is the object that created \(x\).
 \end{definition}
-
-An object may be created either by
-abstraction or application. In case of abstraction, an object
-is created by another abstract object, for example:
-  \begin{equation}
-  \begin{split}
-  & x \mapsto \llbracket y \mapsto \llbracket z \mapsto t \rrbracket \rrbracket \br
-  & x.y.\rho = x \br
-  & x.y.z.\rho = y.
-  \end{split}
-  \end{equation}
-In case of application, an object is created by the prepending object:
-  \begin{equation}
-  \begin{split}
-  & a \mapsto \llbracket b \mapsto c, d \mapsto e.f, g \mapsto h.i(j) \rrbracket \br
-  & a.b.\rho = a \br
-  & a.d.\rho = e \br
-  & a.g.\rho = h.
-  \end{split}
-  \end{equation}
-
-\begin{definition}\label{def:home}
-If \(x\) is an object, then \(x.\sigma\) is its \textbf{home} object, which
-is the \(\rho\) of the abstract object \(x\) is a copy of.
-\end{definition}
-
-For example:
-\begin{equation}
-\begin{split}
-& x \mapsto \llbracket y(f) \mapsto \llbracket \rrbracket \rrbracket \br
-& x.y.\rho = x \br
-& z \mapsto \llbracket t \mapsto x.y(42) \rrbracket \br
-& z.t.\rho = z \br
-& z.t.\sigma = x.
-\end{split}
-\end{equation}
-
-\subsection{Decoration}\label{sec:decoration}
-
-\begin{definition}\label{def:decorator}
-If \(x\) and \(y\) are objects and \(x.\varphi = y\), then
-  \(\forall a (x.a = y.a)\) if \(a \not\in \hat{x}\);
-  this means that \(x\) is \textbf{decorating} \(y\).
-\end{definition}
-
-Here, \(\varphi\) is a special identifier denoting the object,
-known as a \emph{decoratee}, being decorated
-within the scope of the decorator.
-
-For example, the object at \lrefs{circle}{circle-end} would
-be denoted by this formula:
-\begin{equation}\label{eq:c-empty}
-\begin{split}
-& \ff{circle}(\ff{center}, \ff{radius}) \mapsto \llbracket \br
-& \quad \varphi \mapsto \ff{center}, \br
-& \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\varphi.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
-& \quad \rrbracket \br
-& \rrbracket,
-\end{split}
-\end{equation}
-while the application of it would look like:
-\begin{equation}
-\begin{split}
-\ff{c} & \mapsto \ff{circle}(\ff{point}(\ff{-3}, \ff{9}), \ff{40}),
-\end{split}
-\end{equation}
-producing:
-\begin{equation}\label{eq:c-fin}
-\begin{split}
-& \ff{c} \mapsto \llbracket \br
-& \quad \ff{center} \mapsto \ff{point}(\ff{-3}, \ff{9}), \br
-& \quad \ff{radius} \mapsto \ff{40}, \br
-& \quad \varphi \mapsto \ff{center}, \br
-& \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
-& \quad \rrbracket \br
-& \rrbracket.
-\end{split}
-\end{equation}
-
-Because of decoration, the expression
-\(\rho.\varphi.\ff{distance}\) in \cref{eq:c-empty} is semantically equivalent to a shorter expression
-\(\rho.\ff{distance}\) in \cref{eq:c-fin}.
-
-The following expression makes a new object \ff{is}, which represents
-a sequence of object applications ending with a copy of \ff{lte}:
-\begin{equation}\label{eq:is}
-\begin{split}
-& \ff{is} \mapsto \ff{c}.\ff{is-inside}(\ff{point}(\ff{1}, \ff{7})),
-\end{split}
-\end{equation}
-producing:
-\begin{equation}\label{eq:c-fin2}
-\begin{split}
-& \ff{c} \mapsto \llbracket \br
-& \quad \ff{center} \mapsto \ff{point}(\ff{-3}, \ff{9}), \br
-& \quad \ff{radius} \mapsto \ff{40}, \br
-& \quad \varphi \mapsto \ff{center}, \br
-& \quad \ff{is-inside} \mapsto \llbracket \br
-& \quad \quad \ff{p} \mapsto \ff{point}(\ff{1}, \ff{7}), \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\ff{p}).\ff{lte}(\ff{radius}) \br
-& \quad \rrbracket \br
-& \rrbracket.
-\end{split}
-\end{equation}
-
-It is important to notice that attributes of a decoratee
-don't belong to the scope of its decorator.
 
 \subsection{Atoms}
 
-\begin{definition}\label{def:atom}
-If \(\lambda s.M\) is a function of one argument \(s\) returning an object,
-then it is an abstract object called an \textbf{atom}, \(M\) is its \(\lambda\)-term,
-and \(s\) is its void attribute.
+\begin{definition}[Atom]
+\textbf{Atom} is an object formation with a total function \(\langle \mathcal{B}, \mathcal{S} \rangle \to \langle \mathcal{B}, \mathcal{S} \rangle\) attached to its \(\lambda\)-asset, that maps objects to objects, possibly modifying the \emph{state} of evaluation \(s\), which ranges over \(\mathcal{S}\).
 \end{definition}
 
-Atoms may have their \(\lambda\)-terms defined outside of \phic{} formal scope.
-For example, the object at \lref{stdout} would be denoted as
-\begin{equation}\label{def:stdout}
-\ff{stdout}(\ff{text}) \mapsto \lambda s.M_\texttt{stdout},
-\end{equation}
-where \(M_\texttt{stdout}\) is a \(\lambda\)-term defined externally.
+\Cref{eq:Sqrt} demonstrates an atom with a function that calculates a square root of a number, which it retrieves from the \(\Delta\)-asset of \(b.\alpha_0\), with the help of dataization function. The implementation of functions is outside of the scope of \phic{}: they may be implemented, for example, in \(\lambda\)-calculus or some programming language, for example, Java or C++.
 
-In atoms, \(\lambda\)-terms are attached to \(\lambda\) attribute.
-Thus, a more formal form of the \cref{def:stdout} is:
-\begin{equation*}
-\ff{stdout} \mapsto \llbracket \ff{text} \mapsto \varnothing, \lambda \mapsto M_\text{stdout} \rrbracket.
-\end{equation*}
+\subsection{Decoration}
 
-\subsection{Constant}
-
-\newcommand\cmapsto{\mapstochar\relbar\mathrel{\mkern-8mu}\mapsto}
-\begin{definition}\label{def:identity}
-If \(x \mapsto \llbracket y \cmapsto z \rrbracket\) is an object
-then \(y\) is a \emph{constant} attribute, meaning that
-the result of dataization of \(x.y\) always equals to itself.
+\begin{definition}[Decoration]
+Object \textbf{decoration} is a mechanism of extending an object (``decoratee'') by attaching it to the attribute \(\varphi\) of another object (``decorator''), which makes attributes of the decoratee retrievable from the decorator, unless the decorator has its own attributes with the same names.
 \end{definition}
 
-\subsection{Identity}
+\subsection{Parent}
 
-\begin{definition}\label{def:constant}
-If \(x\) is an object then \(x.\nu\) is a positive integer data object
-with a unique identity of \(x\) in the entire runtime scope.
+\begin{definition}[Parent]
+Attaching object \(b_1\) to the \(\rho\) attribute of object \(b_2\) means setting the \textbf{parent} of \(b_2\) to \(b_1\).
 \end{definition}
-
-For example, without any other objects in scope it is safe
-to assume the following, however there is no guarantee that
-the actual numbers will be the same in all implementations:
-\begin{equation}
-\begin{split}
-& \ff{x}(\ff{y}) \mapsto \llbracket \rrbracket \br
-& \ff{z} \mapsto \ff{x} ( \ff{y} \mapsto \ff{42} ) \br
-& \Phi.\nu = 0, \ff{x}.\nu = 1, \ff{42}.\nu = 2, \ff{z}.\nu = 3.
-\end{split}
-\end{equation}
-

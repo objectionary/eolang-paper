@@ -140,15 +140,6 @@ default, but can be made mutable via the \ff{mut} modifier. Similarly,
 D~\citep{bright2020origins} has qualifier \ff{immutable}, which expresses
 transitive immutability of data.
 
-\feature{no-exceptions}{No Exceptions}
-%
-In most OO languages exception handling~\citep{goodenough1975exception}:
-happens through an imperative error-throwing statement.
-Instead, \eolang{} has a declarative mechanism for it, which
-is similar to Null Object design pattern~\citep{martin1997pattern}: returning
-an abstract object causes program execution to stop once the returned
-object is dealt with.
-
 \feature{no-functions}{No Functions}
 %
 There are no lambda objects or functions in \eolang{}, which exist in Java~8+, for example.
