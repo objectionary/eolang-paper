@@ -55,4 +55,3 @@ zip: *.tex sections/*.tex
 
 clean:
 	git clean -dfX
-
