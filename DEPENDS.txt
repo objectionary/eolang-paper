@@ -1,12 +1,15 @@
 hard acmart
+hard adjustbox
 hard algorithmicx
 hard algpseudocodex
 hard anyfontsize
 hard babel-russian
+hard bibcop
 hard biber
 hard cancel
 hard catchfile
 hard cjk
+hard cleveref
 hard cm-super
 hard comment
 hard csquotes
@@ -30,11 +33,13 @@ hard lastpage
 hard lh
 hard libertine
 hard makecell
+hard microtype
 hard ncctools
 hard paralist
 hard pgf
 hard pgfopts
 hard preprint
+hard silence
 hard stmaryrd
 hard svg
 hard textpos
@@ -47,7 +52,3 @@ hard trimspaces
 hard upquote
 hard wrapfig
 hard xstring
-hard cleveref
-hard adjustbox
-hard bibcop
-hard silence
