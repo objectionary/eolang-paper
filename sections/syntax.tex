@@ -362,8 +362,7 @@ in order to use it as a substitute for \ff{\%s} and the second time for
 \ff{\%d}. There will be two round-trips to the standard input stream, which
 obviously is not correct. The exclamation mark at the \ff{x!} solves the
 problem, making the object by the name \ff{x} a \emph{constant}. This means
-that all attributes of \ff{x} are \emph{cached}. Important to notice
-that the cache is \emph{not deep}: the attributes of attributes are not cached.
+that on the first trip to \ff{x}, it turns into bytes.
 
 Here, \ff{x} is an attribute of the object \ff{hello}, even though
 it is not defined as explicitly as \ff{say}. Anywhere a new
