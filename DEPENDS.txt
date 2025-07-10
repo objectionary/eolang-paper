@@ -41,6 +41,7 @@ hard makecell
 hard mdframed
 hard microtype
 hard ncctools
+hard needspace
 hard paralist
 hard pgf
 hard pgfopts
