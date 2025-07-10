@@ -1,9 +1,9 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-In order to answer the question, whether
+In order to answer the question of whether
 the proposed object calculus is sufficient
-to express any object model, in this Section we demonstrate
+to express any object model, in this section we demonstrate
 how four fundamental principles of OOP are realized by \phic{}:
 encapsulation, abstraction, inheritance, and polymorphism.
 
@@ -21,7 +21,7 @@ of abstraction is decomposition, according to~\citet[p.73]{west2004object}:
 
 In \phic{} objects are the elements the problem domain
 is decomposed into.
-This goes along the claim of~\citet[p.24]{west2004object}:
+This goes along with the claim of~\citet[p.24]{west2004object}:
 ``objects, as abstractions of entities in the real world,
 represent a particularly dense and cohesive clustering of information.''
 
@@ -40,7 +40,7 @@ The purpose of inheritance, according to~\citet{meyer1997object}, is
 ``to control the resulting potential complexity'' of the design
 by enabling code reuse.
 
-Consider a classic case of behaviour extension, suggested by~\citet[p.38]{stroustrup1997}
+Consider a classic case of behavior extension, suggested by~\citet[p.38]{stroustrup1997}
 to illustrate inheritance. C++ class \ff{Shape} represents a graphic object
 on the canvas (a simplified version of the original code):
 
@@ -70,7 +70,7 @@ extends it with its own feature in the method \ff{draw()}. Now, when the
 method \ff{Circle.move()} is called, its implementation from the class \ff{Shape}
 will call the virtual method \ff{Shape.draw()}, and the call will be dispatched
 to the overridden method \ff{Circle.draw()} through the ``virtual table'' in the class \ff{Shape}.
-The creator of the class \ff{Shape} is now aware of sub-classes
+The creator of the class \ff{Shape} is not aware of sub-classes
 which may be created long after, for example \ff{Triangle}, \ff{Rectangle}, and so on.
 
 Even though implementation inheritance and method overriding seem to
@@ -93,7 +93,7 @@ the behavior of objects by composition rather than by inheritance.''
 delegation, which they called ``dynamic inheritance,'' is a better way
 to add behavior to an object, but not to override existing behavior.
 
-The absence of inheritance mechanism in \phic{} doesn't make it
+The absence of an inheritance mechanism in \phic{} doesn't make it
 any weaker, since object hierarchies are available. \citet{grady2007object}
 while naming four fundamental elements of object model mentioned
 ``abstraction, encapsulation, modularity, and hierarchy'' (instead of inheritance, like
@@ -140,7 +140,7 @@ public:
 
 Now, it is possible to define a function, which accepts a set
 of instances of class \ff{Employee} and prints them one by one,
-calling their method \ff{print()}.:
+calling their method \ff{print()}:
 
 \begin{ffcode}
 void print_list(set<Employee*> &emps) {
@@ -161,12 +161,12 @@ to a name is not determined until execution.''
 Even though there are no explicitly defined types in \phic{},
 the conformance between objects is derived and ``strongly'' checked
 in compile time. In the example above, it would not be possible to
-compile the code that adds elements to the set \ff{emps}, if any
+compile the code that adds elements to the set \ff{emps} if any
 of them lacks the attribute \ff{print}. Since in \eolang{},
 there is no reflection on types or any other mechanisms
 of alternative object instantiation, it is always known where
-objects are constructed or copied and what is the structure of them.
-Having this information in compile-time it is possible to guarantee
+objects are constructed or copied and what their structure is.
+Having this information at compile-time, it is possible to guarantee
 strong compliance of all objects and their users. To our knowledge,
 this feature is not available in any other OOP languages.
 
@@ -183,10 +183,10 @@ Java is achieved through access modifiers like \ff{public} or
 \ff{protected}, while in some other languages, like JavaScript or Python,
 there are no mechanisms of enforcing information hiding.
 
-However, even though~\citet[p.51]{grady2007object} believe that
+However, even though~\citet[p.51]{grady2007object} believes that
 ``encapsulation provides explicit barriers among different
 abstractions and thus leads to a clear separation of concerns,''
-in reality the barriers are not so explicit: they can be easily
+in reality, the barriers are not so explicit: they can be easily
 violated.
 \citet[p.141]{west2004object} noted that
 ``in most ways, encapsulation is a discipline more than a real barrier;
@@ -204,19 +204,19 @@ are visible to any other object.
 
 In \eolang{} the primary goal of encapsulation is achieved differently.
 The goal is to reduce coupling between objects:
-the less they know about each other the thinner the
+the less they know about each other, the thinner
 the connection between them, which is one of the virtues of
 software design, according to~\citet{yourdon1979structured}.
 
-In \eolang{} the tightness of coupling between objects should be controlled
+In \eolang{}, the tightness of coupling between objects should be controlled
 during the build, similar to how the threshold of test code coverage is
-usually controlled. At compile-time the compiler collects the information
+usually controlled. At compile-time, the compiler collects information
 about the relationships between objects and calculates the coupling depth of each connection.
 For example, the object \ff{garage} is referring to the object
 \ff{car.engine.size}. This means that the depth of this connection between objects
 \ff{garage} and \ff{car} is two, because the object \ff{garage} is using
 two dots to access the object \ff{size}. Then, all collected depths from
-all object connections are analyzes and the build is rejected if the numbers
+all object connections are analyzed and the build is rejected if the numbers
 are higher than a predefined threshold. How exactly the numbers are analyzed
-and what are the possible values of the threshold is a subject for future
-researches.
+and what the possible values of the threshold are is a subject for future
+research.

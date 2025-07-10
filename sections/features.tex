@@ -10,7 +10,7 @@
 
 There are a few features that distinguish \eolang{} and \phic{}
 from other existing OO languages and object theories, while some of
-them are similar to what other languages have to offer. The Section is not
+them are similar to what other languages have to offer. This section is not
 intended to present the features formally, which was done earlier in
 \cref{sec:calculus,sec:syntax}, but to compare \eolang{} with other
 programming languages and informally identify similarities.
@@ -28,7 +28,7 @@ in \eolang{} such object alteration is not allowed.
 \feature{no-types}{No Types}
 %
 Even though there are no types in \eolang{}, compatibility
-between objects may be inferred in compile-time and validated strictly, which other
+between objects may be inferred at compile-time and validated strictly, which other
 \nospell{typeless} languages such as Python,
 Julia~\citep{bezanson2012julia},
 Lua~\citep{ierusalimschy2016lua},
@@ -49,7 +49,7 @@ has to be implemented manually~\citep{bettinibono2008delegation}.
 %
 An object in \eolang{} is a composition of other objects and atoms:
 there are no methods or functions similar to Java or C++ ones.
-Execution control is given to a program when atoms' attributes are referred to.
+Execution control is given to a program when atoms' attributes are referenced.
 Atoms are implemented by \eolang{} runtime similar to Java native objects.
 To our knowledge, there are no other OO languages without methods.
 
@@ -57,7 +57,7 @@ To our knowledge, there are no other OO languages without methods.
 %
 Unlike Java or C++, \eolang{} doesn't allow programmers to alter
 the process of object construction or suggest alternative
-paths of object instantiation via additional constructions.
+paths of object instantiation via additional constructors.
 Instead, all arguments are attached to attributes ``as is'' and can't be modified.
 
 \feature{no-static}{No Static Entities}
@@ -65,14 +65,14 @@ Instead, all arguments are attached to attributes ``as is'' and can't be modifie
 Unlike Java and C\#,
 \eolang{} objects may consist only of other objects, represented
 by attributes, while class methods, also known as static methods, as well as
-static literals, and static blocks---don't exist in \eolang{}.
+static literals, and static blocks don't exist in \eolang{}.
 Considering modern programming languages, Go has no static methods either,
 but only objects and ``\nospell{structs}''~\citep{schmager2010gohotdraw}.
 
 \feature{no-primitives}{No Primitive Data Types}
 %
-There are no primitive data types in \eolang{}, which
-exist in Java and C++, for example.
+There are no primitive data types in \eolang{}, unlike
+in Java and C++, for example.
 As in Ruby, Smalltalk~\citep*{goldbergrobson1983smalltalk}, Squeak, Self, and Pharo,
 integers, floating point numbers, boolean
 values, and strings are objects in \eolang{}:
@@ -120,16 +120,16 @@ and less readable, as explained by~\citet{holub2004more}.
 All objects in \eolang{} are attached to some attributes. Objects constructed
 in the global scope of visibility are attached to attributes of the
 \(\Phi\) object of the highest level of abstraction.
-Newspeak and Eiffel are two programming languages that does not have global scope as well.
+Newspeak and Eiffel are two programming languages that do not have global scope either.
 
 \feature{no-mutability}{No Mutability}
 %
 Similar to Erlang~\citep{armstrong2010erlang},
 there are only immutable objects in \eolang{}, meaning that their attributes may
 not be changed after the object is constructed or copied.
-Java, C\#, and C++, have modifiers like
-\ff{final}, \ff{readonly}, or \ff{const} to make attributes immutable, which
-don't mean constants though. While the latter will
+Java, C\#, and C++ have modifiers like
+\ff{final}, \ff{readonly}, or \ff{const} to make attributes immutable, though these
+don't mean constants. While the latter will
 always expose the same functionality, the former may represent mutable
 entities, being known as read-only references~\citep{birka2004practical}.
 For example, an attribute \ff{r} may have an object \ff{random.pseudo}
@@ -137,10 +137,10 @@ attached to it, which is a random number generator. \eolang{} won't allow
 assigning another object to the attribute \ff{r}. However, every time
 the attribute is dataized, its value will be different.
 %
-There are number of OOP languages that also prioritize immutability of objects.
+There are a number of OOP languages that also prioritize immutability of objects.
 In Rust~\citep{matsakis2014rust}, for example, all variables are immutable by
 default, but can be made mutable via the \ff{mut} modifier. Similarly,
-D~\citep{bright2020origins} has qualifier \ff{immutable}, which expresses
+D~\citep{bright2020origins} has a qualifier \ff{immutable}, which expresses
 transitive immutability of data.
 
 \feature{no-functions}{No Functions}
@@ -149,13 +149,13 @@ There are no lambda objects or functions in \eolang{}, which exist in Java~8+, f
 However, objects in \eolang{} have ``bodies,'' which make it possible to interpret
 objects as functions.
 Strictly speaking, if objects in \eolang{} would only have bodies and no other attributes,
-they would be functions. It is legit to
+they would be functions. It is legitimate to
 say that \eolang{} extends lambda calculus, but in a different way
-comparing to previous attempts made by~\citet{mitchell1993lambda} and \citet{di1998lambda}:
+compared to previous attempts made by~\citet{mitchell1993lambda} and \citet{di1998lambda}:
 methods and attributes in \eolang{} are not new concepts, but lower-level
 objects.
 
 \feature{no-mixins}{No mixins}
 %
-There are no ``traits'' or ``mixins'' in~\eolang{}, which exist in Ruby and PHP to enable
+There are no ``traits'' or ``mixins'' in \eolang{}, which exist in Ruby and PHP to enable
 code reuse from other objects without inheritance and composition.
