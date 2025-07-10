@@ -1,17 +1,17 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-The entire syntax of \eolang{} language in BNF is available on the first page of the
+The entire syntax of the \eolang{} language in BNF is available on the first page of the
 \texttt{objectionary/eo} Github repository\footnote{\url{https://github.com/objectionary/eo}}.
-Here, we only explain the basics of the language, not the entire syntax of it.
+Here, we only explain the basics of the language, not its entire syntax.
 
 Similar to Python~\citep{lutz2013learning}, indentation in \eolang{} is part of the syntax:
 the scope of a code block is determined by its horizontal position
 in relation to other blocks, which is also known as ``off-side rule''~\citep{landin1966next}.
 
 There are no keywords in \eolang{} but only a few special symbols
-denoting grammar constructs, such as \ff{>} for the attributes naming,
-\ff{.} for the dot notation, and \ff{[]} for the specification of parameters of formations.
+denoting grammar constructs, such as \ff{>} for attribute naming,
+\ff{.} for dot notation, and \ff{[]} for specifying parameters of formations.
 
 Attributes, which are the only identifiers that exist in \eolang{}, may have
 any Unicode symbols in their names, as long as they start with a small English letter
@@ -21,13 +21,13 @@ and don't contain spaces, line breaks, or the symbols that are part of the synta
 \ff{i文件}
 \end{CJK}
  are valid identifiers.
-Identifiers are case-sentitive: \ff{acar} and \ff{aCar} are two different identifiers.
+Identifiers are case-sensitive: \ff{acar} and \ff{aCar} are two different identifiers.
 Java-notation is used for numbers and strings.
 
 \subsection{Objects}
 
 This is a formation of a new object \ff{book}
-with has a single \ff{isbn} attribute:
+that has a single \ff{isbn} attribute:
 
 \begin{ffcode}
 # A book in the library.
@@ -47,9 +47,9 @@ Its only attribute is accessible as \ff{b1.isbn}.
 \subsection{Indentation}
 
 This is an example of an \emph{abstract} object \ff{vector}, where
-spaces are replaced with the ``\textvisiblespace'' symbol in order to demonstrate
-the importance of their presence in specific quantity
-(for example, there has to be exactly one space after the closing square bracket at the
+spaces are replaced with the ``\textvisiblespace'' symbol to demonstrate
+the importance of their presence in specific quantities
+(for example, there must be exactly one space after the closing square bracket on the
 second line and the \ff{>} symbol, while two spaces will break the syntax):
 
 {\lstset{showspaces=true}\begin{ffcode}
@@ -58,7 +58,7 @@ second line and the \ff{>} symbol, while two spaces will break the syntax):
   sqrt. > length(*@\label{ln:length}@*)
     plus.
       dx.times dx
-      dy.timex dy(*@\label{ln:length-end}@*)(*@\label{ln:vector-end}@*)
+      dy.times dy(*@\label{ln:length-end}@*)(*@\label{ln:vector-end}@*)
 \end{ffcode}
 }
 
@@ -67,27 +67,27 @@ Two \emph{void attributes} \ff{dx} and \ff{dy}
 are listed in square brackets at \lref{vector}.
 The \emph{name} of the object goes after the \ff{>} symbol.
 The code at \lref{length} defines
-an \emph{attached attribute} \ff{length}. Anywhere when an object
-has to get a name, the \ff{>} symbol can be added after the object.
+an \emph{attached attribute} \ff{length}. Wherever an object
+needs to get a name, the \ff{>} symbol can be added after the object.
 
 The declaration of the attribute \ff{length} at \lrefs{length}{length-end}
 can be written in one line, using \emph{dot notation}:
 
 \begin{ffcode}
-((dx.times dx).plus (dy.timex dy)).sqrt > length
+((dx.times dx).plus (dy.times dy)).sqrt > length
 \end{ffcode}
 
-An \emph{inverse} dot notation is used in order to simplify
+An \emph{inverse} dot notation is used to simplify
 the syntax. The identifier that goes after the dot is written
 first, the dot follows, and the next line contains the part
-that is supposed to stay before the dot. It is also possible to rewrite
+that is supposed to come before the dot. It is also possible to rewrite
 this expression in multiple lines without the usage of
 inverse notation, but it will look subjectively less readable:
 
 \begin{ffcode}
 dx.times dx (*@\label{ln:dx-pow}@*)
 .plus
-  dy.timex dy (*@\label{ln:dx-pow-2}@*)
+  dy.times dy (*@\label{ln:dx-pow-2}@*)
 .sqrt > length (*@\label{ln:dx-pow-3}@*)
 \end{ffcode}
 
@@ -199,7 +199,7 @@ sum (div 45 5) 10  (*@\label{ln:sum}@*)
 \end{ffcode}
 
 The \ff{(div 45 5)} is a copy of the abstract object \ff{div}
-with two arguments \ff{45} and \ff{5}. This object is itself
+with two arguments \ff{45} and \ff{5}. This object itself is
 the first argument of the copy of the object \ff{sum}. Its second
 argument is \ff{10}. Without brackets the syntax would read differently:
 
@@ -317,10 +317,10 @@ making a copy of it, for example:
 
 Here the object \ff{walk} is copied with a single argument:
 the one-item tuple, which is a formation with a single void attribute \ff{f}. The \ff{walk}
-will use this formation, which doesn't have a name, in order
-to filter out files while traversing the tree of directories. It will
+will use this formation, which doesn't have a name,
+to filter out files while traversing the directory tree. It will
 make a copy of the formation and then treat it as a boolean
-value in order to make a decision about each file.
+value to make a decision about each file.
 
 The syntax may be simplified and the formation may be inlined
 (the tuple is also inlined):
@@ -358,15 +358,15 @@ that this code would read the input stream two times:
 \end{ffcode}
 
 The \ff{sprintf} object will go to the \ff{x} two times. First time,
-in order to use it as a substitute for \ff{\%s} and the second time for
+to use it as a substitute for \ff{\%s} and the second time for
 \ff{\%d}. There will be two round-trips to the standard input stream, which
-obviously is not correct. The exclamation mark at the \ff{x!} solves the
+is obviously not correct. The exclamation mark at the \ff{x!} solves the
 problem, making the object by the name \ff{x} a \emph{constant}. This means
 that on the first trip to \ff{x}, it turns into bytes.
 
 Here, \ff{x} is an attribute of the object \ff{hello}, even though
-it is not defined as explicitly as \ff{say}. Anywhere a new
-name shows up after the \ff{>} symbol, it is a declaration of a new
+it is not defined as explicitly as \ff{say}. Wherever a new
+name appears after the \ff{>} symbol, it is a declaration of a new
 attribute in the nearest object abstraction.
 
 \subsection{Metas}
