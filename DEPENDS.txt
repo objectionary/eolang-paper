@@ -8,6 +8,7 @@ hard bibcop
 hard biber
 hard booktabs
 hard cancel
+hard caption
 hard catchfile
 hard cjk
 hard cleveref
