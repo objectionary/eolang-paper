@@ -6,6 +6,7 @@ hard anyfontsize
 hard babel-russian
 hard bibcop
 hard biber
+hard booktabs
 hard cancel
 hard catchfile
 hard cjk
