@@ -1,215 +1,96 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-The proposed \phic{} is based on set theory~\citep{jech2013set} and lambda calculus,
-representing objects as sets of pairs and their internals as \(\lambda\)-terms.
-\Cref{fig:ebnf} presents formal syntax of \phic{}.
+\def\trans{\mathrel{\leadsto}}
+\def\dead{\bot}
 
-\begin{figure*}
-\begin{mdframed}
-\raggedright
-\begin{ebnf}[8em]
-<Program> := "\(\Phi\)" "\(\mapsto\)" <Object> \\
-<Object> := <Formation> | <Application> | <Dispatch> | "\(\Phi\)" | "\(\xi\)" | "\(\perp\)" \\
-<Formation> := "\(\llbracket\)" <Bindings> "\(\rrbracket\)" \\
-<Application> := <Object> "\(\lparen\)" <Bindings> "\(\rparen\)" \\
-<Dispatch> := <Object> "." <Attribute> \\
-<Bindings> := <Bindings> "," <Binding> | \(\epsilon\) \\
-<Binding> := <\(\tau\)-Binding> | <\(\Delta\)-Binding> | <\(\lambda\)-Binding> \\
-<\(\tau\)-Binding> := <Attribute> "\(\mapsto\)" ( <Object> | "\(\varnothing\)" ) \\
-<\(\Delta\)-Binding> := "\(\Delta\)" "\(\phiDotted\)" ( <Data> | "\(\varnothing\)" ) \\
-<\(\lambda\)-Binding> := "\(\lambda\)" "\(\phiDotted\)" <Function> \\
-\end{ebnf}
-\end{mdframed}
-\caption{Syntax as a context-free grammar, in EBNF}
-\label{fig:ebnf}
-\end{figure*}
-
-Besides the literals mentioned in the grammar in blue color, the alphabet includes three non-terminals that rewrite to terminals as such:
-\begin{itemize}
-\item \EbnfNonTerminal{Attribute}: either \begin{inparaenum}[1)]
-    \item one of two Greek letters \(\varphi\) and \(\rho\),
-    \item a Greek letter \(\alpha\) with an optional index,
-    or
-    \item a string of English letters starting with a lowercase letter, e.g. ``\ff{price}'' or ``\ff{color}'';
-\end{inparaenum}
-\item \EbnfNonTerminal{Data}: a sequence of bytes in hexadecimal format, e.g. ``\texttt{EF-41-5C}'' is a sequence of three bytes, ``\texttt{42-}'' is a one-byte sequence (with a tailing dash in order to avoid confusion with integers), and ``\texttt{-{}-}'' (double dash) is an empty sequence of bytes;
-\item \EbnfNonTerminal{Function}: a string of English letters where the first letter is uppercase, e.g. ``\ff{Sqrt}''.
-\end{itemize}
-
-\subsection{Bindings}
-
-\begin{definition}[Binding]
-\textbf{Binding}, ranging by \(B\), is a possibly empty map of key-value pairs, where all keys are unique, denoted as $k_1 -> v_1, k_2 -> v_2, \dots, k_n -> v_n$.
-\end{definition}
-
-The following operations can be performed on a binding:
-\begin{itemize}
-\item The statement \(k \in B\) evaluates to true if the key \(k\) is present within the map;
-% \item The operation \(B-k\) results in a new binding that excludes the key-value pair with the key \(k\) (if such a pair exists);
-\item The expression \(B[k]\) returns the value associated with the key \(k\).
-\end{itemize}
-
-\subsection{Attributes}
-
-\begin{definition}[Attribute]
-\textbf{Attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\), is an identifier that is either
-\begin{inparaenum}[1)]
-    \item a text string that starts with a lower-case English letter,
-    \item \(\alpha\) with an index,
-    or
-    \item one of the following two Greek letters:
-    \(\varphi\),
-    and
-    \(\rho\).
-\end{inparaenum}
-\end{definition}
-
-\subsection{Asset}
-
-\begin{definition}[Asset]
-\textbf{Asset} is either \(\Delta\) or \(\lambda\) Greek letter.
-\end{definition}
-
-\subsection{Data}
-
-\begin{definition}[Data]
-\textbf{Data} is a possibly empty sequence of 8-bit bytes, ranged over \(\mathcal{D}\) by \(\delta_i\).
-\end{definition}
-
-\subsection{Objects}
-
-\begin{definition}[Object]
-\textbf{Object} is either an terminator, denoted as \(\perp\), or a binding where keys are attributes or assets and the following conditions hold:
-\begin{inparaenum}[1)]
-\item if a key is \(\Delta\), then the value is a data or \(\varnothing\),
-\item if a key is \(\lambda\), then the value is a function,
-\item otherwise, the value is either an object or \(\varnothing\).
-\end{inparaenum}
-Objects range over \(\mathcal{B}\) by \(b_i\).
-\end{definition}
-
-The following expression is an example of an object:
+An \emph{object} is a collection of \emph{attributes}, which are uniquely named pairs, for example:
 \begin{phiquation}
-\label{eq:object-example}
-b_1 = [[ D> 42, 0-> b_2(|foo| -> b_3).|bar|, 1-> [[ L> Sqrt ]], 5-> \perp ]]
+\label{eq:price-color}
+[[ price -> ?, color -> [[ D> FF-C0-CB ]] ]].
 \end{phiquation}
+This is a \emph{formation} of an object with two attributes |price| and |color|.
+The object is \emph{abstract} because the |price| attribute is \emph{void}, i.e. there is no object \emph{attached} to it.
+The |color| attribute is attached to another object formation with one \(\Delta\)-\emph{asset}, which is attached to \emph{data} (three bytes).
+Objects do not have \emph{names}, while only the attributes, which objects are attached to, do.
 
-The arrow ``\(\mapsto\)'' denotes an attachment of an object (right-hand side) to the attributes (left-hand side). The arrow ``\(\phiDotted\)'' denotes an attachment of a data or a function to either \(\Delta\) or \(\lambda\) assets respectively.
-
-\begin{definition}[Domain]
-\textbf{Domain} of an object is a set of all attributes of the object.
-\end{definition}
-
-The domain of the object of \cref{eq:object-example} is the following set:
-\(\{ \alpha_0, \alpha_1, \alpha_5 \}\). The asset \(\Delta\) does not belong to the domain.
-
-\begin{definition}[Abstract Object]
-An object is \textbf{abstract} if at least one of its attribute is attached to \(\varnothing\), otherwise the object is \textbf{closed}.
-\end{definition}
-
-The object of \cref{eq:object-example} is abstract, because its attribute \ff{price} is attached to \(\varnothing\). The object of \cref{eq:simple-application} was abstract before the application, but the object that it was reduced to by the application, is a closed object since its attribute \(\alpha_1\) is attached to \(b_2\).
-
-Even though \(\varnothing\) may be attached to an attribute of an object, it is not an object by itself. Instead, \(\varnothing\) is a ``placeholder'' for an object, which is attached to an attribute until an object is attached to it.
-
-\subsection{Formation}
-
-\begin{definition}[Formation]
-Object \textbf{formation}, denoted as $[[B]]$, is a construction of a new object.
-\end{definition}
-
-We introduce the term ``object formation'' rather than using a more convenient
-term ``construction'' because the latter generally implies a presence of a
-class from which an object is being constructed or instantiated. Instead,
-object formation is closer to the creation of a prototype, which may either be
-used ``as is'' or copied.
-
-\Cref{eq:price-color} is an example of object formation, where the binding of
-the abstract object being formed consists of two pairs: $price -> ?$ and
-$color -> [[D>"red"]]$. The object attached to the \ff{color} attribute is a
-formation of a closed object.
-
-\subsection{Application}
-
-\begin{definition}[Application]
-Object \textbf{application}, denoted as $b(B)$, is a copy of an existing abstract object \(b\), with new values attached to some of its attributes and/or assets.
-\end{definition}
-
-\Cref{eq:simple-application} demonstrates object application, where the binding $( 1-> b_2 )$ is applied to the formation of an abstract object $[[ 1-> ?]]$. The application creates a new object $[[ 1-> b_2 ]]$, while the existing abstract object remains intact.
-
-\subsection{Forma}
-
-\begin{definition}[Forma]
-A \textbf{forma} of an object \(b\), denoted as \(\mathbb{F}(b)\), is the abstract object that was copied in order to create \(b\). A forma of a formation is the formation itself.
-\end{definition}
-
-In \cref{eq:simple-application}, the forma of $[[ 1-> b_2 ]]$ is the abstract object $[[ 1->? ]]$, while the forma of $[[ 1->? ]]$ is $[[ 1->? ]]$.
-
-\subsection{Programs}
-
-\begin{definition}[Program]
-\textbf{Program} is an object attached to \(\Phi\) attribute of \emph{Universe}.
-\end{definition}
-
-The Universe resembles an object with the only attribute \(\Phi\), but it is not an object since it may not be attached to any attribute of any other object.
-
-\subsection{Scope}
-
-\begin{definition}[Scope]
-Object \textbf{scope} is either the formation where the object is attached to an attribute, or the scope of the application where the object is used in a binding.
-\end{definition}
-
-In simpler terms, scope is the formation that is the ``closest'' to the object, moving to the left. In the following object formation, the scope of \(b_1\) is the formation where the \ff{source} attribute stays, while the scope of \(b_2\) is the formation where the \ff{ref} attribute stays:
+A \emph{full application} of an abstract object to a pair of attribute and object \emph{results} in a new \emph{closed} object, for example:
 \begin{phiquation}
-    [[ ref -> [[ source -> Q.book( author -> b_1 ) ]], cite -> b_2 ]]
+\label{eq:simple-application}
+[[ |a| -> ? ]]( |a| -> b_2 ) \trans [[ |a| -> b_2 ]].
 \end{phiquation}
+A \emph{partial} application results in a new abstract object, for example:
+\begin{phiquation*}
+[[ |a| -> ?, |b| -> ?, |c| -> b_1 ]]( |a| -> b_2 ) \trans [[ |a| -> b_2, |b| -> ?, |c| -> b_1 ]].
+\end{phiquation*}
 
-\subsection{Dispatch}
+An object may be \emph{dispatched} from another object with the help of \emph{dot notation} where the right side \emph{accesses} the left side (underlined), for example:
+\begin{phiquation}
+\label{eq:dot-notation}
+[[ |x| -> \underline{\xi.|p|(|t|->b)}.y, |p| -> [[ |t| -> ?, |y| -> \xi.|t| ]] ]].|x| \trans b.
+\end{phiquation}
+The leftmost symbol \(\xi\) denotes the \emph{scope} of the object,
+which is the object formation itself; the following \(.|p|\) part
+retrieves the object attached to the attribute \(|p|\);
+then, the application $(|t|->b)$ makes a copy of the object;
+finally, the \(.|y|\) part retrieves object \(b\).
 
-\begin{definition}[Dispatch]
-Object \textbf{dispatch} (also known as ``dot notation''), denoted as $x.\tau_1$, is a retrieval of an object attached to attribute \(\tau_1\) of \(x\), where \(x\) (the ``subject'') may be an object, \(\Phi\), or \(\xi\); and then attaching its \(\rho\) attribute to the subject, if it is not attached yet.
-\end{definition}
+Each object has a \emph{parent} attribute \(\rho\), which is attached to the
+formation from where the object was dispatched.
 
-The subject \(\Phi\) means the program.
+Attributes are \emph{immutable}, i.e. an application of a binding to an object, where the attribute is already attached, results in a \emph{terminator} denoted as \(\dead\) (runtime error), for example:
+\begin{phiquation*}
+[[ |a| -> b_1 ]]( |a| -> b_2 ) \trans \dead{}.
+\end{phiquation*}
 
-The subject \(\xi\) means the scope of the dispatch.
+An object may be textually reduced, for example:
+\begin{phiquation*}
+[[ |a| -> ?, |b| -> ? ]]( |a| -> b_1 )( |b| -> b_2 ) \trans
+  \trans [[ |a| -> b_1, |b| -> ? ]] ( |b| -> b_2 ) \trans
+  \trans [[ |a| -> b_1, |b| -> b_2 ]].
+\end{phiquation*}
+The object on the left is reduced to the object on the right in two reduction steps.
+Every object has a \emph{normal form}, which is a form that
+has no more possible applicable reductions.
 
-\Cref{eq:dot-notation} demonstrates how dot notation works in a combination with object application. First, the scope \(\xi\) denotes the object formation, where \(x\) stays. Then, the \(.\ff{p}\) retrieves the object attached to \(\ff{p}\) attribute---this object is the formation where \(|t|\) stays. Then, the application of the $|t|->b$ binding makes a copy of the formation and attaches \(b\) to \(|t|\). Then, \(.|y|\) retrieves the object attached to \(|y|\) attribute of the copy: it is \(\xi.|t|\), where \(\xi\) means the nearest object formation, which is the copy itself. Finally, the dispatch retrieves what is the attached to \(b\) of the copy, which is \(b\).
+An object is called a \emph{decorator} if it has the \(\varphi\) attribute
+with an object attached to it, known as a \emph{decoratee}. An attribute
+dispatched from a decorator reduces to the same attribute dispatched from the decoratee,
+if the attribute is not present in the decorator, for example:
+\begin{phiquation*}
+[[ @ -> [[ |a| -> b ]] ]].|a| \trans b.
+\end{phiquation*}
 
-\subsection{Terminator}
+An object may have data attached only to its \(\Delta\)-asset, for example:
+\begin{phiquation*}
+[[ |a| -> [[ D> 00-2A ]] ]].
+\end{phiquation*}
 
-\begin{definition}[Terminator]
-The \textbf{terminator} object, denoted as \(\perp\), equals to itself when being a subject of a dispatch or an application:
-\begin{equation*}
-\forall \tau : \perp.\tau \leadsto \perp \qquad \forall B : \perp(B) \leadsto \perp.
-\end{equation*}
-\end{definition}
+An object may have a \emph{function} attached to its \(\lambda\)-asset.
+Such an object is referred to as \emph{atom}.
+An atom may be \emph{morphed} to another object by evaluating
+its function with \begin{inparaenum}[1)]
+    \item the object and
+    \item the state of evaluation
+\end{inparaenum}
+as arguments, for example:
+\begin{phiquation}
+\label{eq:Sqrt}
+\frac \
+  { \vdash Sqrt (b, s) \to \langle [[ D> \sqrt{\mathbb{D}(b.|a|)} ]], s \rangle } \
+  {[[ L> Sqrt, |a| -> 256 ]] \to 16}.
+\end{phiquation}
+There is also a \emph{dataization} function \(\mathbb{D}(b, s)\) that normalizes its first argument
+and then either returns the data attached to the \(\Delta\)-asset of
+the normal form or morphs the atom into an object and dataizes it (recursively),
+for example:
+\begin{phiquation*}
+\mathbb{D}([[ @ -> 42 ]].|a| \trans [[ |a| -> 42 ]].|a| \trans 42, s) \to 42.
+\end{phiquation*}
 
-\subsection{Immutability}
-
-\begin{definition}[Immutability]
-Every object is \textbf{immutable}, meaning that an application of its already attached attribute or asset equals to \(\perp\):
-\begin{equation*}
-\forall \tau, b_1, b_2 : \llbracket \tau \mapsto b_1 \rrbracket ( \tau \mapsto b_2 ) \leadsto \perp
-\end{equation*}
-\end{definition}
-
-\subsection{Atoms}
-
-\begin{definition}[Atom]
-\textbf{Atom} is an object formation with a total function \(\langle \mathcal{B}, \mathcal{S} \rangle \to \langle \mathcal{B}, \mathcal{S} \rangle\) attached to its \(\lambda\)-asset, that maps objects to objects, possibly modifying the \emph{state} of evaluation \(s\), which ranges over \(\mathcal{S}\).
-\end{definition}
-
-\Cref{eq:Sqrt} demonstrates an atom with a function that calculates a square root of a number, which it retrieves from the \(\Delta\)-asset of \(b.\alpha_0\), with the help of dataization function. The implementation of functions is outside of the scope of \phic{}: they may be implemented, for example, in \(\lambda\)-calculus or some programming language, for example, Java or C++.
-
-\subsection{Decoration}
-
-\begin{definition}[Decoration]
-Object \textbf{decoration} is a mechanism of extending an object (``decoratee'') by attaching it to the attribute \(\varphi\) of another object (``decorator''), which makes attributes of the decoratee retrievable from the decorator, unless the decorator has its own attributes with the same names.
-\end{definition}
-
-\subsection{Parent}
-
-\begin{definition}[Parent]
-Attaching object \(b_1\) to the \(\rho\) attribute of object \(b_2\) means setting the \textbf{parent} of \(b_2\) to \(b_1\).
-\end{definition}
+A program is an object that is attached to the \(\Phi\) attribute
+of the \emph{Universe}, for example:
+\begin{phiquation*}
+Q -> [[ D> CA-FE ]].
+\end{phiquation*}
+The dataization of \(\Phi\) is the evaluation of the program.
