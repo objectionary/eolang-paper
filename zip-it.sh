@@ -31,6 +31,7 @@ bibtex paper
 pdflatex -halt-on-error paper.tex > /dev/null
 pdflatex -halt-on-error paper.tex > /dev/null
 rm -rf ./*.aux ./*.bcf ./*.blg ./*.fdb_latexmk ./*.fls ./*.log ./*.run.xml ./*.out ./*.exc ./*.ret
+rm -rf bibliography
 zip -x paper.pdf -r "paper-${version}.zip" ./*
 mv "paper-${version}.zip" ..
 cd ..

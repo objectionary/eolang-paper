@@ -1,5 +1,6 @@
 _eolang/
 _minted-*
+paper-*/
 .DS_Store
 .idea/
 *-SAVE-ERROR
