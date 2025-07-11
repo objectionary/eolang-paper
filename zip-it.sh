@@ -4,9 +4,7 @@
 
 set -ex -o pipefail
 
-TLROOT=$1
-REPO=$2
-PACKAGES=$3
+REPO=$1
 
 rm -rf package
 mkdir package
@@ -16,7 +14,8 @@ cp ../phigure.sty .
 mkdir bibliography
 cp ../bibliography/main.bib bibliography/main.bib
 
-for p in ${PACKAGES}; do
+TLROOT=$(kpsewhich -var-value TEXMFDIST)
+for p in ffcode to-be-determined href-ul iexec eolang; do
     cp "${TLROOT}/tex/latex/${p}/${p}.sty" .
 done
 cp -r ../sections .
@@ -31,7 +30,7 @@ pdflatex -shell-escape -halt-on-error paper.tex > /dev/null
 bibtex paper
 pdflatex -halt-on-error paper.tex > /dev/null
 pdflatex -halt-on-error paper.tex > /dev/null
-rm -rf ./*.aux ./*.bcf ./*.blg ./*.fdb_latexmk ./*.fls ./*.log ./*.run.xml ./*.out ./*.exc
+rm -rf ./*.aux ./*.bcf ./*.blg ./*.fdb_latexmk ./*.fls ./*.log ./*.run.xml ./*.out ./*.exc ./*.ret
 zip -x paper.pdf -r "paper-${version}.zip" ./*
 mv "paper-${version}.zip" ..
 cd ..
