@@ -11,7 +11,7 @@ PACKAGES=ffcode to-be-determined href-ul iexec eolang bibcop
 REPO=objectionary/eo
 
 zip: *.tex sections/*.tex
-	zip-it.sh "$(TLROOT)" "$(REPO)" "$(PACKAGES)"
+	./zip-it.sh "$(TLROOT)" "$(REPO)" "$(PACKAGES)"
 
 clean:
 	git clean -dfX
