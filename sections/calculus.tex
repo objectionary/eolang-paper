@@ -1,7 +1,7 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-In this Section we introduce \phic{}, a formalism that we use later in order to optimize object-oriented code.
+In this section we introduce \phic{}, a formalism that we use later to optimize object-oriented code.
 We give an informal introduction to the calculus, helping the reader to grasp the idea without diving into details.
 In \cref{app:syntax}, we formulate the syntax using EBNF and introduce individual concepts of the calculus, explaining their semantics and illustrating them with examples.
 
@@ -127,7 +127,7 @@ The syntax of a program is defined by EBNF in \cref{fig:ebnf} (the starting symb
 \end{figure*}
 
 Besides the literals mentioned in the grammar in blue color, the
-alphabet includes three non-terminals that rewrite to terminals as such:
+alphabet includes three non-terminals that rewrite to terminals as follows:
 \begin{itemize}
   \item \EbnfNonTerminal{Attribute}: either \begin{inparaenum}[1)]
       \item Greek letter \(\varphi\),
@@ -384,7 +384,7 @@ Since any expression may recursively be defined as either \begin{inparaenum}[1)]
     or
     \item dispatch,
 \end{inparaenum}
-it consists of a \textbf{head} and a possibly empty \textbf{tail}, together denoted as \(h\bullet{}t\).
+it consists of a \textbf{head} and a possibly empty \textbf{tail}, denoted together as \(h\bullet{}t\).
 \end{definition}
 
 \begin{example}
@@ -418,8 +418,8 @@ $b_1( |foo| -> b_2)( 0-> 42 ).|print|( 1-> 7 )$
 \subsection{Terminator}\label{sec:terminator}
 
 \begin{definition}[Terminator]
-The \textbf{terminator}, denoted as \stx{\dead}, is an object that equals itself when being
-a subject of a dispatch or an application:
+The \textbf{terminator}, denoted as \stx{\dead}, is an object that equals itself when it is
+the subject of a dispatch or an application:
 \begin{equation*}
 \forall \tau : \dead.\tau \trans \dead \qquad \forall \tau, e : \dead( \tau \mapsto e) \trans \dead.
 \end{equation*}
@@ -443,7 +443,7 @@ its already attached attribute equals to \(\dead\):
 
 \Cref{eq:Sqrt} demonstrates an atom with a function that calculates
 the square root of a number, which it retrieves from the \(\Delta\)-asset
-of \(b.\alpha_0\), with the help of the morphing function (\cref{sec:morphing}).
+of \(b.\alpha_0\) with the help of the morphing function (\cref{sec:morphing}).
 The implementation of functions is outside the scope of \phic{}: they may be implemented,
 for example, in \(\lambda\)-calculus or a programming language
 such as Java or C++.
@@ -452,7 +452,7 @@ such as Java or C++.
 
 \begin{definition}[Decoration]
 Object \textbf{decoration} is a mechanism of extending an object (``decoratee'')
-by attaching it to ``\stx{\varphi}''-attribute of another object (``decorator''),
+by attaching it to the ``\stx{\varphi}''-attribute of another object (``decorator''),
 which makes attributes of the decoratee retrievable from the decorator,
 unless the decorator has its own attributes with the same names.
 \end{definition}
@@ -632,8 +632,8 @@ A normal form is either a primitive or a dispatch where the subject is an atom.
 \subsection{Confluence}\label{sec:confluence}
 
 The reduction strategy in \cref{fig:reduction} is \emph{confluent},
-i.e. possesses the Church–Rosser property~\citep{church1936some}. This means
-that if there are reduction sequences from any expression to two different expression,
+i.e., possesses the Church–Rosser property~\citep{church1936some}. This means
+that if there are reduction sequences from any expression to two different expressions,
 then there exist reduction sequences from those two expressions to some common expression.
 Moreover, the reduction strategy possesses the unique normal form property:
 

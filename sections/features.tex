@@ -10,7 +10,7 @@
 
 There are a few features that distinguish \eolang{} and \phic{}
 from other existing OO languages and object theories, while some of
-them are similar to what other languages have to offer. This section is not
+them are similar to what other languages offer. This section is not
 intended to present the features formally, which was done earlier in
 \cref{sec:calculus,sec:syntax}, but to compare \eolang{} with other
 programming languages and informally identify similarities.
@@ -18,7 +18,7 @@ programming languages and informally identify similarities.
 \feature{no-classes}{No Classes}
 %
 \eolang{} is similar to other delegation-based languages like Self~\citep{ungar1987self},
-where objects are not created by a class as in class-based languages like C++ or Java,
+where objects are not created by a class, as in class-based languages like C++ or Java,
 but from another object, inheriting properties from the original.
 However, while in such languages, according to~\citet{fisher1995delegation},
 ``an object may be created,
@@ -32,7 +32,7 @@ between objects may be inferred at compile-time and validated strictly, which ot
 \nospell{typeless} languages such as Python,
 Julia~\citep{bezanson2012julia},
 Lua~\citep{ierusalimschy2016lua},
-or Erlang~\citep{erlang2020manual} can't guarantee.
+or Erlang~\citep{erlang2020manual} cannot guarantee.
 Also, there is no type casting or reflection on types in \eolang{}.
 
 \feature{no-inheritance}{No Inheritance}
@@ -56,7 +56,7 @@ To our knowledge, there are no other OO languages without methods.
 \feature{no-ctors}{No Constructors}
 %
 Unlike Java or C++, \eolang{} doesn't allow programmers to alter
-the process of object construction or suggest alternative
+the process of object construction or to suggest alternative
 paths of object instantiation via additional constructors.
 Instead, all arguments are attached to attributes ``as is'' and can't be modified.
 
@@ -65,7 +65,7 @@ Instead, all arguments are attached to attributes ``as is'' and can't be modifie
 Unlike Java and C\#,
 \eolang{} objects may consist only of other objects, represented
 by attributes, while class methods, also known as static methods, as well as
-static literals, and static blocks don't exist in \eolang{}.
+static literals and static blocks, do not exist in \eolang{}.
 Considering modern programming languages, Go has no static methods either,
 but only objects and ``\nospell{structs}''~\citep{schmager2010gohotdraw}.
 
@@ -74,7 +74,7 @@ but only objects and ``\nospell{structs}''~\citep{schmager2010gohotdraw}.
 There are no primitive data types in \eolang{}, unlike
 in Java and C++, for example.
 As in Ruby, Smalltalk~\citep*{goldbergrobson1983smalltalk}, Squeak, Self, and Pharo,
-integers, floating point numbers, boolean
+integers, floating-point numbers, Boolean
 values, and strings are objects in \eolang{}:
 ``everything is an object'' is the key design principle, which,
 according to~\citet[p.66]{west2004object}, is an ``obviously necessary prerequisite
@@ -87,7 +87,7 @@ numeric objects have built-in atoms that represent math operations. The same
 is true for all other manipulations with objects: they are provided
 only by their encapsulated objects, not by external language constructs, as in
 Java or C\#. Here \eolang{} is similar to Ruby, Smalltalk and Eiffel,
-where operators are syntax sugar, while implementation is encapsulated in
+where operators are syntactic sugar, while implementation is encapsulated in
 the objects.
 
 \feature{no-null}{No NULL References}
@@ -95,7 +95,7 @@ the objects.
 Unlike C++ and Java, there is no concept of NULL in \eolang{}, which
 was called a ``billion dollar mistake'' by~\citet{hoare2009null} and
 is one of the key threats for design consistency~\citep{eo1}.
-Haskell, Rust, OCaml, Standard ML, and Swift also don't have NULL references.
+Haskell, Rust, OCaml, Standard ML, and Swift also do not have NULL references.
 
 \feature{no-empty}{No Empty Objects}
 %
@@ -133,7 +133,7 @@ don't mean constants. While the latter will
 always expose the same functionality, the former may represent mutable
 entities, being known as read-only references~\citep{birka2004practical}.
 For example, an attribute \ff{r} may have an object \ff{random.pseudo}
-attached to it, which is a random number generator. \eolang{} won't allow
+attached to it, which is a random number generator. \eolang{} will not allow
 assigning another object to the attribute \ff{r}. However, every time
 the attribute is dataized, its value will be different.
 %
@@ -148,7 +148,7 @@ transitive immutability of data.
 There are no lambda objects or functions in \eolang{}, which exist in Java~8+, for example.
 However, objects in \eolang{} have ``bodies,'' which make it possible to interpret
 objects as functions.
-Strictly speaking, if objects in \eolang{} would only have bodies and no other attributes,
+Strictly speaking, if objects in \eolang{} had only bodies and no other attributes,
 they would be functions. It is legitimate to
 say that \eolang{} extends lambda calculus, but in a different way
 compared to previous attempts made by~\citet{mitchell1993lambda} and \citet{di1998lambda}:
@@ -158,4 +158,4 @@ objects.
 \feature{no-mixins}{No mixins}
 %
 There are no ``traits'' or ``mixins'' in \eolang{}, which exist in Ruby and PHP to enable
-code reuse from other objects without inheritance and composition.
+code reuse from other objects without inheritance or composition.

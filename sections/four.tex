@@ -1,7 +1,7 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-In order to answer the question of whether
+To answer the question of whether
 the proposed object calculus is sufficient
 to express any object model, in this section we demonstrate
 how four fundamental principles of OOP are realized by \phic{}:
@@ -36,7 +36,7 @@ and/or behavior defined in one (single inheritance)
 or more (multiple inheritance) other classes,'' where
 ``a subclass typically augments or
 restricts the existing structure and behavior of its superclasses.''
-The purpose of inheritance, according to~\citet{meyer1997object}, is
+According to~\citet{meyer1997object}, the purpose of inheritance is
 ``to control the resulting potential complexity'' of the design
 by enabling code reuse.
 
@@ -54,7 +54,7 @@ public:
 \end{ffcode}
 
 The method \ff{draw()} is ``virtual,'' meaning that it is not implemented in the class
-\ff{Shape} but may be implemented in sub-classes, for example in
+\ff{Shape} but may be implemented in sub-classes, for example, in
 the class \ff{Circle}:
 
 \begin{ffcode}
@@ -71,7 +71,7 @@ method \ff{Circle.move()} is called, its implementation from the class \ff{Shape
 will call the virtual method \ff{Shape.draw()}, and the call will be dispatched
 to the overridden method \ff{Circle.draw()} through the ``virtual table'' in the class \ff{Shape}.
 The creator of the class \ff{Shape} is not aware of sub-classes
-which may be created long after, for example \ff{Triangle}, \ff{Rectangle}, and so on.
+that may be created long after, for example, \ff{Triangle}, \ff{Rectangle}, and so on.
 
 Even though implementation inheritance and method overriding seem to
 be powerful mechanisms, they have been criticized.
@@ -93,9 +93,9 @@ the behavior of objects by composition rather than by inheritance.''
 delegation, which they called ``dynamic inheritance,'' is a better way
 to add behavior to an object, but not to override existing behavior.
 
-The absence of an inheritance mechanism in \phic{} doesn't make it
-any weaker, since object hierarchies are available. \citet{grady2007object}
-while naming four fundamental elements of object model mentioned
+The absence of an inheritance mechanism in \phic{} does not make it
+any weaker, since object hierarchies are available. \citet{grady2007object},
+while naming four fundamental elements of the object model, mentioned
 ``abstraction, encapsulation, modularity, and hierarchy'' (instead of inheritance, like
 some other authors).
 
@@ -138,7 +138,7 @@ public:
 };
 \end{ffcode}
 
-Now, it is possible to define a function, which accepts a set
+Now, it is possible to define a function that accepts a set
 of instances of class \ff{Employee} and prints them one by one,
 calling their method \ff{print()}:
 
@@ -152,7 +152,7 @@ void print_list(set<Employee*> &emps) {
 \end{ffcode}
 
 The information of whether elements of the set \ff{emps} are instances of \ff{Employee}
-or \ff{Manager} is not available for the \ff{print\char`\_list} function in compile-time.
+or \ff{Manager} is not available to the \ff{print\char`\_list} function at compile-time.
 As explained by \citet[p.103]{grady2007object},
 ``polymorphism and late binding go hand in hand;
 in the presence of polymorphism, the binding of a method
@@ -160,13 +160,13 @@ to a name is not determined until execution.''
 
 Even though there are no explicitly defined types in \phic{},
 the conformance between objects is derived and ``strongly'' checked
-in compile time. In the example above, it would not be possible to
+at compile-time. In the example above, it would not be possible to
 compile the code that adds elements to the set \ff{emps} if any
 of them lacks the attribute \ff{print}. Since in \eolang{},
 there is no reflection on types or any other mechanisms
 of alternative object instantiation, it is always known where
 objects are constructed or copied and what their structure is.
-Having this information at compile-time, it is possible to guarantee
+Having this information at compile-time makes it possible to guarantee
 strong compliance of all objects and their users. To our knowledge,
 this feature is not available in any other OOP languages.
 
@@ -212,11 +212,11 @@ In \eolang{}, the tightness of coupling between objects should be controlled
 during the build, similar to how the threshold of test code coverage is
 usually controlled. At compile-time, the compiler collects information
 about the relationships between objects and calculates the coupling depth of each connection.
-For example, the object \ff{garage} is referring to the object
+For example, the object \ff{garage} refers to the object
 \ff{car.engine.size}. This means that the depth of this connection between objects
 \ff{garage} and \ff{car} is two, because the object \ff{garage} is using
 two dots to access the object \ff{size}. Then, all collected depths from
-all object connections are analyzed and the build is rejected if the numbers
+all object connections are analyzed, and the build is rejected if the numbers
 are higher than a predefined threshold. How exactly the numbers are analyzed
 and what the possible values of the threshold are is a subject for future
 research.

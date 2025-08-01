@@ -2,7 +2,7 @@
 % SPDX-License-Identifier: MIT
 
 The entire syntax of the \eolang{} language in BNF is available on the first page of the
-\texttt{objectionary/eo} Github repository\footnote{\url{https://github.com/objectionary/eo}}.
+\texttt{objectionary/eo} GitHub repository\footnote{\url{https://github.com/objectionary/eo}}.
 Here, we only explain the basics of the language, not its entire syntax.
 
 Similar to Python~\citep{lutz2013learning}, indentation in \eolang{} is part of the syntax:
@@ -15,14 +15,14 @@ denoting grammar constructs, such as \ff{>} for attribute naming,
 
 Attributes, which are the only identifiers that exist in \eolang{}, may have
 any Unicode symbols in their names, as long as they start with a small English letter
-and don't contain spaces, line breaks, or the symbols that are part of the syntax:
+and do not contain spaces, line breaks, or the symbols that are part of the syntax:
 \ff{test-File} and
 \begin{CJK}{UTF8}{gbsn}
 \ff{i文件}
 \end{CJK}
  are valid identifiers.
 Identifiers are case-sensitive: \ff{acar} and \ff{aCar} are two different identifiers.
-Java-notation is used for numbers and strings.
+Java notation is used for numbers and strings.
 
 \subsection{Objects}
 
@@ -62,7 +62,7 @@ second line and the \ff{>} symbol, while two spaces will break the syntax):
 }
 
 The code at \lref{comment} is a \emph{comment}.
-Two \emph{void attributes} \ff{dx} and \ff{dy}
+Two \emph{void attributes}, \ff{dx} and \ff{dy},
 are listed in square brackets at \lref{vector}.
 The \emph{name} of the object goes after the \ff{>} symbol.
 The code at \lref{length} defines
@@ -92,7 +92,7 @@ dx.times dx (*@\label{ln:dx-pow}@*)
 
 Here, \lref{dx-pow} is the application of the object \ff{dx.times} with
 a new argument \ff{dx}. Then, the next line is the object \ff{plus} taken
-from the object created at the first line, using the dot notation. Then,
+from the object created at the first line, using dot notation. Then,
 \lref{dx-pow-2} is the argument passed to the object \ff{plus}.
 The code at \lref{dx-pow-3} takes the object \ff{sqrt} from the object constructed
 at the previous line, and gives it the name \ff{length}.
@@ -104,7 +104,7 @@ known as making a \emph{copy}.
 A definition of an abstract object starts with a list of void attributes
 in square brackets on one line, followed by a list of attached attributes
 each in its own line. For example, this is an abstract \emph{anonymous} object
-(it doesn't have a name)
+(it does not have a name)
 with one void attribute \ff{x} and two attached attributes \ff{succ} and \ff{prev}:
 
 \begin{ffcode}
@@ -114,7 +114,7 @@ with one void attribute \ff{x} and two attached attributes \ff{succ} and \ff{pre
   x.minus 1 > prev
 \end{ffcode}
 
-The arguments of \ff{plus} and \ff{minus} are provided in a \emph{horizontal}
+The arguments of \ff{plus} and \ff{minus} are provided in \emph{horizontal}
 mode, without the use of indentation. It is possible to rewrite this code
 in a \emph{vertical} mode, where indentation will be required:
 
@@ -304,7 +304,7 @@ square brackets.
 
 \subsection{Anonymous Formations}
 
-A formation may be used as an argument of another object while
+A formation may be used as an argument of another object when
 making a copy of it, for example:
 
 \begin{ffcode}
@@ -316,7 +316,7 @@ making a copy of it, for example:
 
 Here the object \ff{walk} is copied with a single argument:
 the one-item tuple, which is a formation with a single void attribute \ff{f}. The \ff{walk}
-will use this formation, which doesn't have a name,
+will use this formation, which does not have a name,
 to filter out files while traversing the directory tree. It will
 make a copy of the formation and then treat it as a boolean
 value to make a decision about each file.
@@ -335,7 +335,7 @@ An anonymous formation may have multiple attributes:
 [x] (x.plus 1 > succ) (x.minus 1 > prev)
 \end{ffcode}
 
-This object has two attributes \ff{succ} and \ff{prev}, and doesn't
+This object has two attributes \ff{succ} and \ff{prev}, and does not
 have a name.
 
 The parent of each copy of the abstract object will be set by
@@ -356,8 +356,8 @@ that this code would read the input stream two times:
       x.length
 \end{ffcode}
 
-The \ff{sprintf} object will go to the \ff{x} two times. First time,
-to use it as a substitute for \ff{\%s} and the second time for
+The \ff{sprintf} object will go to the \ff{x} two times. The first time,
+to use it as a substitute for \ff{\%s}, and the second time for
 \ff{\%d}. There will be two round-trips to the standard input stream, which
 is obviously not correct. The exclamation mark at the \ff{x!} solves the
 problem, making the object by the name \ff{x} a \emph{constant}. This means
@@ -390,8 +390,8 @@ to the file:
 
 \subsection{Atoms}
 
-Some objects in \eolang{} programs may need to be platform specific
-and can't be composed from other existing objects---they are called
+Some objects in \eolang{} programs may need to be platform-specific
+and cannot be composed from other existing objects---they are called
 \emph{atoms}.
 For example, the object \ff{app} uses the object \ff{stdout},
 which is an atom. Its implementation would be provided by the
