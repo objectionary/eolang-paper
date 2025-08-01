@@ -1,8 +1,9 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-\def\trans{\mathrel{\leadsto}}
-\def\dead{\bot}
+In this Section we introduce \phic{}, a formalism that we use later in order to optimize object-oriented code.
+We give an informal introduction to the calculus, helping the reader to grasp the idea without diving into details.
+In \cref{app:syntax}, we formulate the syntax using EBNF and introduce individual concepts of the calculus, explaining their semantics and illustrating them with examples.
 
 An \emph{object} is a collection of \emph{attributes}, which are uniquely named pairs, for example:
 \begin{phiquation}
@@ -17,17 +18,17 @@ Objects do not have \emph{names}, while only the attributes, which objects are a
 A \emph{full application} of an abstract object to a pair of attribute and object \emph{results} in a new \emph{closed} object, for example:
 \begin{phiquation}
 \label{eq:simple-application}
-[[ |a| -> ? ]]( |a| -> b_2 ) \trans [[ |a| -> b_2 ]].
+[[ |x| -> ? ]]( |y| -> b_2 ) \trans [[ |x| -> b_2 ]].
 \end{phiquation}
 A \emph{partial} application results in a new abstract object, for example:
 \begin{phiquation*}
-[[ |a| -> ?, |b| -> ? ]]( |a| -> b ) \trans [[ |a| -> b, |b| -> ? ]].
+[[ |x| -> ?, |y| -> ? ]]( |x| -> b ) \trans [[ |x| -> b, |y| -> ? ]].
 \end{phiquation*}
 
 An object may be \emph{dispatched} from another object with the help of \emph{dot notation} where the right side \emph{accesses} the left side (underlined), for example:
 \begin{phiquation}
 \label{eq:dot-notation}
-[[ |x| -> \underline{\xi.|p|(|t|->b)}.y, |p| -> [[ |t| -> ?, |y| -> \xi.|t| ]] ]].|x| \trans b.
+[[ |x| -> \underline{\xi.|p|(|t| -> b)}.|y|, |p| -> [[ |t| -> ?, |y| -> \xi.|t| ]] ]].|x| \trans b.
 \end{phiquation}
 The leftmost symbol \(\xi\) denotes the \emph{scope} of the object,
 which is the object formation itself; the following \(.|p|\) part
@@ -40,14 +41,14 @@ formation from where the object was dispatched.
 
 Attributes are \emph{immutable}, i.e. an application of a binding to an object, where the attribute is already attached, results in a \emph{terminator} denoted as \(\dead\) (runtime error), for example:
 \begin{phiquation*}
-[[ |a| -> b_1 ]]( |a| -> b_2 ) \trans \dead{}.
+[[ |x| -> b_1 ]]( |x| -> b_2 ) \trans \dead{}.
 \end{phiquation*}
 
 An object may be textually reduced, for example:
 \begin{phiquation*}
-[[ |a| -> ?, |b| -> ? ]]( |a| -> b_1 )( |b| -> b_2 ) \trans
-  \trans [[ |a| -> b_1, |b| -> ? ]] ( |b| -> b_2 ) \trans
-  \trans [[ |a| -> b_1, |b| -> b_2 ]].
+[[ |x| -> ?, |y| -> ? ]]( |x| -> b_1 )( |y| -> b_2 ) \trans
+  \trans [[ |x| -> b_1, |y| -> ? ]] ( |y| -> b_2 ) \trans
+  \trans [[ |x| -> b_1, |y| -> b_2 ]].
 \end{phiquation*}
 The object on the left is reduced to the object on the right in two reduction steps.
 Every object has a \emph{normal form}, which is a form that
@@ -58,12 +59,12 @@ with an object attached to it, known as a \emph{decoratee}. An attribute
 dispatched from a decorator reduces to the same attribute dispatched from the decoratee,
 if the attribute is not present in the decorator, for example:
 \begin{phiquation*}
-[[ @ -> [[ |a| -> b ]] ]].|a| \trans b.
+[[ @ -> [[ |x| -> b ]] ]].|x| \trans b.
 \end{phiquation*}
 
 An object may have data attached only to its \(\Delta\)-asset, for example:
 \begin{phiquation*}
-[[ |a| -> [[ D> 00-2A ]] ]].
+[[ |x| -> [[ D> 00-2A ]] ]].
 \end{phiquation*}
 
 An object may have a \emph{function} attached to its \(\lambda\)-asset.
@@ -77,15 +78,15 @@ as arguments, for example:
 \begin{phiquation}
 \label{eq:Sqrt}
 \frac \
-  { \vdash Sqrt (b, s) \to \langle [[ D> \sqrt{\mathbb{D}(b.|a|)} ]], s \rangle } \
-  {[[ L> Sqrt, |a| -> 256 ]] \to 16}.
+  { \vdash Sqrt (b, s) \to \langle [[ D> \sqrt{\mathbb{D}(b.|x|)} ]], s \rangle } \
+  {[[ L> Sqrt, |x| -> 256 ]] \to 16}.
 \end{phiquation}
 There is also a \emph{dataization} function \(\mathbb{D}(b, s)\) that normalizes its first argument
 and then either returns the data attached to the \(\Delta\)-asset of
 the normal form or morphs the atom into an object and dataizes it (recursively),
 for example:
 \begin{phiquation*}
-\mathbb{D}([[ @ -> 42 ]].|a| \trans [[ |a| -> 42 ]].|a| \trans 42, s) \to 42.
+\mathbb{D}([[ @ -> 42 ]].|x| \trans [[ |x| -> 42 ]].|x| \trans 42, s) \to 42.
 \end{phiquation*}
 
 A program is an object that is attached to the \(\Phi\) attribute
@@ -94,3 +95,752 @@ of the \emph{Universe}, for example:
 Q -> [[ D> CA-FE ]].
 \end{phiquation*}
 The dataization of \(\Phi\) is the evaluation of the program.
+
+\subsection{Syntax}\label{sec:syntax}
+
+The syntax of a program is defined by EBNF in \cref{fig:ebnf} (the starting symbol is \EbnfNonTerminal{Program}).
+
+\begin{figure*}
+\begin{mdframed}
+\raggedright
+\begin{ebnf}[8em]
+<Program> := "\(\Phi\)" "\(\mapsto\)" <Expression> \\
+<Expression> := <Formation> | <Application> | <Dispatch> | "\(\dead\)" \\
+<Formation> := "\(\llbracket\)" <Binding> "\(\rrbracket\)" \\
+<Application> := <Expression> "\(\lparen\)" <A-Pair> "\(\rparen\)" \\
+<A-Pair> := <\(\tau\)-Pair> | <\(\alpha\)-Pair> \\
+<Dispatch> := <Subject> "." <Attribute> \\
+<Subject> := <Expression> | <Locator> \\
+<Locator> := "\(\Phi\)" | "\(\xi\)" \\
+<Binding> := <Pair> <Bindings> | \(\epsilon\) \\
+<Bindings> := "," <Pair> <Bindings> | \(\epsilon\) \\
+<Pair> := <\(\varnothing\)-Pair> | <\(\tau\)-Pair> | <\(\Delta\)-Pair> | <\(\lambda\)-Pair> \\
+<\(\varnothing\)-Pair> := <Attribute> "\(\mapsto\)" "\(\varnothing\)" \\
+<\(\tau\)-Pair> := <Attribute> "\(\mapsto\)" <Subject> \\
+<\(\alpha\)-Pair> := <Alpha> "\(\mapsto\)" <Subject> \\
+<\(\Delta\)-Pair> := "\(\Delta\)" "\(\phiDotted\)" <Data> \\
+<\(\lambda\)-Pair> := "\(\lambda\)" "\(\phiDotted\)" <Function> \\
+\end{ebnf}
+\end{mdframed}
+\caption{Syntax as a context-free grammar, in EBNF.}
+\label{fig:ebnf}
+\end{figure*}
+
+Besides the literals mentioned in the grammar in blue color, the
+alphabet includes three non-terminals that rewrite to terminals as such:
+\begin{itemize}
+  \item \EbnfNonTerminal{Attribute}: either \begin{inparaenum}[1)]
+      \item Greek letter \(\varphi\),
+      \item Greek letter \(\rho\),
+      or
+      \item a string of lowercase English letters possibly with dashes inside, e.g. ``|price|'' or ``|a-car|'';
+  \end{inparaenum}
+  \item \EbnfNonTerminal{Data}: a sequence of bytes in hexadecimal format, e.g. ``\texttt{EF-41-5C}'' is a sequence of three bytes, ``\texttt{42-}'' is a one-byte sequence (with a trailing dash in order to avoid confusion with integers), and ``\texttt{-{}-}'' (double dash) is an empty sequence of bytes;
+  \item \EbnfNonTerminal{Function}: a string of English letters where the first letter is in uppercase, e.g. ``|Sqrt|'';
+  \item \EbnfNonTerminal{Alpha}: a Greek letter \(\alpha\) with a non-negative whole-number index, e.g. \(\alpha_2\).
+\end{itemize}
+
+\subsection{Expression}\label{sec:expression}
+
+\begin{definition}[Expression]
+\textbf{Expression}, ranged over \(\mathcal{E}\) by \(e_i\),
+is a grammatical construct that may result in an object after
+certain transformations.
+\end{definition}
+
+\subsection{Attribute}\label{sec:attribute}
+
+\begin{definition}[Attribute]
+\textbf{Attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\),
+is an identifier to which either ``\stx{\varnothing}'' or an expression
+may be attached.
+\end{definition}
+
+\begin{definition}[Void vs. Attached]
+An attribute is \textbf{void} if it is attached to ``\stx{\varnothing},''
+otherwise it is an \textbf{attached} attribute.
+\end{definition}
+
+\subsection{Data}\label{sec:data}
+
+\begin{definition}[Data]
+\textbf{Data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly
+empty sequence of 8-bit bytes.
+\end{definition}
+
+\subsection{Binding}\label{sec:binding}
+
+\begin{definition}[Binding]
+\textbf{Binding}, ranged over \(\mathcal{G}\) by \(B\), is a possibly empty set of key-value pairs,
+denoted as \( k_1 \to v_1, k_2 \to v_2, \dots, k_n \to v_n \), where all keys are unique.
+\end{definition}
+
+The predicate \(k \in B\) holds if \(k\) is present in any pair of \(B\).
+
+\subsection{Function}\label{sec:function}
+
+\begin{definition}[Function]
+\textbf{Function} is a total mapping
+\(\langle \mathcal{G}, \mathcal{S} \rangle \to \langle \mathcal{G}, \mathcal{S} \rangle\)
+that maps binding to binding, possibly modifying the \emph{state} of evaluation \(s_i\),
+which itself ranges over \(\mathcal{S}\).
+\end{definition}
+
+\subsection{Asset}\label{sec:asset}
+
+\begin{definition}[Asset]
+\textbf{Asset} is an identifier to which either data
+(denoted as ``\stx{\Delta}''-asset) or function
+(denoted as ``\stx{\lambda}''-asset) is attached.
+\end{definition}
+
+\subsection{Object}\label{sec:object}
+
+\begin{definition}[Object]
+\textbf{Object}, ranged over \(\mathcal{B}\) by \(b_i\), is a binding
+where keys are either attributes or assets and values are either
+``\stx{\varnothing},'' expressions, data, or functions.
+\end{definition}
+
+The following is an example of an object with four pairs, where the first one
+is an asset attached to data, while the other three are attributes attached to
+expressions:
+\begin{phiquation}
+\label{eq:object-example}
+[[ D> 00-2A, |a| -> b_2(0-> b_3).|bar|, |b| -> [[ L> Sqrt ]], foo -> \dead ]]
+\end{phiquation}
+
+The arrow ``\stx{\mapsto}'' denotes an attachment of an expression (right-hand side)
+to an attribute (left-hand side). The arrow ``\stx{\phiDotted}'' denotes
+an attachment of data or function to an asset.
+
+\subsection{Domain}\label{sec:domain}
+
+\begin{definition}[Domain]
+\textbf{Domain} of object \(b\), denoted as \(\bar{b}\), is a set
+that includes all attributes of \(b\).
+\end{definition}
+
+The domain of the object in \cref{eq:object-example} is \(\{ |a|, |b|, |foo| \}\).
+Assets ``\stx{\Delta}'' and ``\stx{\lambda}'' do not belong to object domain.
+
+\subsection{Formation}\label{sec:formation}
+
+\begin{definition}[Formation]
+Object \textbf{formation}, denoted as ``\(\stx{\llbracket} B \stx{\rrbracket}\)'',
+is a construction of a new object.
+\end{definition}
+
+We introduce the term ``object formation'' rather than using a more traditional
+``construction'' term because the latter generally implies a presence of a
+class from which an object is being constructed or instantiated. Instead,
+object formation is closer to the creation of a prototype, which may either be
+used ``as is'' or copied.
+
+\subsection{Program}\label{sec:program}
+
+\begin{definition}[Program]
+\textbf{Program} is a pair $ Q -> [[ B ]] $ that exists only
+in the \textit{Universe} binding.
+\end{definition}
+
+The Universe resembles an object with only the attribute \(\Phi\), but it
+is not an object since it cannot be attached to any attribute of any other object.
+
+\subsection{Abstract Object}\label{sec:abstract}
+
+\begin{definition}[Abstract Object]
+An object is \textbf{abstract} if at least one of its attributes is void,
+otherwise the object is \textbf{closed}.
+\end{definition}
+
+\Cref{eq:price-color} is an example of an object formation, where the binding of
+the abstract object being formed consists of two pairs: $price -> ?$ and
+$color -> [[ D> FF-C0-CB ]]$. The object attached to the |color| attribute is a
+formation of a closed object.
+
+\subsection{Ordinal}\label{sec:ordinal}
+
+\newcommand\ordinal[2]{#1 \circ #2}
+\begin{definition}[Ordinal]
+An attribute's \textbf{ordinal}, denoted as \(\ordinal{\tau}{b}\),
+is a non-negative whole number that is equal to the position of \(\tau\)
+in \(\mathbb{F}(b)\), starting from zero, not counting assets.
+\end{definition}
+
+\begin{example}
+\Cref{tab:ordinals} shows a few examples of attributes and their ordinals.
+
+\begin{table*}
+\caption{A few examples of attributes' ordinals in their objects.}
+\label{tab:ordinals}
+\begin{tabular}{lr}
+\toprule
+\(b\) & \(\ordinal{|x|}{b}\) \\
+\midrule
+$[[ |x| -> \xi.|k| ]]$
+  & 0 \\
+$[[ |foo| -> \xi.|k|, |x| -> \Phi.|t| ]]$
+  & 1 \\
+$[[ L> Fn, |x| -> \xi.|k| ]]$
+  & 0 \\
+$[[ D> CA-FE, |foo| -> \xi, |x| -> \xi.|foo| ]]$
+  & 2 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+\end{example}
+
+\subsection{Application}\label{sec:application}
+
+\begin{definition}[Application]
+Object \textbf{application}, denoted as \( b \stx{(} \tau \;\stx{\mapsto}\; e \stx{)} \), is a copy of an existing abstract object \(b\) (the ``subject''), with \(e\) attached to its \(\tau\) attribute.
+\end{definition}
+
+\Cref{eq:simple-application} demonstrates object application, where $ |a| -> b_2 $ is
+applied to the formation of an abstract object $[[ |a| -> ? ]]$. The application creates
+a new object $[[ |a| -> b_2 ]]$, while the existing abstract object remains intact.
+
+The object in \cref{eq:price-color} is abstract, because its attribute |price| is void.
+The object in \cref{eq:simple-application} was abstract before the application, but the object created by the application is closed since its attribute |a| is not void (attached to \(b_2\)).
+
+Even though \stx{\varnothing} may be attached to an attribute of an object,
+it is not an object by itself. Instead, \(\varnothing\) is a ``placeholder''
+for an object, which remains attached to an attribute until an object is attached to it.
+Even though this mechanism resembles NULL references, there is a significant
+difference: in \phic{}, void attributes may be attached to objects only once,
+while any further reattachments are prohibited.
+
+In $b(\alpha_i -> e)$ application, \(e\) must be attached to the attribute \(\tau\) of \(b\) for which \(\ordinal{\tau}{\mathbb{F}(b)}\) equals \(i\).
+
+\subsection{Forma}\label{sec:forma}
+
+\begin{definition}[Forma]
+A \textbf{forma} of an object \(b\), denoted as \(\mathbb{F}(b)\), is an abstract
+object that was copied in order to create \(b\).
+A forma of a formation is the formation itself.
+\end{definition}
+
+In \cref{eq:simple-application}, the forma of $[[ |a| -> b_2 ]]$ is the abstract
+object $[[ |a| -> ? ]]$, while the forma of $[[ |a| -> ? ]]$ is itself.
+
+\subsection{Dispatch}\label{sec:dispatch}
+
+\begin{definition}[Dispatch]
+Object \textbf{dispatch} (also known as ``dot notation''), denoted as
+\( b \stx{.} \tau \) where \(b\) is the ``subject'', means retrieval of the object
+attached to the \(\tau\) attribute of \(b\).
+\end{definition}
+
+\subsection{Scope}\label{sec:scope}
+
+\begin{definition}[Scope]
+The \textbf{scope} of expression \(e\), denoted as \(e^\varsigma\) is either
+\begin{inparaenum}[a)]
+\item the formation where the expression is attached to an attribute,
+\item or the scope of the expression where \(e\) is used.
+\end{inparaenum}
+\end{definition}
+
+In simpler terms, the scope is the formation that is the ``closest'' to the pair,
+moving to the left in the expression. In~\cref{eq:simple-scope}, the scope of |author| is the
+formation where the |source| attribute stays, while the scope of |cite|
+is the formation where the |ref| attribute stays.
+\begin{phiquation}
+\label{eq:simple-scope}
+  [[ ref -> \uplace{}{ [[ source -> Q.book( author -> b_1 ) ]] }, cite -> b_2 ]]
+\end{phiquation}
+
+\Cref{fig:scopes} illustrates the concept of scope of a pair.
+
+\begin{figure*}
+\begin{mdframed}
+\begin{phiquation*}
+[[ |a| -> \uplace{}{ [[ |y| -> b_2.|t|( |f| -> [[ |z| -> b_3 ]] ( |x| -> e ) ) ]] } ]]
+
+[[ |f| -> \uplace{}{ [[ |k| -> b_1( |x| -> e ) ]] } ]]
+
+[[ |k| -> [[ |y| -> b( |f| -> \uplace{}{ [[ |x| -> e ]] } ) ]] ]]
+
+[[ |k| -> \uplace{}{ [[ |f| -> [[ |x| -> ? ]] ( |x| -> b_2 ) ( |x| -> b_3 ) ( |x| -> e ) ]] } ]]
+\end{phiquation*}
+\end{mdframed}
+\label{fig:scopes}
+\caption{Illustrative examples of scopes: the bars over the terms highlight \(e^\varsigma\), the scope of \(e\).}
+\end{figure*}
+
+\subsection{Locators}\label{sec:locators}
+
+In an expression, the locator ``\stx{\Phi}'' means the program,
+while the locator ``\stx{\xi}'' means the scope of the expression.
+
+\subsection{Head and Tail}
+
+\begin{definition}
+Since any expression may recursively be defined as either \begin{inparaenum}[1)]
+    \item \(\dead\),
+    \item formation,
+    \item application,
+    or
+    \item dispatch,
+\end{inparaenum}
+it consists of a \textbf{head} and a possibly empty \textbf{tail}, together denoted as \(h\bullet{}t\).
+\end{definition}
+
+\begin{example}
+\Cref{tab:head-and-tail} shows a few examples that demonstrate the separation
+between a head and a possibly empty tail of an expression.
+
+\begin{table*}
+\caption{A few examples of objects that demonstrate the separation between a head and a possibly empty tail of an expression.}
+\label{tab:head-and-tail}
+\begin{tabular}{lll}
+\toprule
+Expression & Head & Tail \\
+\midrule
+$b_1( foo -> b_2 )$
+  & $b_1( foo -> b_2 )$
+  & --- \\
+$b_1.\alpha_1.\alpha_2( 0-> b_2 )$
+  & $b_1$
+  & $\alpha_1.\alpha_2( 0-> b_2 )$ \\
+$[[ |a| -> b_2 ]].|a|.|test|.|b|$
+  & $[[ |a| -> b_2 ]]$
+  & $\alpha_0.|test|.\alpha_2$ \\
+$b_1( |foo| -> b_2)( 0-> 42 ).|print|( 1-> 7 )$
+  & $b_1( |foo| -> b_2)( 0-> 42 )$
+  & $|print|( 1-> 7 )$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+\end{example}
+
+\subsection{Terminator}\label{sec:terminator}
+
+\begin{definition}[Terminator]
+The \textbf{terminator}, denoted as \stx{\dead}, is an object that equals itself when being
+a subject of a dispatch or an application:
+\begin{equation*}
+\forall \tau : \dead.\tau \trans \dead \qquad \forall \tau, e : \dead( \tau \mapsto e) \trans \dead.
+\end{equation*}
+\end{definition}
+
+\subsection{Immutability}\label{sec:immutability}
+
+\begin{definition}[Immutability]
+Every object is \textbf{immutable}, meaning that an application of
+its already attached attribute equals to \(\dead\):
+\begin{equation*}
+\forall \tau, e_1, e_2 : \llbracket \tau \mapsto e_1 \rrbracket ( \tau \mapsto e_2 ) \trans \dead
+\end{equation*}
+\end{definition}
+
+\subsection{Atoms}\label{sec:atoms}
+
+\begin{definition}[Atom]
+\textbf{Atom} is an object with a function attached to its \(\lambda\)-asset.
+\end{definition}
+
+\Cref{eq:Sqrt} demonstrates an atom with a function that calculates
+the square root of a number, which it retrieves from the \(\Delta\)-asset
+of \(b.\alpha_0\), with the help of the morphing function (\cref{sec:morphing}).
+The implementation of functions is outside the scope of \phic{}: they may be implemented,
+for example, in \(\lambda\)-calculus or a programming language
+such as Java or C++.
+
+\subsection{Decoration}\label{sec:decoration}
+
+\begin{definition}[Decoration]
+Object \textbf{decoration} is a mechanism of extending an object (``decoratee'')
+by attaching it to ``\stx{\varphi}''-attribute of another object (``decorator''),
+which makes attributes of the decoratee retrievable from the decorator,
+unless the decorator has its own attributes with the same names.
+\end{definition}
+
+\subsection{Syntactic Sugar}
+
+\Cref{tab:sugar} shows all possible syntax sugar.
+
+\begin{table*}
+\caption{Syntax sugar.}
+\label{tab:sugar}
+\newcommand\sugar[2]{$ #1 $ & $ #2 $ \\}
+\newcommand\subs[1]{& \textcolor{gray}{(#1)} \\}
+\newcommand\tto{\;\stx{\mapsto}\;}
+\begin{tabular}{ll}
+\toprule
+Syntax sugar & Its more verbose equivalent \\
+\midrule
+\sugar
+  {\stx{ QQ }}
+  {\stx{ Q } \stx{.} |org| \stx{.} |eolang|}
+\sugar
+  {e \stx{(} \tau_1 \tto e_1, \tau_2 \tto e_2, \dots \stx{)}}
+  {e \stx{(} \tau_1 \tto e_1 \stx{)}\stx{(} \tau_2 \tto e_2 \stx{)} \dots}
+\sugar
+  {e \stx{(} e_0 \stx{,}\; e_1 \stx{,}\; \dots \stx{)}}
+  {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,}\; \dots \stx{)}}
+\sugar
+  {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,}\; \dots \stx{)} \tto \stx{[[} B \stx{]]}}
+  {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,}\; \dots \stx{,}\; B \stx{]]}}
+\sugar
+  {\tau_1 \tto \tau_2}
+  {\tau_1 \tto \stx{\xi}\stx{.}\tau_2}
+\sugar
+  {\stx{[[} B \stx{]]}}
+  {\stx{[[} B \stx{,}\; \rho \tto \stx{?} \stx{]]} \quad\text{if}\; \rho \notin B}
+\sugar
+  {\tau \;\stx{\mapsto}\; \texttt{\begin{CJK}{UTF8}{gbsn}"你好"\end{CJK}}}
+  {\tau \tto \stx{ QQ } \stx{.} |string| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |E4-BD-A0-E5-A5-BD| \stx{]]} \stx{)} \stx{)}}
+  \subs{UTF-8 string}
+\sugar
+  {\tau \tto 42}
+  {\tau \tto \stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-45-00-00-00-00-00-00| \stx{]]} \stx{)} \stx{)}}
+  \subs{eight bytes per integer}
+\sugar
+  {\tau \tto 3.14}
+  {\tau \tto \stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-09-1E-B8-51-EB-85-1F| \stx{]]} \stx{)} \stx{)}}
+  \subs{eight bytes per number with a floating point}
+\sugar
+  {\stx{\Big\{} e \stx{\Big\}}}
+  {\stx{ Q } \tto \stx{[[} e \stx{]]}}
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\newpage
+\subsection{Contextualization}\label{sec:contextualization}
+\newcommand\ctx[2]{\lceil #1 \;\textcolor{gray}{\shortmid}\; #2 \rfloor}
+
+\begin{definition}[Contextualization]
+A contextualization function \(\mathbb{C} : \mathcal{E} \times \mathcal{B} \to \mathcal{E}\) denoted as \( \ctx{e}{b} \), which replaces locators with objects, is defined by induction:
+\begin{enumerate}[label=\(\mathbb{C}_\arabic*:\),ref=\ensuremath{\mathbb{C}.\arabic*}]
+  \item\label{C:Phi} $ \ctx{\Phi}{b} \trans e $ \quad if $ \Phi -> e $,
+  \item\label{C:xi} $ \ctx{\xi}{b} \trans b $,
+  \item\label{C:forma} $ \ctx{[[ B ]]}{b} \trans [[ B ]] $,
+  \item\label{C:dead} $ \ctx{\dead}{b} \trans \dead $,
+  \item\label{C:dot} $ \ctx{e.\tau}{b} \trans \ctx{e}{b}.\tau $,
+  \item\label{C:app} $ \ctx{e_1( \tau -> e_2 )}{b} \trans \ctx{e_1}{b}( \tau -> \ctx{e_2}{b} ) $.
+\end{enumerate}
+\end{definition}
+
+\Cref{app:contextualization-examples} demonstrates how contextualization function works, by examples.
+
+\subsection{Normalization}\label{sec:normalization}
+
+An expression that may be rewritten by the \emph{rules} (or \emph{reductions})
+listed in \cref{fig:reduction} is a \emph{reducible} expression.
+The notation \(e_1 \trans e_2\), optionally followed by a condition,
+denotes a reduction of \(e_1\) to \(e_2\), if the condition holds.
+
+These rules may be applied in any order.
+
+A specific reduction may be denoted, for example, as \(\trans_{\nameref{r:dot}}\),
+or just \(\trans\) if a reduction is meant with no specificity.
+The notation \(e_1 \strans e_2\) denotes a reflexive transitive
+closure of all reductions, so that there is a possibly empty finite
+sequence of reductions between \(e_1\) and \(e_2\).
+
+An expression that has no more possible applications of reductions
+is \emph{irreducible} or a \emph{normal form}, denoted as \(\nf{}_i\)
+ranging over \(\mathcal{N} \in \mathcal{E}\). Thus, \(\nf\) is a normal
+form of \(e\) if \(e \strans \nf\) and there is no expression \(e_1\)
+such that \(\nf \trans e_1\).
+
+An expression may not have a normal form.
+
+\begin{figure*}
+\newcommand\trrule[5][]{%
+  \newrule[#1]{#2}:
+  &
+  { $ #3 $ }
+  \(\trans\)
+  { $ #4 $ }
+  \quad #5
+  \\%
+}
+\begin{mdframed}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rl}
+\trrule{copy}
+  { [[ B_1, \tau -> ?, B_2 ]] ( \tau -> e ) }
+  { [[ B_1, \tau -> n, B_2 ]] }
+  { if \( \ctx{e}{e\textsuperscript{\(\varsigma\)}} \strans n \) }
+\trrule[\alpha]{alpha}
+  { [[ B_1, \tau -> ?, B_2 ]] ( \alpha_i -> e ) }
+  { [[ B_1, \tau -> ?, B_2 ]] ( \tau -> e) }
+  { if $ \ordinal{\tau}{[[B]]} = i $ }
+\trrule{dot}
+  { [[ B_1, \tau -> \nf, B_2 ]].\tau }
+  { \ctx{\nf}{n\textsuperscript{\(\varsigma\)}} ( \rho -> n\textsuperscript{\(\varsigma\)} ) }
+  { }
+\trrule[\varphi]{phi}
+  { [[ B ]].\tau }
+  { [[ B ]].\varphi.\tau }
+  { if \( \tau \notin B\) and \( \varphi \in B\)  }
+\trrule{stay}
+  { [[ B_1, \rho -> e_1, B_2 ]]( \rho -> e_2 ) }
+  { [[ B_1, \rho -> e_1, B_2 ]] }
+  { }
+\trrule{over}
+  { [[ B_1, \tau -> e_1, B_2 ]]( \tau -> e_2) }
+  { \dead }
+  { if \( \tau \not= \rho \) }
+\trrule{stop}
+  { [[ B ]].\tau }
+  { \dead }
+  { if \( [ \tau, \varphi, \lambda ] \cap B = \emptyset \) }
+\trrule{null}
+  { [[ B_1, \tau -> ?, B_2 ]].\tau }
+  { \dead }
+  { }
+\trrule{miss}
+  { [[ B ]] ( \tau -> e ) }
+  { \dead }
+  { if \( \tau \notin B \) and \( \tau \notin [ \alpha_0, \alpha_1, \dots ] \) }
+\trrule{dd}
+  { \dead.\tau }
+  { \dead }
+  { }
+\trrule{dc}
+  { \dead ( \tau -> e ) }
+  { \dead }
+  { }
+\end{tabular}
+\end{mdframed}
+\caption{Reduction rules.}
+\label{fig:reduction}
+\end{figure*}
+
+\Cref{app:normalization-examples} demonstrates how normalization works, by examples.
+
+\subsection{Primitives}\label{sec:primitives}
+
+\begin{definition}[Primitive]
+\textbf{Primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
+is either \(\dead\) or object formation without \(\lambda\) asset.
+\end{definition}
+
+\begin{theorem}\label{th:norm-head}
+A normal form is either a primitive or a dispatch where the subject is an atom.
+\end{theorem}
+
+\begin{proof}
+\tbd{The proof is yet to be written.}
+\end{proof}
+
+\subsection{Confluence}\label{sec:confluence}
+
+The reduction strategy in \cref{fig:reduction} is \emph{confluent},
+i.e. possesses the Church–Rosser property~\citep{church1936some}. This means
+that if there are reduction sequences from any expression to two different expression,
+then there exist reduction sequences from those two expressions to some common expression.
+Moreover, the reduction strategy possesses the unique normal form property:
+
+\begin{theorem}[Confluence]
+Any expression may have only one normal form.
+\end{theorem}
+
+\begin{proof}
+\tbd{The proof is going to be written soon.}
+\end{proof}
+
+\subsection{Equivalence}\label{sec:equivalence}
+
+Two expressions are said to be \emph{syntactically equivalent} or just
+\emph{equivalent} (denoted by \(\equiv\)) if their normal forms are
+syntactically identical.
+
+\Cref{fig:equivalence} shows some properties that hold.
+
+\begin{figure*}
+\begin{mdframed}
+\begin{phiquation*}
+e(\tau_1 -> e_1)(\tau_2 -> e_2) \equiv e(\tau_2 -> e_2)(\tau_1 -> e_1) \
+\quad\text{(by \nameref{r:copy})}
+  \text{Commutativity of Application}
+\end{phiquation*}
+\end{mdframed}
+\caption{Equivalence properties that hold.}
+\label{fig:equivalence}
+\end{figure*}
+
+\subsection{Morphing}\label{sec:morphing}
+
+The \emph{morphing} function \(\mathbb{M} : \langle \mathcal{E}, \mathcal{S} \rangle \to \langle \mathcal{P}, \mathcal{S} \rangle\)
+maps expressions to primitives, possibly modifying the \emph{state} of evaluation.
+The inference rules at \cref{fig:morphing} inductively describe the algorithm of morphing.
+
+\begin{figure*}
+\begin{mdframed}
+\begin{phiquation*}
+\newrule{prim} \
+\frac \
+{  } \
+{ \langle e, s \rangle \stepto \langle p, s \rangle }  \
+\;\text{if}\; e \in \mathcal{P} \
+\quad\quad \
+\newrule{nmz} \
+\frac \
+{ \langle \nf, s_1 \rangle \stepto \langle p, s_2 \rangle } \
+{ \langle e, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; e \strans \nf \;\text{and}\; e \not\equiv n
+
+\newrule[\lambda]{lambda} \
+\frac \
+{ \langle e \bullet t, s_1 \rangle \stepto \langle p, s_2 \rangle} \
+{ \langle [[ B_1, L> f, B_2 ]] \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; f( [[ B_1, B_2 ]], s_1 ) \to \langle e, s_2 \rangle
+
+\newrule[\Phi]{Phi} \
+\frac \
+{ \langle e \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle} \
+{ \langle \Phi.\tau \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; \Phi \mapsto \llbracket B_1, \tau \mapsto e, B_2 \rrbracket
+\end{phiquation*}
+\end{mdframed}
+\caption{Morphing rules.}
+\label{fig:morphing}
+\end{figure*}
+
+The notation \(\langle e, s_1 \rangle \stepto \langle p, s_2 \rangle\)
+means that \(\mathbb{M}(e, s_1)\) evaluates to \(p\), thus \emph{morphing} \(e\)
+with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\).
+
+In \nameref{r:lambda}, the function \(f\) is called by value.
+
+\begin{lemma}
+The morphing function is not total because not every expression has a normal form.
+\end{lemma}
+
+\subsection{Dataization}\label{sec:dataization}
+
+The \emph{dataization} function
+\(\mathbb{D} : \langle \mathcal{E}, \mathcal{S} \rangle \rightharpoonup \langle \mathcal{D}, \mathcal{S} \rangle\)
+maps expressions to data, possibly modifying the \emph{state} of evaluation.
+The inference rules in \cref{fig:dataization} inductively describe the algorithm of dataization.
+
+\begin{figure*}
+\begin{mdframed}
+\begin{phiquation*}
+\newrule[\Delta]{delta} \
+\frac \
+{ } \
+{ \langle [[ B_1, D> \delta, B_2 ]], s \rangle \stepto \langle \delta, s \rangle } \
+\quad\quad \
+\newrule{norm} \
+\frac{ \langle p, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+\;\text{if}\; \mathbb{M}(e, s_1) \to \langle p, s_2 \rangle
+
+\newrule{box} \
+\frac \
+{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
+{ \langle [[ B_1, @ -> e, B_2 ]], s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+\;\text{if}\; [\Delta, \lambda] \cap ( B_1 \cup B_2 ) = \emptyset
+\end{phiquation*}
+\end{mdframed}
+\caption{Dataization rules.}
+\label{fig:dataization}
+\end{figure*}
+
+The rules \nameref{r:box} and \nameref{r:phi} coexist because
+\(\Delta \notin \mathcal{T}\), thus making the expression $ [[ @ -> 42 ]].\Delta $ invalid.
+
+The notation \(\langle e, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
+means that \(\mathbb{D}(e, s_1)\) evaluates to \(\delta\),
+thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\).
+The notation \(\mathbb{D}(e)\) is a shortened form of \(\mathbb{D}(e, \varnothing)_{(1)}\),
+which is a \emph{pure} dataization --- inputting an empty state of evaluation and ignoring
+the output state of evaluation. Here and later,
+the notation \(x_{(i)}\) denotes the \(i\)-th element of the tuple \(x\).
+
+\begin{lemma}
+The dataization function is partial, because not every primitive contains \(\Delta\)-asset.
+\end{lemma}
+
+\Cref{app:dataization-examples} demonstrates how dataization function works, by examples.
+
+\subsection{Parent}
+
+\begin{definition}[Parent]
+Attaching expression \(e\) to the \(\rho\) attribute of object \(b\)
+means setting the \textbf{parent} of \(b\) to \(e\).
+\end{definition}
+
+The presence of ``parent'' in each object is essential for the coordination of inner
+objects after dynamic dispatch. Consider the following formation of an abstract object
+with an inner object:
+\begin{phiquation*}
+\Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> \xi.^.\alpha_0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> \xi.|x|( |42| ) \Big\}.
+\end{phiquation*}
+Here, if the parent of \(\Phi.|x|.|next|\) were attached in the formation, the result of \(\mathbb{D}(\Phi.|k|.|next|)\)
+would not be equal to |43|. Instead, it would be equal to \(\dead\), because \(\Phi.|k|.|next|.\rho\)
+would still be attached to \(\Phi.|x|\) after the dispatch of \(\Phi.|k|.|next|\).
+The parent attribute may be compared with the |this| pointer in Java or C++, which
+does not point anywhere until a method of a class is called. Then, when the method
+is called, the |this| pointer refers to the object that owns the method.
+
+\subsection{Congruence}
+
+Two expressions \(e_1\) and \(e_2\) are said to be \emph{behaviorally equivalent}
+or \emph{congruent} (denoted by \(\cong\)) if for any state \(s\): \(\mathbb{D}(e_1, s) = \mathbb{D}(e_2, s)\).
+
+The following properties hold:
+\begin{phiquation*}
+\nf \cong [[ @ -> \nf ]] \quad \text{(by \nameref{r:phi})}
+  \text{Transparency of Decoration}
+
+[[ \tau_1 -> ?, B]] \cong [[ B ]] \quad \text{(by \nameref{r:stop})}
+  \text{Redundancy of Void Attributes}
+
+[[ B ]] \cong [[ B ]].@ \quad\text{if}\; \stx{@} \in B \;\text{and}\; \stx{\Delta} \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
+  \text{Implicitness of Decoration}
+\end{phiquation*}
+
+Two congruent expressions may be non-equivalent, for example:
+\begin{phiquation*}
+\Big\{ \tau_1 -> [[ foo -> ?, D> 01-02 ]], \tau_2 -> [[ bar -> ?, D> 01-02 ]] \Big\}
+Q.\tau_1 \cong Q.\tau_2 \;\not\to\; Q.\tau_1 \equiv Q.\tau_2.
+\end{phiquation*}
+
+% \subsection{Dataless Objects}
+
+% \begin{definition}[\(\Delta\)-depth]
+% \(\Delta\)-depth of an object describes how deep data is in the object when recursively traversing values attached to the object attributes.
+% More specifically:
+% \begin{enumerate}
+%   \item the \(\Delta\)-depth of an object with \(\Delta\)-asset is \(1\);
+%   \item the \(\Delta\)-depth of an empty object is \(\infty\);
+%   \item otherwise, the \(\Delta\)-depth of an object is:
+%     \begin{inparaenum}
+%       \item \(1 + M\), where \(M\) is the minimal \(\Delta\)-depth among objects attached to its attributes;
+%       \item \(\infty\) if no objects are attached to its attributes;
+%     \end{inparaenum}.
+% \end{enumerate}
+% \end{definition}
+
+% \begin{definition}[Dataless Object]
+% An object is \emph{dataless} if its \(\Delta\)-depth is greater than 2.
+% \end{definition}
+
+% \begin{example}
+% \Cref{tab:depths} demonstrates objects with their \(\Delta\)-depths.
+% \begin{table*}
+% \caption{A few examples of objects and their \(\Delta\)-depths.}
+% \label{tab:depths}
+% \begin{tabular}{lll}
+% \toprule
+% Formation                                               & \(\Delta\)-Depth & Dataless \\
+% \midrule
+% $[[  ]]$                                                & \(\infty\)       & Yes      \\
+% $[[ |a| -> ? ]]$                                           & \(\infty\)       & Yes      \\
+% $[[ D> |42-43| ]]$                                      & 1              & No       \\
+% $[[ bar -> [[ D> ? ]] ]]$                               & \(\infty\)       & Yes      \\
+% $[[ foo -> [[ D> 01-02-03 ]] ]]$                        & 2              & No       \\
+% $[[ D> |42-|, L> Fn ]]$                                 & 1              & No       \\
+% $[[ L> Fn ]]$                                           & \(\infty\)       & Yes      \\
+% $[[ |a| -> ?, x -> [[ y -> ?, z -> [[ D> |42-01| ]] ]] ]]$ & 3              & Yes      \\
+% \bottomrule
+% \end{tabular}
+% \end{table*}
+% \end{example}

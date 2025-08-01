@@ -1,0 +1,32 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\newpage
+\section{Examples of Dataization}
+\label{app:dataization-examples}
+
+Consider a program that converts degrees from Celsius to Fahrenheit using
+the formula \(^{\circ}F = (^{\circ}C \times 1.8) + 32\), assuming that
+\(^{\circ}C\) already equals |25.0| and is attached to the |c| attribute (instead of being provided by a user):
+\begin{phiquation*}
+\label{eq:celsius}
+Q -> [[
+  @ -> \xi.|c|.times( 1.8 ).plus( 32.0 ),
+  |c| -> 25.0,
+  number -> [[
+    |as-bytes| -> ?,
+    times -> [[ |x| -> ?, L> Times ]],
+    plus -> [[ |x| -> ?, L> Plus ]]
+  ]]
+]]
+\end{phiquation*}
+
+The functions are defined as such:
+\begin{phiquation*}
+Times(b,s) \to \langle QQ.number( D> \mathbb{D}(b.^) \boldsymbol{\times} \mathbb{D}(b.\alpha_0) ), s \rangle
+Plus(b,s) \to \langle QQ.number( D> \mathbb{D}(b.^) \boldsymbol{+} \mathbb{D}(b.\alpha_0) ), s \rangle
+\end{phiquation*}
+
+The following sequence of transformations constitutes the evaluation of the program:
+
+% \iexec{eo-phi-normalizer dataize --chain --tex celsius.phi}

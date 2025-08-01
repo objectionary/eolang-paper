@@ -1,13 +1,11 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-\documentclass[sigplan,nonacm]{acmart}
+\documentclass[sigsmall,nonacm,11pt]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 \usepackage[utf8]{inputenc}
 \usepackage[T2A,T1]{fontenc}
 \usepackage{natbib} % for \citep and \citet
-\usepackage{stmaryrd} % for arrows, like \mapstochar
-\let\Bbbk\relax\usepackage{amssymb} % for special symbols
 \usepackage{amsmath}
 \usepackage[russian,english]{babel}
   \renewcommand\ttdefault{cmtt}
@@ -15,26 +13,23 @@
 \usepackage{mdframed} % for drawing frames around figures
 \usepackage[novert]{ffcode} % for fixed-fonts
 \usepackage{phigure} % local, in this directory
-\usepackage[capitalize]{cleveref} % for \cref
 \usepackage{CJKutf8} % for chinese font
 \usepackage{paralist} % for inlined lists
 \usepackage{cancel} % to enable \cancel command
 \usepackage{anyfontsize} % To get rid of font not found warnings
 \usepackage{eolang} % for EO sources and formulas
 \usepackage{tabularx} % for special tables
-\usepackage{to-be-determined} % for \tbd command
+\usepackage{naive-ebnf} % for EBNF
+\usepackage[hide]{to-be-determined} % for \tbd command
 \usepackage{href-ul} % for nicely underscored links
-\usepackage{tcolorbox} % for algorithm
-  \tcbuselibrary{skins}
-\usepackage{algpseudocode} % for algorithms
 \usepackage{multicol} % for two cols in BNF
-\usepackage{pgffor} % to enable \foreach
 \usepackage{mathtools} % for matrix* environment
+\usepackage[shortlabels]{enumitem} % for changing labes in "enumerate"
+\usepackage[capitalize,nameinlink]{cleveref} % must stay last!
+\renewcommand\emph[1]{\textit{#1}} % to prevent a weird bug coming from some of the packages above
 
 \usepackage{silence}
   \WarningFilter{acmart}{\vspace should only be used to provide space above/below}
-
-\renewcommand\emph[1]{\textit{#1}}
 
 \tolerance=1500
 \raggedbottom
@@ -47,21 +42,80 @@
 \newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
 
 \newenvironment{twocols}{}{}
+\newcommand\fn[1]{\text{\scshape\sffamily #1}}
+\def\trans{\mathrel{\leadsto}}
+\def\strans{\mathrel{\setbox0\hbox{\(\trans\)}\rlap{\hbox to \wd0{\hss*\hss}}\box0}}
+\def\stepto{\mathrel{\Downarrow}}
+\def\dtz{\mathrel{\downdownarrows}}
+\def\nf{n}
+\def\dead{\bot}
+\newcommand\nv{v_{+}}
+\newcommand\rj{\mathop{\circ}\nolimits}
+\definecolor{rgbTerminals}{RGB}{0,0,128}
+\renewcommand\EbnfTerminal[1]{\textcolor{rgbTerminals}{#1}}
+
+\AtEndPreamble{\newtheorem{axiom}[theorem]{Axiom}}
+
+\newcommand\stx[1]{%
+  \EbnfTerminal{%
+    \relax\ifmmode%
+      #1%
+    \else%
+      \(#1\)%
+    \fi%
+  }%
+}
 
 \newcounter{rule}
-\renewcommand\therule{R\arabic{rule}}
-\newcommand\rr{\triangleright{}}
-\newcommand\rrule[1]{{\scshape\sffamily\ref{rule:#1}}}
-\newcommand{\jrule}[1]{%
-  \refstepcounter{rule}\label{rule:#1}%
-  \text{\textbf{\rrule{#1}}}}
-\newcommand*{\ohat}[2]{%
-  \overbracket[0.4pt][2pt]{\textcolor{black}{#2}}^{\color{gray}#1}}
-\newenvironment{algo}
-  {\newcommand\kw[1]{{\bfseries\sffamily ##1}}
-  \newcommand\tab{{\hspace*{1em}}}
-  \noindent}
-  {}
+\makeatletter
+\newcommand\rulemnemo[1]{\text{\sffamily{}R\(_\text{\scshape\sffamily{}#1}\)}}
+\newcommand\newrule[2][]{%
+  \def\param{#1}%
+  \ifx\param\empty%
+    \def\sub{#2}%
+  \else
+    \def\sub{\(#1\)}%
+  \fi%
+  \refstepcounter{rule}%
+  \protected@edef\@currentlabelname{\rulemnemo{\sub}}%
+  \label@noarg{r:#2}%
+  \rulemnemo{\sub}%
+}
+\makeatother
+
+\newtcolorbox{tatombox}{
+enhanced,
+colback=white,
+boxrule=0pt,
+frame hidden,
+borderline west={1pt}{0pt}{gray},
+sharp corners,
+top=0pt,bottom=0pt,left=0pt,right=0pt,
+before skip=0pt, after skip=0pt
+}
+\newenvironment{atom}
+  {\begin{minipage}{0.75\columnwidth}\ttfamily\begin{tatombox}}
+  {\end{tatombox}\end{minipage}}
+
+% \setlength\itemsep{3pt}
+
+\newcounter{uplace}
+\makeatletter
+\newcommand\uplace[2]{%
+  \ifmeasuring@\else\refstepcounter{uplace}\cref@label{#1}\fi%
+  \def\param{#1}%
+  {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\ifx\param\empty\else\color{gray}\Pi_{\theuplace}\fi}}}}
+\makeatother
+\crefformat{uplace}{{\color{gray}\Pi_{#2#1#3}}}
+
+\newcounter{unorm}
+\makeatletter
+\newcommand\unorm[2]{%
+  \ifmeasuring@\else\refstepcounter{unorm}\cref@label{#1}\fi%
+  \def\param{#1}%
+  {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\ifx\param\empty\else\color{gray}\mathrm{H}_{\theunorm}\fi}}}}
+\makeatother
+\crefformat{unorm}{{\color{gray}\mathrm{H}_{#2#1#3}}}
 
 \setlength{\footskip}{13.0pt}
 
@@ -141,7 +195,11 @@ At the end of the paper, we overview the work done by others in the area of form
 {\raggedright
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{bibliography/main}}
+\vfill\eject
 
-\clearpage
+\appendix
+\input{sections/app-normalization}
+\input{sections/app-contextualization}
+\input{sections/app-dataization}
 
 \end{document}
