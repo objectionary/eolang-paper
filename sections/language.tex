@@ -22,12 +22,12 @@ In this section, we only explain key concepts of the language.
 
 In runtime, every \eolang{} object is represented by an \emph{actor}.
 On the surface, an actor resembles an associative array that responds to a few requests:
-\begin{itemize}
+\begin{enumerate}
   \item \ff{take(attr)} returns a reference to a sub-actor, by provided attribute
   \item \ff{put(attr, actor)} saves a reference to a sub-actor, by the attribute
   \item \ff{delta()} turns itself to data
   \item \ff{copy()} makes a copy of itself
-\end{itemize}
+\end{enumerate}
 
 Consider the following code:
 
@@ -43,14 +43,16 @@ The code is equivalent to the following \phic{} expression:
 \end{phiquation*}
 
 \cref{fig:order} shows five actors that represent the code in runtime.
+When being asked to \ff{take()}, actors behave differently.
+Their behavior constitute the semantic of the language.
 
 \begin{figure*}
 \begin{mdframed}
 \begin{tikzpicture}
 [every node/.style={draw},
-up/.style={draw=none, anchor=south west, label position=north west, text width=12em, align=left},
+up/.style={draw=none, anchor=south west, label position=north west, align=left},
 actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
-\node [label={[up]$b_1=[[ qty -> ?, price -> ?, cost -> b_4, \rho -> ? ]]$}, label={[actor]formation}, fill=blue!5] (b1)
+\node [label={[up, text width=10em]$b_1=[[ qty -> ?, price -> ?, cost -> b_4, \rho -> ? ]]$}, label={[actor]formation}, fill=blue!5] (b1)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{qty}: & \(\varnothing\) \\
@@ -63,28 +65,28 @@ actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south we
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(b_1\) \\
   \ff{attr}: & \ff{qty} \\
-  \ff{object}: & \(\varnothing\) \\
+  \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$b_3 = b_2.mul$}, label={[actor]dispatch}, fill=green!5, right=of b2] (b3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(b_2\) \\
   \ff{attr}: & \ff{mul} \\
-  \ff{object}: & \(\varnothing\) \\
+  \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$b_4 = b_3(0-> b_5)$}, label={[actor]application}, fill=red!5, below=of b3] (b4)
-  {\parbox{7em}{
+  {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{prototype}: & \(b_3\) \\
   \ff{attr}: & \(\alpha_0\) \\
-  \ff{object}: & \(b_5\) \\
+  \ff{argument}: & \(b_5\) \\
   \end{tabularx}}};
 \node [label={[up]$b_5 = b_1.price$}, label={[actor]dispatch}, fill=green!5, left=of b4] (b5)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(b_1\) \\
   \ff{attr}: & \ff{price} \\
-  \ff{object}: & \(\varnothing\) \\
+  \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
 \end{tikzpicture}
 \end{mdframed}
@@ -92,11 +94,47 @@ actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south we
 \label{fig:order}
 \end{figure*}
 
-When being asked to turn itself into data, the \(b_1\) object
+\subsection{Application}
+
+The actor representing \emph{application} contains
+\begin{inparaenum}[1)]
+\item a ``prototype'' as actor reference,
+\item an attribute,
+and
+\item an ``argument'' as actor reference.
+\end{inparaenum}
+
+On any type of request, the actor
+\begin{inparaenum}[1)]
+\item asks prototype to \ff{copy()} expecting a ``copy'' actor to be returned,
+\item asks the copy to \ff{put(attribute, argument)},
+and
+\item passes the request to the copy.
+\end{inparaenum}
+
+\subsection{Dispatch}
+
+The actor representing \emph{application} contains
+\begin{inparaenum}[1)]
+\item a ``base'' as actor reference,
+\item an attribute,
+and
+\item a ``memo'' as a mutable, initially blank, reference to an actor.
+\end{inparaenum}
+
+On any type of request, the actor does two things.
+First, if memo is blank, it
+\begin{inparaenum}[1)]
+\item asks base to \ff{take(attribute)} expecting a target to be returned,
+\item asks target to \ff{put(\(\rho\),base)},
+and
+\item saves target to the memo.
+\end{inparaenum}
+Then, it passes the request to the memo.
 
 \subsection{Formation}
 
-A \emph{formation} is represented by an actor that is an associative array of attributes vs immutable object references.
+A \emph{formation} is represented by an actor that is an associative array of attributes vs immutable actor references.
 
 \begin{ffcode}
 [isbn] > book
@@ -104,7 +142,7 @@ A \emph{formation} is represented by an actor that is an associative array of at
   39.95 > price
 \end{ffcode}
 
-This syntax is translated to the following object:
+This syntax is translated to the following actor:
 
 \begin{tikzpicture}
 [every node/.style={draw}, every label/.style={draw=none, anchor=south west, label position=north west}]
@@ -117,16 +155,6 @@ This syntax is translated to the following object:
   \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
 \end{tikzpicture}
-
-\subsection{Application}
-
-An \emph{application} is an actor with an object reference (called ``prototype''), an attribute, and an immutable object reference (called ``argument'').
-
-\subsection{Dispatch}
-
-A \emph{dispatch} is an actor with an object reference (called ``base''), an attribute, and a mutable---initially blank---object reference.
-
-% explain rho
 
 \subsection{Decoration}
 
