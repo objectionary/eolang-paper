@@ -1,20 +1,36 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-\eolang{}\footnote{\url{https://www.eolang.org}}
-was created to eliminate the problem of complexity in
-OOP code, providing
+\eolang{}\footnote{\url{https://www.eolang.org}} was created to eliminate complexity in OOP code.
+Complexity reduction is guaranteed by
 \begin{inparaenum}[1)]
-  \item a formal object calculus and
-  \item a programming language with a reduced set of features.
+  \item a formal calculus behind the language
+  and
+  \item a reduced feature set.
 \end{inparaenum}
-The proposed \phic{} represents an object model through
-data and objects, while operations on them are possible
-through formation, application, decoration, dispatch, and dataization. The calculus
-introduces a formal apparatus for manipulating objects.
+The proposed \phic{} represents an object model through objects, data, and functions.
+Operations on them are possible through formation, application, decoration, dispatch, morphing, and dataization.
 
-\eolang{}, the proposed programming language, fully implements
-all elements of the calculus and enables implementation of
-an object model on any computational platform.
-Being an OO programming language, \eolang{} enables four key principles of OOP:
-abstraction, inheritance, polymorphism, and encapsulation.
+\eolang{} is a dynamically and weakly typed language.
+Key qualities are the following:
+
+\begin{itemize}
+  \item No classes
+  \item No constructors or destructors
+  \item No data primitives aside from byte sequences
+  \item No imperative directives, only FFI functions
+  \item No types or type annotations
+  \item No reflection on objects at runtime
+  \item No returning or passing NULL as an argument
+  \item No changing of object structure at runtime
+  \item No attribute mutability
+  \item No implementation inheritance
+  \item No operators
+  \item No traits or mixins
+  \item No varargs
+  \item No arrays
+  \item No method overloading
+\end{itemize}
+
+An \eolang{} compiler must be strictly and statically typed.
+The inability to infer types for all objects must lead to compilation failure.
