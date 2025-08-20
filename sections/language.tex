@@ -18,7 +18,7 @@ The entire syntax of the \eolang{} language in BNF is available on the first pag
   \footnote{\url{https://github.com/objectionary/eo}}.
 In this section, we only explain key concepts of the language.
 
-\section{Informal Overview}
+\subsection{Informal Overview}
 
 At runtime, every \eolang{} object is represented by an \emph{actor}.
 On the surface, an actor resembles an associative array that responds to a few requests, where ``reference'' is a reference to an arbitrary actor:
@@ -45,6 +45,7 @@ The code is equivalent to the following \phic{} expression:
 \cref{fig:order} shows five actors that represent the code in runtime.
 When being asked to \ff{take()}, actors behave differently.
 Their behavior constitutes the semantics of the language.
+Actors belong to one of three types: application, dispatch, and formation.
 
 \begin{figure*}
 \begin{mdframed}
@@ -104,7 +105,7 @@ and
 \item an ``argument'' reference.
 \end{inparaenum}
 
-On any type of request, the actor
+On any request, the actor
 \begin{inparaenum}[1)]
 \item asks prototype to \ff{copy()} expecting a ``copy'' reference to be returned,
 \item asks the copy to \ff{put(attribute, argument)},
@@ -122,10 +123,10 @@ and
 \item a mutable initially blank ``memo'' reference.
 \end{inparaenum}
 
-On any type of request, the actor does two things.
+On any request, the actor does two things.
 First, if memo is blank, it
 \begin{inparaenum}[1)]
-\item asks base to \ff{take(attribute)} expecting a target to be returned,
+\item asks base to \ff{take(attribute)} expecting a ``target'' reference to be returned,
 \item asks target to \ff{put(\(\rho\),base)},
 and
 \item saves target to the memo.
@@ -155,3 +156,10 @@ When being asked to \ff{delta()}, the actor returns the \(\Delta\)-asset if it h
 If it doesn't have it but the \(\lambda\)-asset is present, the actor calls the function attached to the \(\lambda\)-asset, gets a reference, and uses it to \ff{delta()}.
 If the \(\lambda\)-asset is also absent but the \(\varphi\)-attribute is present, the actor asks the actor referenced by the attribute to \ff{delta()}.
 Otherwise, the actor returns an error.
+
+\subsection{FFI Atoms}
+
+A formation actor with a non-blank \(\lambda\)-asset is an \emph{atom}.
+The execution of a function attached to the \(\lambda\)-asset is implemented via foreign function interface (FFI).
+
+The function accepts a reference to the actor and returns a reference.
