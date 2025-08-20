@@ -23,10 +23,10 @@ In this section, we only explain key concepts of the language.
 In runtime, every \eolang{} object is represented by an \emph{actor}.
 On the surface, an actor resembles an associative array that responds to a few requests:
 \begin{enumerate}
-  \item \ff{take(attr)} returns a reference to a sub-actor, by provided attribute
-  \item \ff{put(attr, actor)} saves a reference to a sub-actor, by the attribute
-  \item \ff{delta()} turns itself to data
-  \item \ff{copy()} makes a copy of itself
+  \item \ff{take(attr)} returns a reference to a sub-actor, by provided attribute;
+  \item \ff{put(attr, actor)} saves a reference to a sub-actor, by the attribute;
+  \item \ff{delta()} turns itself to data;
+  \item \ff{copy()} makes a copy of itself.
 \end{enumerate}
 
 Consider the following code:
@@ -114,7 +114,7 @@ and
 
 \subsection{Dispatch}
 
-The actor representing \emph{application} contains
+The actor representing \emph{dispatch} contains
 \begin{inparaenum}[1)]
 \item a ``base'' as actor reference,
 \item an attribute,
@@ -143,6 +143,9 @@ When being asked to \ff{take()}, the actor returns the actor reference that corr
 If the attribute is attached to a blank, the actor returns an error.
 If the attribute is absent and the \(\varphi\)-attribute is present, the actor asks the actor referenced by the attribute to \ff{take()}.
 If the \(\varphi\)-attribute is present but the \(\lambda\)-asset is present, the actor calls the function attached to the asset, it returns a reference, and the actor uses it to \ff{take()}.
+Otherwise, the actor returns an error.
 
-When being asked to \ff{delta()}, the actor ...
-
+When being asked to \ff{delta()}, the actor returns the \(\Delta\)-asset if it has one.
+If it doesn't have it but the \(\lambda\)-asset is present, the actor calls the function attached to the \(\lambda\)-asset, gets a reference, and uses it to \ff{take()}.
+If the \(\lambda\)-asset is also absent by the \(\varphi\)-attribute is present, the actor asks the actor referenced by the attribute to \ff{take()}.
+Otherwise, the actor returns an error.
