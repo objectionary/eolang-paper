@@ -3,7 +3,7 @@
 
 In this section we introduce \phic{}, the formalism that we use as a foundation of \eolang{}.
 First, we give an informal introduction to the calculus, helping the reader to grasp the idea without diving into details.
-Then, we formulate the syntax using EBNF and introduce individual concepts of the calculus, explaining their semantics and illustrating them with examples.
+Then, we formulate the syntax using BNF and introduce individual concepts of the calculus, explaining their semantics and illustrating them with examples.
 
 \subsection{Informal Overview}
 
@@ -100,7 +100,7 @@ The dataization of \(\Phi\) is the evaluation of the program.
 
 \subsection{Syntax}\label{sec:syntax}
 
-The syntax of a program is defined by EBNF in \cref{fig:ebnf} (the starting symbol is \EbnfNonTerminal{Program}).
+The syntax of a program is defined by BNF in \cref{fig:ebnf} (the starting symbol is \EbnfNonTerminal{Program}).
 
 \begin{figure*}
 \begin{mdframed}
@@ -124,7 +124,7 @@ The syntax of a program is defined by EBNF in \cref{fig:ebnf} (the starting symb
 <\(\lambda\)-Pair> := "\(\lambda\)" "\(\phiDotted\)" <Function> \\
 \end{ebnf}
 \end{mdframed}
-\caption{Syntax as a context-free grammar, in EBNF.}
+\caption{Syntax as a context-free grammar, in BNF.}
 \label{fig:ebnf}
 \end{figure*}
 

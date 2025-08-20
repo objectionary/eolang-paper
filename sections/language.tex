@@ -1,417 +1,109 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-The entire syntax of the \eolang{} language in BNF is available on the first page of the
-\texttt{objectionary/eo} GitHub repository\footnote{\url{https://github.com/objectionary/eo}}.
-Here, we only explain the basics of the language, not its entire syntax.
+The entire syntax of the \eolang{} language in BNF is available on the first page of the \texttt{objectionary/eo} GitHub repository%
+  \footnote{\url{https://github.com/objectionary/eo}}.
+In this section, we only explain key concepts of the language.
 
-Similar to Python~\citep{lutz2013learning}, indentation in \eolang{} is part of the syntax:
-the scope of a code block is determined by its horizontal position
-in relation to other blocks, which is also known as ``off-side rule''~\citep{landin1966next}.
+\section{Informal Overview}
 
-There are no keywords in \eolang{} but only a few special symbols
-denoting grammar constructs, such as \ff{>} for attribute naming,
-\ff{.} for dot notation, and \ff{[]} for specifying parameters of formations.
+Similar to Python~\citep{lutz2013learning}, indentation in \eolang{} is part of the syntax: the scope of a code block is determined by its horizontal position in relation to other blocks~\citep{landin1966next}.
+There are no keywords in \eolang{} but only a special symbols denoting grammar constructs, such as \ff{>} for attribute naming, \ff{.} for dynamic dispatch, and \ff{[]} for specifying parameters of formations.
 
-Attributes, which are the only identifiers that exist in \eolang{}, may have
-any Unicode symbols in their names, as long as they start with a small English letter
-and do not contain spaces, line breaks, or the symbols that are part of the syntax:
-\ff{test-File} and
-\begin{CJK}{UTF8}{gbsn}
-\ff{i文件}
-\end{CJK}
- are valid identifiers.
-Identifiers are case-sensitive: \ff{acar} and \ff{aCar} are two different identifiers.
-Java notation is used for numbers and strings.
+% formation + application + dataization
+% decoration
+% FFI atoms
+% caching dynamic dispatch
+% rho
+% synthetic attributes
+% const
+% idempotence
+% lints
+
+% true, false, if
+% try/catch
+% seq, goto, while,
+% tuples
+% malloc
+% number
+% const
 
 \subsection{Objects}
 
-This is a \emph{formation} of a new object \ff{book} that has a single \ff{isbn} attribute:
+An object in \eolang{} may either be eager or lazy.
+An eager object is an associative array of attributes vs immutable object references.
+The compiler creates an eager object when it finds a formation in the source code:
 
 \begin{ffcode}
-# A book in the library.
-[isbn] > book (*@\label{ln:book}@*)
+[isbn] > book
+  "Object Thinking" > title
+  39.95 > price
 \end{ffcode}
 
-To make another object with a specific ISBN, the \ff{book}
-has to be \emph{copied}, with the \emph{data} as an argument:
+This syntax is translated to the following object:
+
+\begin{tikzpicture}
+[every node/.style={draw}, every label/.style={draw=none, anchor=south west, label position=north west}]
+\node [label={\(b_1\) (formation)}] (b1)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{isbn}: & \(\varnothing\) \\
+  \ff{title}: & \(b_2\) \\
+  \ff{price}: & \(b_3\) \\
+  \(\rho\): & \(\varnothing\) \\
+  \end{tabularx}}};
+\end{tikzpicture}
+
+Lazy objects represent applications and dispatches.
+An application is a trio of an object reference, an attribute, and an immutable object reference.
+A dispatch is a trio of an object reference, an attribute, and a mutable---initially blank---object reference.
 
 \begin{ffcode}
-book "978-1519166913" > b1
+[qty price] > order
+  qty.mul price > cost
 \end{ffcode}
 
-Here, \ff{b1} is a new object created.
-Its only attribute is accessible as \ff{b1.isbn}.
+The code is translated to the following objects:
+
+\begin{tikzpicture}
+[every node/.style={draw}, every label/.style={draw=none, anchor=south west, label position=north west}]
+\node [label={\(b_1\) (formation)}] (b1)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{qty}: & \(\varnothing\) \\
+  \ff{price}: & \(\varnothing\) \\
+  \ff{cost}: & \(b_4\) \\
+  \(\rho\): & \(\varnothing\) \\
+  \end{tabularx}}};
+\node [label={\(b_2\) (dispatch)}, above right=0 and 1 of b1] (b2)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{target}: & \(b_1\) \\
+  \ff{attr}: & \ff{qty} \\
+  \ff{object}: & \(\varnothing\) \\
+  \end{tabularx}}};
+\node [label={\(b_3\) (dispatch)}, right=of b2] (b3)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{target}: & \(b_2\) \\
+  \ff{attr}: & \ff{mul} \\
+  \ff{object}: & \(\varnothing\) \\
+  \end{tabularx}}};
+\node [label={\(b_4\) (application)}, below=of b3] (b4)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{target}: & \(b_3\) \\
+  \ff{attr}: & \(\alpha_0\) \\
+  \ff{object}: & \(b_5\) \\
+  \end{tabularx}}};
+\node [label={\(b_5\) (dispatch)}, left=of b4] (b5)
+  {\parbox{8em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{target}: & \(b_1\) \\
+  \ff{attr}: & \ff{price} \\
+  \ff{object}: & \(\varnothing\) \\
+  \end{tabularx}}};
+\end{tikzpicture}
+
+Then,  ...
 
-\subsection{Indentation}
-
-This is an example of an \emph{abstract} object \ff{vector}, where
-spaces are replaced with the ``\textvisiblespace'' symbol to demonstrate
-the importance of their presence in specific quantities
-(for example, there must be exactly one space after the closing square bracket on the
-second line and the \ff{>} symbol, while two spaces will break the syntax):
-
-{\lstset{showspaces=true}\begin{ffcode}
-# This is a vector in 2D space.(*@\label{ln:comment}@*)
-[dx dy] > vector(*@\label{ln:vector}@*)
-  sqrt. > length(*@\label{ln:length}@*)
-    plus.
-      dx.times dx
-      dy.times dy(*@\label{ln:length-end}@*)(*@\label{ln:vector-end}@*)
-\end{ffcode}
-}
-
-The code at \lref{comment} is a \emph{comment}.
-Two \emph{void attributes}, \ff{dx} and \ff{dy},
-are listed in square brackets at \lref{vector}.
-The \emph{name} of the object goes after the \ff{>} symbol.
-The code at \lref{length} defines
-an \emph{attached attribute} \ff{length}. Wherever an object
-needs to get a name, the \ff{>} symbol can be added after the object.
-
-The declaration of the attribute \ff{length} at \lrefs{length}{length-end}
-can be written in one line, using \emph{dot notation}:
-
-\begin{ffcode}
-((dx.times dx).plus (dy.times dy)).sqrt > length
-\end{ffcode}
-
-An \emph{inverse} dot notation is used to simplify
-the syntax. The identifier that goes after the dot is written
-first, the dot follows, and the next line contains the part
-that is supposed to come before the dot. It is also possible to rewrite
-this expression in multiple lines without the usage of
-inverse notation, but it will look subjectively less readable:
-
-\begin{ffcode}
-dx.times dx (*@\label{ln:dx-pow}@*)
-.plus
-  dy.times dy (*@\label{ln:dx-pow-2}@*)
-.sqrt > length (*@\label{ln:dx-pow-3}@*)
-\end{ffcode}
-
-Here, \lref{dx-pow} is the application of the object \ff{dx.times} with
-a new argument \ff{dx}. Then, the next line is the object \ff{plus} taken
-from the object created at the first line, using dot notation. Then,
-\lref{dx-pow-2} is the argument passed to the object \ff{plus}.
-The code at \lref{dx-pow-3} takes the object \ff{sqrt} from the object constructed
-at the previous line, and gives it the name \ff{length}.
-
-Indentation is used for two purposes: either to define attributes
-of an abstract object or to specify arguments for object application, also
-known as making a \emph{copy}.
-
-A definition of an abstract object starts with a list of void attributes
-in square brackets on one line, followed by a list of attached attributes
-each in its own line. For example, this is an abstract \emph{anonymous} object
-(it does not have a name)
-with one void attribute \ff{x} and two attached attributes \ff{succ} and \ff{prev}:
-
-\begin{ffcode}
-# A counter.
-[x]
-  x.plus 1 > succ
-  x.minus 1 > prev
-\end{ffcode}
-
-The arguments of \ff{plus} and \ff{minus} are provided in \emph{horizontal}
-mode, without the use of indentation. It is possible to rewrite this code
-in a \emph{vertical} mode, where indentation will be required:
-
-\begin{ffcode}
-# A counter.
-[x] (*@\label{ln:succ}@*)
-  x.plus > succ
-    1
-  x.minus > prev
-    1 (*@\label{ln:succ-end}@*)
-\end{ffcode}
-
-This abstract object can also be written in a horizontal mode,
-because it is anonymous:
-
-\begin{ffcode}
-[x] (x.plus 1 > succ) (x.minus 1 > prev)
-\end{ffcode}
-
-\subsection{Data}
-
-There is only one abstract object that can encapsulate data: \ff{bytes}.
-Copies of the \ff{bytes} object are created by the compiler when it meets
-a special syntax for data, for example:
-
-\begin{ffcode}
-3.14 > radius
-\end{ffcode}
-
-This code is compiled into the following:
-
-\begin{ffcode}
-number > radius
-  bytes
-    40-09-1E-B8-51-EB-85-1F
-\end{ffcode}
-
-Similar to the floating-point number compilation into a copy
-of \ff{bytes}, there are a few other syntax shortcuts, listed in~\cref{tab:types}.
-
-\begin{table}
-\begin{tabularx}{\columnwidth}{l|X|r}
-\toprule
-Data & Example & Size \\
-\midrule
-\ff{bytes} & \ff{1F-E5-77-A6} & 4 \\
-\ff{string} & \ff{"Hello, \foreignlanguage{russian}{друг}!"} & 16 \\
-  & \ff{"\textbackslash{}u5BB6"} or \begin{CJK}{UTF8}{gbsn}\ff{"家"}\end{CJK} & 2 \\
-\ff{number} & \ff{1024}, \ff{0x1A7E}, or \ff{-42.133e14} & 8 \\
-\bottomrule
-\end{tabularx}
-\figcap{The syntax of all data with examples. The ``Size'' column
-denotes the number of bytes in the \ff{as-bytes} attribute.
-UTF-8 is the encoding used in \ff{string} object.}
-\label{tab:types}
-\end{table}
-
-\subsection{Tuples}
-
-The \ff{tuple} is yet another syntax sugar, for arrays:
-
-\begin{ffcode}
-* "Lucy" "Jeff" 3.14 (*@\label{ln:tuple-1}@*)
-* > a (*@\label{ln:tuple-2a}@*)
-  (* "a")
-  TRUE (*@\label{ln:tuple-2b}@*)
-* > b (*@\label{ln:tuple-3}@*)
-\end{ffcode}
-
-The code at \lref{tuple-1} makes a tuple of three elements: two strings
-and one float. The code at \lrefs{tuple-2a}{tuple-2b} makes a tuple named \ff{a} with another
-tuple as its first element and \ff{TRUE} as the second item.
-The code at \lref{tuple-3} is an empty tuple with the name \ff{b}.
-
-\subsection{Scope Brackets}
-
-Brackets can be used to group object arguments in horizontal mode:
-
-\begin{ffcode}
-sum (div 45 5) 10  (*@\label{ln:sum}@*)
-\end{ffcode}
-
-The \ff{(div 45 5)} is a copy of the abstract object \ff{div}
-with two arguments \ff{45} and \ff{5}. This object itself is
-the first argument of the copy of the object \ff{sum}. Its second
-argument is \ff{10}. Without brackets the syntax would read differently:
-
-\begin{ffcode}
-sum div 45 5 10
-\end{ffcode}
-
-This expression denotes a copy of \ff{sum} with four arguments.
-
-\subsection{Inner Objects}
-
-An object may have other abstract objects as its attributes, for example:
-
-\begin{ffcode}
-# A point on a 2D canvas.
-[x y] > point
-  [to] > distance
-    length. > len (*@\label{ln:vector-length}@*)
-      vector
-        to.x.minus (^.x)
-        to.y.minus (^.y)
-\end{ffcode}
-
-The object \ff{point} has two void attributes \ff{x} and \ff{y}
-and the attribute \ff{distance}, which is attached to an abstract
-object with one void attribute \ff{to} and one attached attribute \ff{len}.
-The \emph{inner} abstract object \ff{distance} may only be copied
-with a reference to its \emph{parent} object \ff{point}, via
-a special attribute denoted by the \ff{\^{}} symbol:
-
-\begin{ffcode}
-distance. (*@\label{ln:point-copy}@*)
-  point
-    5:x
-    -3:y
-  point:to
-    13:x
-    3.9:y
-\end{ffcode}
-
-The parent object is \ff{(point 5 -3)}, while the object \ff{(point 13 3.9)}
-is the argument for the void attribute \ff{to} of the object \ff{distance}.
-Suffixes \ff{:x}, \ff{:y}, and \ff{:to} are optional and may be used
-to denote the exact name of the void attribute to be attached to the
-provided argument.
-
-\subsection{Decorators}
-
-An object may extend another object by \emph{decorating} it:
-
-\begin{ffcode}
-# A circle with a center and radius.
-[center radius] > circle (*@\label{ln:circle}@*)
-  center > @ (*@\label{ln:circle-phi}@*)
-  [p] > is-inside
-    lte. > @
-      ^.@.distance $.p (*@\label{ln:circle-phi-2}@*)
-      ^.radius (*@\label{ln:circle-end}@*)
-\end{ffcode}
-
-The object \ff{circle} has a special attribute \ff{@}
-at \lref{circle-phi}, which denotes
-the \emph{decoratee}: an object to be extended,
-also referred to as ``component'' by~\citet{gamma1994design}.
-
-The \emph{decorator} \ff{circle}
-has the same attributes as its decoratee \ff{center}, but also
-its own attribute \ff{is-inside}. The attribute \ff{@} may be used
-the same way as other attributes, including in dot notation, as it is done
-at \lref{circle-phi-2}. However, this line
-may be re-written in a more compact way, omitting the explicit
-reference to the \ff{@} attribute, because all attributes
-of the \ff{center} are present in the \ff{circle};
-and omitting the reference to \ff{\$} because the default scope of visibility of
-\ff{p} is the object \ff{is-inside}:
-
-\begin{ffcode}
-^.distance p
-\end{ffcode}
-
-The inner object \ff{is-inside} also has the \ff{@} attribute: it
-decorates the object \ff{lte} (stands for ``less than equal'').
-The expression at \lref{circle-phi-2} means:
-take the parent object of \ff{is-inside},
-take the attribute \ff{@} from it, then take the inner object \ff{distance}
-from there, and then make a copy of it with the attribute \ff{p}
-taken from the current object (denoted by the \ff{\$} symbol).
-
-The object \ff{circle} may be used like this, to understand whether
-the \((0,0)\) point is inside the circle at \((-3,9)\) with the radius \(40\):
-
-\begin{ffcode}
-circle (point -3 9) 40 > c  (*@\label{ln:circle-c}@*)
-c.is-inside (point 0 0) > i
-\end{ffcode}
-
-Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{TRUE}
-because \ff{lte} decorates \ff{bool}.
-
-It is also possible to make decoratee void, similar to other void
-attributes, specifying it in the list of void attributes in
-square brackets.
-
-\subsection{Anonymous Formations}
-
-A formation may be used as an argument of another object when
-making a copy of it, for example:
-
-\begin{ffcode}
-(dir "/tmp").walk
-  *
-    [f]
-      f.is-dir > @
-\end{ffcode}
-
-Here the object \ff{walk} is copied with a single argument:
-the one-item tuple, which is a formation with a single void attribute \ff{f}. The \ff{walk}
-will use this formation, which does not have a name,
-to filter out files while traversing the directory tree. It will
-make a copy of the formation and then treat it as a boolean
-value to make a decision about each file.
-
-The syntax may be simplified and the formation may be inlined
-(the tuple is also inlined):
-
-\begin{ffcode}
-(dir "/tmp").walk
-  * ([f] (f.is-dir > @))
-\end{ffcode}
-
-An anonymous formation may have multiple attributes:
-
-\begin{ffcode}
-[x] (x.plus 1 > succ) (x.minus 1 > prev)
-\end{ffcode}
-
-This object has two attributes \ff{succ} and \ff{prev}, and does not
-have a name.
-
-The parent of each copy of the abstract object will be set by
-the object \ff{walk} and will point to the \ff{walk} object itself.
-
-\subsection{Constants}
-
-\eolang{} is a declarative language with lazy evaluations. This means
-that this code would read the input stream two times:
-
-\begin{ffcode}
-# Just say hello.
-[] > hello
-  QQ.io.stdout > say
-    QQ.txt.sprintf
-      "The length of %s is %d"
-      QQ.io.stdin.next-line > x!
-      x.length
-\end{ffcode}
-
-The \ff{sprintf} object will go to the \ff{x} two times. The first time,
-to use it as a substitute for \ff{\%s}, and the second time for
-\ff{\%d}. There will be two round-trips to the standard input stream, which
-is obviously not correct. The exclamation mark at the \ff{x!} solves the
-problem, making the object by the name \ff{x} a \emph{constant}. This means
-that on the first trip to \ff{x}, it turns into bytes.
-
-Here, \ff{x} is an attribute of the object \ff{hello}, even though
-it is not defined as explicitly as \ff{say}. Wherever a new
-name appears after the \ff{>} symbol, it is a declaration of a new
-attribute in the nearest object abstraction.
-
-\subsection{Metas}
-
-A program may have an optional list of \emph{meta} statements,
-which are passed to the compiler as is. The meaning of them depends
-on the compiler and may vary
-between target platforms. This program instructs the compiler
-to put all objects from the file into the package \ff{org.example}
-and helps it resolve the name \ff{stdout}, which is external
-to the file:
-
-\begin{ffcode}
-+package org.example
-+alias org.eolang.io.stdout
-
-# A simple app.
-[args] > app
-  stdout > @
-    "Hello, world!\n"
-\end{ffcode}
-
-\subsection{Atoms}
-
-Some objects in \eolang{} programs may need to be platform-specific
-and cannot be composed from other existing objects---they are called
-\emph{atoms}.
-For example, the object \ff{app} uses the object \ff{stdout},
-which is an atom. Its implementation would be provided by the
-runtime. This is how the object may be defined:
-
-\begin{ffcode}
-+rt jvm org.eolang:eo-runtime:0.7.0
-+rt ruby eolang:0.1.0
-
-[text] > stdout ? (*@\label{ln:stdout}@*)
-\end{ffcode}
-
-The \ff{?} suffix informs the compiler that this object must
-not be compiled from \eolang{} to the target language. The object
-with this suffix already exists in the target language and most
-probably could be found in the library specified by the \ff{rt}
-meta. The exact library to import has to be selected by the compiler.
-In the example above, there are two libraries specified: for JVM and
-for Ruby.
-
-Atoms in \eolang{} are similar to ``native'' methods in Java
-and ``\nospell{extern}'' methods in C\#: this mechanism is also
-known as foreign function interface (FFI).
