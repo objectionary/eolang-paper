@@ -20,7 +20,7 @@ In this section, we only explain key concepts of the language.
 
 \section{Informal Overview}
 
-In runtime, every \eolang{} object is represented by an \emph{actor}.
+At runtime, every \eolang{} object is represented by an \emph{actor}.
 On the surface, an actor resembles an associative array that responds to a few requests, where ``reference'' is a reference to an arbitrary actor:
 \begin{enumerate}
   \item \ff{take(attr)} returns a reference, by provided attribute;
@@ -44,7 +44,7 @@ The code is equivalent to the following \phic{} expression:
 
 \cref{fig:order} shows five actors that represent the code in runtime.
 When being asked to \ff{take()}, actors behave differently.
-Their behavior constitute the semantic of the language.
+Their behavior constitutes the semantics of the language.
 
 \begin{figure*}
 \begin{mdframed}
@@ -106,7 +106,7 @@ and
 
 On any type of request, the actor
 \begin{inparaenum}[1)]
-\item asks prototype to \ff{copy()} expecting a ``copy'' actor to be returned,
+\item asks prototype to \ff{copy()} expecting a ``copy'' reference to be returned,
 \item asks the copy to \ff{put(attribute, argument)},
 and
 \item passes the request to the copy.
@@ -142,16 +142,16 @@ and
 \item a possibly blank \(\Delta\)-asset.
 \end{inparaenum}
 
-When being asked to \ff{put()}, the actor saves the reference to the array, if given attribute is not yet attached.
+When being asked to \ff{put()}, the actor saves the reference to the array if the given attribute is not yet attached.
 If the attribute is already attached, the actor returns an error.
 
 When being asked to \ff{take()}, the actor returns the reference that corresponds to the given attribute.
 If the attribute is attached to a blank, the actor returns an error.
-If the attribute is absent and the \(\varphi\)-attribute is present, the actor asks the referenced actor by the attribute to \ff{take()}.
-If the \(\varphi\)-attribute is present but the \(\lambda\)-asset is present, the actor calls the function attached to the asset, it returns a reference, and the actor uses it to \ff{take()}.
+If the attribute is absent and the \(\varphi\)-attribute is present, the actor asks the actor referenced by the attribute to \ff{take()}.
+If the \(\varphi\)-attribute is absent but the \(\lambda\)-asset is present, the actor calls the function attached to the asset, which returns a reference, and the actor uses it to \ff{take()}.
 Otherwise, the actor returns an error.
 
 When being asked to \ff{delta()}, the actor returns the \(\Delta\)-asset if it has one.
-If it doesn't have it but the \(\lambda\)-asset is present, the actor calls the function attached to the \(\lambda\)-asset, gets a reference, and uses it to \ff{take()}.
-If the \(\lambda\)-asset is also absent by the \(\varphi\)-attribute is present, the actor asks the referenced actor by the attribute to \ff{take()}.
+If it doesn't have it but the \(\lambda\)-asset is present, the actor calls the function attached to the \(\lambda\)-asset, gets a reference, and uses it to \ff{delta()}.
+If the \(\lambda\)-asset is also absent but the \(\varphi\)-attribute is present, the actor asks the actor referenced by the attribute to \ff{delta()}.
 Otherwise, the actor returns an error.
