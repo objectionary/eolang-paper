@@ -44,7 +44,7 @@ This syntax is translated to the following object:
 
 \begin{tikzpicture}
 [every node/.style={draw}, every label/.style={draw=none, anchor=south west, label position=north west}]
-\node [label={\(b_1\) (formation)}] (b1)
+\node [label={\(b_1\) (formation)}, fill=blue!5] (b1)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{isbn}: & \(\varnothing\) \\
@@ -67,7 +67,7 @@ The code is translated to the following objects:
 
 \begin{tikzpicture}
 [every node/.style={draw}, every label/.style={draw=none, anchor=south west, label position=north west}]
-\node [label={\(b_1\) (formation)}] (b1)
+\node [label={\(b_1\) (formation)}, fill=blue!5] (b1)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{qty}: & \(\varnothing\) \\
@@ -75,28 +75,28 @@ The code is translated to the following objects:
   \ff{cost}: & \(b_4\) \\
   \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={\(b_2\) (dispatch)}, above right=0 and 1 of b1] (b2)
+\node [label={\(b_2\) (dispatch)}, fill=red!5, above right=0 and 1 of b1] (b2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{target}: & \(b_1\) \\
   \ff{attr}: & \ff{qty} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={\(b_3\) (dispatch)}, right=of b2] (b3)
+\node [label={\(b_3\) (dispatch)}, fill=red!5, right=of b2] (b3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{target}: & \(b_2\) \\
   \ff{attr}: & \ff{mul} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={\(b_4\) (application)}, below=of b3] (b4)
+\node [label={\(b_4\) (application)}, fill=green!5, below=of b3] (b4)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{target}: & \(b_3\) \\
   \ff{attr}: & \(\alpha_0\) \\
   \ff{object}: & \(b_5\) \\
   \end{tabularx}}};
-\node [label={\(b_5\) (dispatch)}, left=of b4] (b5)
+\node [label={\(b_5\) (dispatch)}, fill=red!5, left=of b4] (b5)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{target}: & \(b_1\) \\
@@ -106,4 +106,3 @@ The code is translated to the following objects:
 \end{tikzpicture}
 
 Then,  ...
-
