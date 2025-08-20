@@ -134,7 +134,13 @@ Then, it passes the request to the memo.
 
 \subsection{Formation}
 
-The actor representing \emph{formation} contains an associative array of attributes and actor references.
+The actor representing \emph{formation} contains
+\begin{inparaenum}[1)]
+\item an associative array of attributes and actor references,
+\item a possibly blank \(\lambda\)-asset,
+and
+\item a possibly blank \(\Delta\)-asset.
+\end{inparaenum}
 
 When being asked to \ff{put()}, the actor saves the reference to the array, if given attribute is not yet attached.
 If the attribute is already attached, the actor returns an error.
