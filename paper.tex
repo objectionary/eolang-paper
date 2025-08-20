@@ -3,6 +3,7 @@
 
 \documentclass[acmsmall,nonacm,11pt]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
+\makeatletter\let\@authorsaddresses\@empty\makeatother
 \usepackage[utf8]{inputenc}
 \usepackage[T2A,T1]{fontenc}
 \usepackage{natbib} % for \citep and \citet
@@ -113,13 +114,14 @@
   }{0.0.0}
 }
 \author{Yegor Bugayenko}
-\orcid{0000-0001-6370-0678}
-\email{yegor256@gmail.com}
-\affiliation{
-  \institution{Huawei}
-  \city{Moscow}
-  \country{Russia}
-}
+  \orcid{0000-0001-6370-0678}
+  \email{yegor256@gmail.com}
+  \affiliation{\institution{Huawei}\city{Moscow}\country{Russia}}
+\author{Maxim Trunnikov}
+  \orcid{0000-0001-8545-4797}
+  \email{mtrunnikov@gmail.com}
+  \affiliation{Huawei\city{Moscow}\country{Russia}}
+
 \ccsdesc[300]{Software and its engineering~Software notations and tools~Formal language definitions}
 \keywords{Object-Oriented Programming, Object Calculus}
 
