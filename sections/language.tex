@@ -134,32 +134,15 @@ Then, it passes the request to the memo.
 
 \subsection{Formation}
 
-A \emph{formation} is represented by an actor that is an associative array of attributes vs immutable actor references.
+The actor representing \emph{formation} contains an associative array of attributes and actor references.
 
-\begin{ffcode}
-[isbn] > book
-  "Object Thinking" > title
-  39.95 > price
-\end{ffcode}
+When being asked to \ff{put()}, the actor saves the reference to the array, if given attribute is not yet attached.
+If the attribute is already attached, the actor returns an error.
 
-This syntax is translated to the following actor:
+When being asked to \ff{take()}, the actor returns the actor reference that corresponds to the given attribute.
+If the attribute is attached to a blank, the actor returns an error.
+If the attribute is absent and the \(\varphi\)-attribute is present, the actor asks the actor referenced by the attribute to \ff{take()}.
+If the \(\varphi\)-attribute is present but the \(\lambda\)-asset is present, the actor calls the function attached to the asset, it returns a reference, and the actor uses it to \ff{take()}.
 
-\begin{tikzpicture}
-[every node/.style={draw}, every label/.style={draw=none, anchor=south west, label position=north west}]
-\node [label={\(b_1\) (formation)}, fill=blue!5] (b1)
-  {\parbox{7em}{
-  \begin{tabularx}{\linewidth}{Xl}
-  \ff{isbn}: & \(\varnothing\) \\
-  \ff{title}: & \(b_2\) \\
-  \ff{price}: & \(b_3\) \\
-  \(\rho\): & \(\varnothing\) \\
-  \end{tabularx}}};
-\end{tikzpicture}
+When being asked to \ff{delta()}, the actor ...
 
-\subsection{Decoration}
-
-Later...
-
-\subsection{Atom}
-
-Later...
