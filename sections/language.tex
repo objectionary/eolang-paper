@@ -31,8 +31,8 @@ There are no keywords in \eolang{} but only a special symbols denoting grammar c
 \subsection{Objects}
 
 An object in \eolang{} may either be eager or lazy.
-An eager object is an associative array of attributes vs immutable object references.
-The compiler creates an eager object when it finds a formation in the source code:
+The compiler creates an eager object when it finds a \textbf{formation} in the source code.
+It is an associative array of attributes vs immutable object references.
 
 \begin{ffcode}
 [isbn] > book
@@ -55,13 +55,18 @@ This syntax is translated to the following object:
 \end{tikzpicture}
 
 Lazy objects represent applications and dispatches.
-An application is a trio of an object reference (called ``prototype''), an attribute, and an immutable object reference (called ``argument'').
-A dispatch is a trio of an object reference (called ``base''), an attribute, and a mutable---initially blank---object reference.
+An \textbf{application} is a trio of an object reference (called ``prototype''), an attribute, and an immutable object reference (called ``argument'').
+A \textbf{dispatch} is a trio of an object reference (called ``base''), an attribute, and a mutable---initially blank---object reference.
 
 \begin{ffcode}
 [qty price] > order
   qty.mul price > cost
 \end{ffcode}
+
+The code is equivalent to the following \phic{} expression:
+\begin{phiquation}
+\Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul(\xi.price) ]] \Big\}
+\end{phiquation}
 
 The code is translated to the following objects:
 
@@ -90,7 +95,7 @@ The code is translated to the following objects:
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={\(b_4\) (application)}, fill=green!5, below=of b3] (b4)
-  {\parbox{7em}{
+  {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{prototype}: & \(b_3\) \\
   \ff{attr}: & \(\alpha_0\) \\
