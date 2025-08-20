@@ -10,11 +10,6 @@ In this section, we only explain key concepts of the language.
 Similar to Python~\citep{lutz2013learning}, indentation in \eolang{} is part of the syntax: the scope of a code block is determined by its horizontal position in relation to other blocks~\citep{landin1966next}.
 There are no keywords in \eolang{} but only a special symbols denoting grammar constructs, such as \ff{>} for attribute naming, \ff{.} for dynamic dispatch, and \ff{[]} for specifying parameters of formations.
 
-% formation + application + dataization
-% decoration
-% FFI atoms
-% caching dynamic dispatch
-% rho
 % synthetic attributes
 % const
 % idempotence
@@ -31,17 +26,15 @@ There are no keywords in \eolang{} but only a special symbols denoting grammar c
 \subsection{Objects}
 
 In \eolang{} runtime, every object is represented by an \emph{actor}.
-An actor responds to a few requests:
+On the surface, an actor resembles an associative array that responds to a few requests:
 \begin{itemize}
-  \item \ff{copy()} makes a copy of itself
-  \item \ff{take(attr)} returns a reference to an actor
-  \item \ff{put(attr, actor)} saves a reference to an actor
+  \item \ff{take(attr)} returns a reference to an actor, by provided attribute
+  \item \ff{put(attr, actor)} saves a reference to an actor, by the attribute
   \item \ff{delta()} turns itself to data
+  \item \ff{copy()} makes a copy of itself
 \end{itemize}
 
-A \emph{formation} is represented by an actor that is an associative array of attributes vs immutable object references.
-An \emph{application} is an actor with an object reference (called ``prototype''), an attribute, and an immutable object reference (called ``argument'').
-A \emph{dispatch} is an actor with an object reference (called ``base''), an attribute, and a mutable---initially blank---object reference.
+Consider the following code:
 
 \begin{ffcode}
 [qty price] > order
@@ -54,13 +47,13 @@ The code is equivalent to the following \phic{} expression:
 \Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul(\xi.price) ]] \Big\}
 \end{phiquation}
 
-The code is translated to the following actors:
+In runtime, the code is represented by five actors:
 
 \begin{tikzpicture}
 [every node/.style={draw},
 up/.style={draw=none, anchor=south west, label position=north west, text width=12em, align=left},
-down/.style={draw=none, anchor=north west, label position=south west}]
-\node [label={[up]$b_1=[[ qty -> ?, price -> ?, cost -> b_4 ]]$}, fill=blue!5] (b1)
+actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
+\node [label={[up]$b_1=[[ qty -> ?, price -> ?, cost -> b_4, \rho -> ? ]]$}, label={[actor]formation}, fill=blue!5] (b1)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{qty}: & \(\varnothing\) \\
@@ -68,28 +61,28 @@ down/.style={draw=none, anchor=north west, label position=south west}]
   \ff{cost}: & \(b_4\) \\
   \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_2 = b_1.qty$}, above right=0 and 2 of b1, fill=green!5] (b2)
+\node [label={[up]$b_2 = b_1.qty$}, label={[actor]dispatch}, above right=0 and 2 of b1, fill=green!5] (b2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{target}: & \(b_1\) \\
   \ff{attr}: & \ff{qty} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_3 = b_2.mul$}, fill=green!5, right=of b2] (b3)
+\node [label={[up]$b_3 = b_2.mul$}, label={[actor]dispatch}, fill=green!5, right=of b2] (b3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{target}: & \(b_2\) \\
   \ff{attr}: & \ff{mul} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_4 = b_3(0-> b_5)$}, fill=red!5, below=of b3] (b4)
+\node [label={[up]$b_4 = b_3(0-> b_5)$}, label={[actor]application}, fill=red!5, below=of b3] (b4)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{target}: & \(b_3\) \\
   \ff{attr}: & \(\alpha_0\) \\
   \ff{object}: & \(b_5\) \\
   \end{tabularx}}};
-\node [label={[up]$b_5 = b_1.price$}, fill=green!5, left=of b4] (b5)
+\node [label={[up]$b_5 = b_1.price$}, label={[actor]dispatch}, fill=green!5, left=of b4] (b5)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{target}: & \(b_1\) \\
@@ -98,9 +91,11 @@ down/.style={draw=none, anchor=north west, label position=south west}]
   \end{tabularx}}};
 \end{tikzpicture}
 
-When being asked to
+When being asked to turn itself into data, the \(b_1\) object
 
 \subsection{Formation}
+
+A \emph{formation} is represented by an actor that is an associative array of attributes vs immutable object references.
 
 \begin{ffcode}
 [isbn] > book
@@ -122,5 +117,20 @@ This syntax is translated to the following object:
   \end{tabularx}}};
 \end{tikzpicture}
 
+\subsection{Application}
 
-Then,  ...
+An \emph{application} is an actor with an object reference (called ``prototype''), an attribute, and an immutable object reference (called ``argument'').
+
+\subsection{Dispatch}
+
+A \emph{dispatch} is an actor with an object reference (called ``base''), an attribute, and a mutable---initially blank---object reference.
+
+% explain rho
+
+\subsection{Decoration}
+
+Later...
+
+\subsection{Atom}
+
+Later...
