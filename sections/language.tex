@@ -55,8 +55,8 @@ This syntax is translated to the following object:
 \end{tikzpicture}
 
 Lazy objects represent applications and dispatches.
-An application is a trio of an object reference, an attribute, and an immutable object reference.
-A dispatch is a trio of an object reference, an attribute, and a mutable---initially blank---object reference.
+An application is a trio of an object reference (called ``prototype''), an attribute, and an immutable object reference (called ``argument'').
+A dispatch is a trio of an object reference (called ``base''), an attribute, and a mutable---initially blank---object reference.
 
 \begin{ffcode}
 [qty price] > order
@@ -78,28 +78,28 @@ The code is translated to the following objects:
 \node [label={\(b_2\) (dispatch)}, fill=red!5, above right=0 and 1 of b1] (b2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{target}: & \(b_1\) \\
+  \ff{base}: & \(b_1\) \\
   \ff{attr}: & \ff{qty} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={\(b_3\) (dispatch)}, fill=red!5, right=of b2] (b3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{target}: & \(b_2\) \\
+  \ff{base}: & \(b_2\) \\
   \ff{attr}: & \ff{mul} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={\(b_4\) (application)}, fill=green!5, below=of b3] (b4)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{target}: & \(b_3\) \\
+  \ff{prototype}: & \(b_3\) \\
   \ff{attr}: & \(\alpha_0\) \\
-  \ff{object}: & \(b_5\) \\
+  \ff{argument}: & \(b_5\) \\
   \end{tabularx}}};
 \node [label={\(b_5\) (dispatch)}, fill=red!5, left=of b4] (b5)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{target}: & \(b_1\) \\
+  \ff{base}: & \(b_1\) \\
   \ff{attr}: & \ff{price} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
