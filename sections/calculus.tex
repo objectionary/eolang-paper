@@ -137,7 +137,7 @@ alphabet includes three non-terminals that rewrite to terminals as follows:
       or
       \item a string of lowercase English letters possibly with dashes inside, e.g. ``\ff{price}'' or ``\ff{a-car}'';
   \end{inparaenum}
-  \item \EbnfNonTerminal{Data}: a sequence of bytes in hexadecimal format, e.g. ``\texttt{EF-41-5C}'' is a sequence of three bytes, ``\texttt{42-}'' is a one-byte sequence (with a trailing dash in order to avoid confusion with integers), and ``\texttt{-{}-}'' (double dash) is an empty sequence of bytes;
+  \item \EbnfNonTerminal{Data}: a sequence of bytes in hexadecimal format, e.g. ``\ff{EF-41-5C}'' is a sequence of three bytes, ``\ff{42-}'' is a one-byte sequence (with a trailing dash in order to avoid confusion with integers), and ``\ff{-{}-}'' (double dash) is an empty sequence of bytes;
   \item \EbnfNonTerminal{Function}: a string of English letters where the first letter is in uppercase, e.g. ``\ff{Sqrt}'';
   \item \EbnfNonTerminal{Alpha}: a Greek letter \(\alpha\) with a non-negative whole-number index, e.g. \(\alpha_2\).
 \end{itemize}
