@@ -1,15 +1,6 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-The entire syntax of the \eolang{} language in BNF is available on the first page of the \texttt{objectionary/eo} GitHub repository%
-  \footnote{\url{https://github.com/objectionary/eo}}.
-In this section, we only explain key concepts of the language.
-
-\section{Informal Overview}
-
-Similar to Python~\citep{lutz2013learning}, indentation in \eolang{} is part of the syntax: the scope of a code block is determined by its horizontal position in relation to other blocks~\citep{landin1966next}.
-There are no keywords in \eolang{} but only a special symbols denoting grammar constructs, such as \ff{>} for attribute naming, \ff{.} for dynamic dispatch, and \ff{[]} for specifying parameters of formations.
-
 % synthetic attributes
 % const
 % idempotence
@@ -23,7 +14,11 @@ There are no keywords in \eolang{} but only a special symbols denoting grammar c
 % number
 % const
 
-\subsection{Objects}
+The entire syntax of the \eolang{} language in BNF is available on the first page of the \texttt{objectionary/eo} GitHub repository%
+  \footnote{\url{https://github.com/objectionary/eo}}.
+In this section, we only explain key concepts of the language.
+
+\section{Informal Overview}
 
 In \eolang{} runtime, every object is represented by an \emph{actor}.
 On the surface, an actor resembles an associative array that responds to a few requests:
