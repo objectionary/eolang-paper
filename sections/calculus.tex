@@ -1,9 +1,11 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
-In this section we introduce \phic{}, a formalism that we use later to optimize object-oriented code.
-We give an informal introduction to the calculus, helping the reader to grasp the idea without diving into details.
-In \cref{sec:syntax}, we formulate the syntax using EBNF and introduce individual concepts of the calculus, explaining their semantics and illustrating them with examples.
+In this section we introduce \phic{}, the formalism that we use as a foundation of \eolang{}.
+First, we give an informal introduction to the calculus, helping the reader to grasp the idea without diving into details.
+Then, we formulate the syntax using EBNF and introduce individual concepts of the calculus, explaining their semantics and illustrating them with examples.
+
+\subsection{Informal Overview}
 
 An \emph{object} is a collection of \emph{attributes}, which are uniquely named pairs, for example:
 \begin{phiquation}
@@ -68,7 +70,7 @@ An object may have data attached only to its \(\Delta\)-asset, for example:
 \end{phiquation*}
 
 An object may have a \emph{function} attached to its \(\lambda\)-asset.
-Such an object is referred to as \emph{atom}.
+Such an object is referred to as an \emph{atom}.
 An atom may be \emph{morphed} to another object by evaluating
 its function with \begin{inparaenum}[1)]
     \item the object and
