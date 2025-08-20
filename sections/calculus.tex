@@ -475,14 +475,14 @@ Syntax sugar & Its more verbose equivalent \\
   {\stx{ QQ }}
   {\stx{ Q } \stx{.} |org| \stx{.} |eolang|}
 \sugar
-  {e \stx{(} \tau_1 \tto e_1, \tau_2 \tto e_2, \dots \stx{)}}
-  {e \stx{(} \tau_1 \tto e_1 \stx{)}\stx{(} \tau_2 \tto e_2 \stx{)} \dots}
+  {e \stx{(} \tau_1 \tto e_1, \tau_2 \tto e_2 \stx{)}}
+  {e \stx{(} \tau_1 \tto e_1 \stx{)}\stx{(} \tau_2 \tto e_2 \stx{)}}
 \sugar
-  {e \stx{(} e_0 \stx{,}\; e_1 \stx{,}\; \dots \stx{)}}
-  {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,}\; \dots \stx{)}}
+  {e \stx{(} e_0 \stx{,}\; e_1 \stx{,} \stx{)}}
+  {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,} \stx{)}}
 \sugar
-  {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,}\; \dots \stx{)} \tto \stx{[[} B \stx{]]}}
-  {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,}\; \dots \stx{,}\; B \stx{]]}}
+  {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,} \stx{)} \tto \stx{[[} B \stx{]]}}
+  {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,} \stx{,}\; B \stx{]]}}
 \sugar
   {\tau_1 \tto \tau_2}
   {\tau_1 \tto \stx{\xi}\stx{.}\tau_2}
@@ -773,12 +773,12 @@ with an inner object:
 \begin{phiquation*}
 \Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> \xi.^.\alpha_0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> \xi.|x|( |42| ) \Big\}.
 \end{phiquation*}
-Here, if the parent of \(\Phi.|x|.|next|\) were attached in the formation, the result of \(\mathbb{D}(\Phi.|k|.|next|)\)
-would not be equal to |43|. Instead, it would be equal to \(\dead\), because \(\Phi.|k|.|next|.\rho\)
-would still be attached to \(\Phi.|x|\) after the dispatch of \(\Phi.|k|.|next|\).
+Here, if the parent of \(\Phi.\ff{x}.\ff{next}\) were attached in the formation, the result of \(\mathbb{D}(\Phi.\ff{k}.\ff{next})\)
+would not be equal to |43|. Instead, it would be equal to \(\dead\), because \(\Phi.\ff{k}.\ff{next}.\rho\)
+would still be attached to \(\Phi.\ff{x}\) after the dispatch of \(\Phi.\ff{k}.\ff{next}\).
 The parent attribute may be compared with the |this| pointer in Java or C++, which
 does not point anywhere until a method of a class is called. Then, when the method
-is called, the |this| pointer refers to the object that owns the method.
+is called, the \ff{this} pointer refers to the object that owns the method.
 
 \subsection{Congruence}
 

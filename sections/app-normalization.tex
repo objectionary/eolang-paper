@@ -19,7 +19,6 @@ some expressions, involving the contextualization function (\cref{sec:contextual
 (expressions in normal forms are highlighted as \(\mathrm{H}_i\) while others are
 highlighted as \(\Pi_i\)):
 
-\begin{multicols}{2}
 \begin{phiquation*}
 \exmp{app} [[ |k| -> [[ |x| -> \xi.|t|, |t| -> ? ]] ( |t| -> 42 ) ]] \trans_{\nameref{r:copy}}
     \trans [[ |k| -> [[ |x| -> \xi.|t|, |t| -> 42 ]] ]].
@@ -126,8 +125,6 @@ highlighted as \(\Pi_i\)):
   \trans 42 ( \rho -> \cref{u:apk:1} ) \trans_{\nameref{r:stay}}
   \trans 42.
 \end{phiquation*}
-
-\end{multicols}
 
 \begin{phiquation*}
 \exmp{rep} \unorm{u:1}{ [[ |x| -> \xi.|t|( |k| -> \xi.|f| ).|k|, |t| -> [[ |k| -> ? ]], |f| -> [[]] ]] }.|x| \trans_{\nameref{r:dot}}
