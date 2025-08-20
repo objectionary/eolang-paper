@@ -20,11 +20,11 @@ In this section, we only explain key concepts of the language.
 
 \section{Informal Overview}
 
-In \eolang{} runtime, every object is represented by an \emph{actor}.
+In runtime, every \eolang{} object is represented by an \emph{actor}.
 On the surface, an actor resembles an associative array that responds to a few requests:
 \begin{itemize}
-  \item \ff{take(attr)} returns a reference to an actor, by provided attribute
-  \item \ff{put(attr, actor)} saves a reference to an actor, by the attribute
+  \item \ff{take(attr)} returns a reference to a sub-actor, by provided attribute
+  \item \ff{put(attr, actor)} saves a reference to a sub-actor, by the attribute
   \item \ff{delta()} turns itself to data
   \item \ff{copy()} makes a copy of itself
 \end{itemize}
@@ -38,9 +38,9 @@ Consider the following code:
 \end{ffcode}
 
 The code is equivalent to the following \phic{} expression:
-\begin{phiquation}
+\begin{phiquation*}
 \Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul(\xi.price) ]] \Big\}
-\end{phiquation}
+\end{phiquation*}
 
 \cref{fig:order} shows five actors that represent the code in runtime.
 
@@ -61,28 +61,28 @@ actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south we
 \node [label={[up]$b_2 = b_1.qty$}, label={[actor]dispatch}, above right=0 and 2.5 of b1, fill=green!5] (b2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{target}: & \(b_1\) \\
+  \ff{base}: & \(b_1\) \\
   \ff{attr}: & \ff{qty} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$b_3 = b_2.mul$}, label={[actor]dispatch}, fill=green!5, right=of b2] (b3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{target}: & \(b_2\) \\
+  \ff{base}: & \(b_2\) \\
   \ff{attr}: & \ff{mul} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$b_4 = b_3(0-> b_5)$}, label={[actor]application}, fill=red!5, below=of b3] (b4)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{target}: & \(b_3\) \\
+  \ff{prototype}: & \(b_3\) \\
   \ff{attr}: & \(\alpha_0\) \\
   \ff{object}: & \(b_5\) \\
   \end{tabularx}}};
 \node [label={[up]$b_5 = b_1.price$}, label={[actor]dispatch}, fill=green!5, left=of b4] (b5)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{target}: & \(b_1\) \\
+  \ff{base}: & \(b_1\) \\
   \ff{attr}: & \ff{price} \\
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
