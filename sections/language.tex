@@ -37,9 +37,9 @@ On the surface, an actor resembles an associative array that responds to a few r
 Consider the following code:
 
 \begin{ffcode}
-[qty price] > order
+[qty price] > order (*@\label{ln:order-start}@*)
   qty.mul > cost
-    price
+    price (*@\label{ln:order-stop}@*)
 \end{ffcode}
 
 The code is equivalent to the following \phic{} expression:
@@ -47,8 +47,10 @@ The code is equivalent to the following \phic{} expression:
 \Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul(\xi.price) ]] \Big\}
 \end{phiquation}
 
-In runtime, the code is represented by five actors:
+\cref{fig:order} shows five actors that represent the code in runtime.
 
+\begin{figure*}
+\begin{mdframed}
 \begin{tikzpicture}
 [every node/.style={draw},
 up/.style={draw=none, anchor=south west, label position=north west, text width=12em, align=left},
@@ -90,6 +92,10 @@ actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south we
   \ff{object}: & \(\varnothing\) \\
   \end{tabularx}}};
 \end{tikzpicture}
+\end{mdframed}
+\caption{Actors representing the program at the lines \ref{ln:order-start}--\ref{ln:order-stop}.}
+\label{fig:order}
+\end{figure*}
 
 When being asked to turn itself into data, the \(b_1\) object
 
