@@ -12,9 +12,9 @@ An \emph{object} is a collection of \emph{attributes}, which are uniquely named 
 \label{eq:price-color}
 [[ price -> ?, color -> [[ D> FF-C0-CB ]] ]].
 \end{phiquation}
-This is a \emph{formation} of an object with two attributes |price| and |color|.
-The object is \emph{abstract} because the |price| attribute is \emph{void}, i.e. there is no object \emph{attached} to it.
-The |color| attribute is attached to another object formation with one \(\Delta\)-\emph{asset}, which is attached to \emph{data} (three bytes).
+This is a \emph{formation} of an object with two attributes \ff{price} and \ff{color}.
+The object is \emph{abstract} because the \ff{price} attribute is \emph{void}, i.e. there is no object \emph{attached} to it.
+The \ff{color} attribute is attached to another object formation with one \(\Delta\)-\emph{asset}, which is attached to \emph{data} (three bytes).
 Objects do not have \emph{names}, while only the attributes, which objects are attached to, do.
 
 A \emph{full application} of an abstract object to a pair of attribute and object \emph{results} in a new \emph{closed} object, for example:
@@ -135,10 +135,10 @@ alphabet includes three non-terminals that rewrite to terminals as follows:
       \item Greek letter \(\varphi\),
       \item Greek letter \(\rho\),
       or
-      \item a string of lowercase English letters possibly with dashes inside, e.g. ``|price|'' or ``|a-car|'';
+      \item a string of lowercase English letters possibly with dashes inside, e.g. ``\ff{price}'' or ``\ff{a-car}'';
   \end{inparaenum}
   \item \EbnfNonTerminal{Data}: a sequence of bytes in hexadecimal format, e.g. ``\texttt{EF-41-5C}'' is a sequence of three bytes, ``\texttt{42-}'' is a one-byte sequence (with a trailing dash in order to avoid confusion with integers), and ``\texttt{-{}-}'' (double dash) is an empty sequence of bytes;
-  \item \EbnfNonTerminal{Function}: a string of English letters where the first letter is in uppercase, e.g. ``|Sqrt|'';
+  \item \EbnfNonTerminal{Function}: a string of English letters where the first letter is in uppercase, e.g. ``\ff{Sqrt}'';
   \item \EbnfNonTerminal{Alpha}: a Greek letter \(\alpha\) with a non-negative whole-number index, e.g. \(\alpha_2\).
 \end{itemize}
 
@@ -303,8 +303,8 @@ Object \textbf{application}, denoted as \( b \stx{(} \tau \;\stx{\mapsto}\; e \s
 applied to the formation of an abstract object $[[ |a| -> ? ]]$. The application creates
 a new object $[[ |a| -> b_2 ]]$, while the existing abstract object remains intact.
 
-The object in \cref{eq:price-color} is abstract, because its attribute |price| is void.
-The object in \cref{eq:simple-application} was abstract before the application, but the object created by the application is closed since its attribute |a| is not void (attached to \(b_2\)).
+The object in \cref{eq:price-color} is abstract, because its attribute \ff{price} is void.
+The object in \cref{eq:simple-application} was abstract before the application, but the object created by the application is closed since its attribute \ff{a} is not void (attached to \(b_2\)).
 
 Even though \stx{\varnothing} may be attached to an attribute of an object,
 it is not an object by itself. Instead, \(\varnothing\) is a ``placeholder''
@@ -344,10 +344,8 @@ The \textbf{scope} of expression \(e\), denoted as \(e^\varsigma\) is either
 \end{inparaenum}
 \end{definition}
 
-In simpler terms, the scope is the formation that is the ``closest'' to the pair,
-moving to the left in the expression. In~\cref{eq:simple-scope}, the scope of |author| is the
-formation where the |source| attribute stays, while the scope of |cite|
-is the formation where the |ref| attribute stays.
+In simpler terms, the scope is the formation that is the ``closest'' to the pair, moving to the left in the expression.
+In~\cref{eq:simple-scope}, the scope of \ff{author} is the formation where the \ff{source} attribute stays, while the scope of \ff{cite} is the formation where the \ff{ref} attribute stays.
 \begin{phiquation}
 \label{eq:simple-scope}
   [[ ref -> \uplace{}{ [[ source -> Q.book( author -> b_1 ) ]] }, cite -> b_2 ]]
