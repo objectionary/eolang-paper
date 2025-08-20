@@ -1,6 +1,10 @@
 % SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 % SPDX-License-Identifier: MIT
 
+In this section we analyze and categorize prior art related to our work.
+Neither object-oriented formalism nor pure object-oriented languages are new research topics.
+However, we identified certain gaps in existing studies that make us believe that our work has novelty.
+
 \subsection{Object Calculi}
 
 Attempts were made to formalize OOP and introduce object calculus, similar to lambda calculus~\citep{barendregt2012} used in functional programming.
@@ -9,7 +13,7 @@ For example, \citet{abadi1995imperative} suggested an imperative calculus of obj
 Earlier, \citet{honda1991object} combined OOP and \(\pi\)-calculus in order to introduce object calculus for asynchronous communication, which was further referenced by~\citet{jones1993pi} in their work on object-based design notation.
 
 A few attempts were made to reduce existing OOP languages and formalize what is left.
-Featherweight Java is the most notable example proposed by~\citet{igarashi2001featherweight}, which is omitting almost all features of the full language (including interfaces and even assignment) to obtain a small calculus.
+Featherweight Java is the most notable example proposed by~\citet{igarashi2001featherweight}, which omits almost all features of the full language (including interfaces and even assignment) to obtain a small calculus.
 Later it was extended by~\citet{jagannathan2005transactional} to support nested and multi-threaded transactions.
 Featherweight Java is used in formal languages such as Obsidian~\citep{coblenz2019} and SJF~\citep{usov2020}.
 
@@ -48,5 +52,4 @@ A broader definition by \citet{west2004object} suggests that being ``pure'' mean
 \input{sections/tab-other-languages}
 \end{table}
 
-Even though, ``pure'' object-orientation may not be a virtue by itself, we claim that \eolang{} is the only object-oriented programming language that has nothing but objects.
-
+Even though ``pure'' object-orientation may not be a virtue by itself, we claim that \eolang{} is the only object-oriented programming language that has nothing but objects.
