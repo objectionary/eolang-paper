@@ -28,7 +28,12 @@
   \WarningFilter{acmart}{\vspace should only be used to provide space above/below}
 
 \tolerance=1500
+\exhyphenpenalty=10000% to avoid line breaks before and after mdash
+\widowpenalty=5000% to have less widows
+\clubpenalty=5000% to have less orphans
+\interfootnotelinepenalty=10000% to format footnotes better
 \raggedbottom
+\setlength\footskip{13.0pt}
 \setlength\headheight{21pt}
 
 \newcommand\nospell[1]{#1}
@@ -86,8 +91,6 @@
   {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\ifx\param\empty\else\color{gray}\mathrm{H}_{\theunorm}\fi}}}}
 \makeatother
 \crefformat{unorm}{{\color{gray}\mathrm{H}_{#2#1#3}}}
-
-\setlength{\footskip}{13.0pt}
 
 \acmBooktitle{untitled}
 \title{EOLANG and \texorpdfstring{\(\varphi\)}{phi}-calculus}
