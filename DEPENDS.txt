@@ -42,6 +42,7 @@ hard makecell
 hard mathtools
 hard mdframed
 hard microtype
+hard naive-ebnf
 hard ncctools
 hard needspace
 hard paralist
