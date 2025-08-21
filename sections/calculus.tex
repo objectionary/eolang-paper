@@ -651,7 +651,7 @@ Two expressions are said to be \emph{syntactically equivalent} or just
 \emph{equivalent} (denoted by \(\equiv\)) if their normal forms are
 syntactically identical.
 
-\Cref{fig:equivalence} shows some properties that hold.
+\Cref{fig:equivalence} shows some equivalence properties that hold.
 
 \begin{figure*}
 \begin{mdframed}
@@ -785,7 +785,8 @@ is called, the \ff{this} pointer refers to the object that owns the method.
 Two expressions \(e_1\) and \(e_2\) are said to be \emph{behaviorally equivalent}
 or \emph{congruent} (denoted by \(\cong\)) if for any state \(s\): \(\mathbb{D}(e_1, s) = \mathbb{D}(e_2, s)\).
 
-The following properties hold:
+\begin{figure*}
+\begin{mdframed}
 \begin{phiquation*}
 \nf \cong [[ @ -> \nf ]] \quad \text{(by \nameref{r:phi})}
   \text{Transparency of Decoration}
@@ -796,6 +797,12 @@ The following properties hold:
 [[ B ]] \cong [[ B ]].@ \quad\text{if}\; \stx{@} \in B \;\text{and}\; \stx{\Delta} \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
   \text{Implicitness of Decoration}
 \end{phiquation*}
+\end{mdframed}
+\capt{Congruence properties that hold.}
+\label{fig:congruence}
+\end{figure*}
+
+\Cref{fig:congruence} shows some congruence properties that hold.
 
 Two congruent expressions may be non-equivalent, for example:
 \begin{phiquation*}
