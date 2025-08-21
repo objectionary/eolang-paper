@@ -10,7 +10,6 @@ rm -rf package
 mkdir package
 cd package
 cp ../paper.tex .
-cp ../phigure.sty .
 mkdir bibliography
 cp ../bibliography/main.bib bibliography/main.bib
 
