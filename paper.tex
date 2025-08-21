@@ -75,8 +75,8 @@
 \newcounter{uplace}
 \makeatletter
 \newcommand\uplace[2]{%
-  \ifmeasuring@\else\refstepcounter{uplace}\cref@label{#1}\fi%
   \def\param{#1}%
+  \ifx\param\empty\else\ifmeasuring@\else\refstepcounter{uplace}\cref@label{#1}\fi\fi%
   {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\ifx\param\empty\else\color{gray}\Pi_{\theuplace}\fi}}}}
 \makeatother
 \crefformat{uplace}{{\color{gray}\Pi_{#2#1#3}}}
