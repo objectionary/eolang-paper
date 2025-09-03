@@ -20,11 +20,11 @@ In this section, we only explain key concepts of the language.
 
 \subsection{Informal Overview}
 
-At runtime, every \eolang{} object is represented by an \emph{actor}.
-On the surface, an actor resembles an associative array that responds to a few requests, where ``reference'' is a reference to an arbitrary actor:
+At runtime, every \eolang{} object resembles an associative array.
+It responds to a few requests, where ``reference'' resembles a pointer:
 \begin{enumerate}
   \item \ff{take(attr)} returns a reference, by provided attribute;
-  \item \ff{put(attr, actor)} saves a reference, by the attribute;
+  \item \ff{put(attr, object)} saves a reference, by the attribute;
   \item \ff{delta()} turns itself to data;
   \item \ff{copy()} makes a copy of itself.
 \end{enumerate}
@@ -42,18 +42,18 @@ The code is equivalent to the following \phic{} expression:
 \Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul(\xi.price) ]] \Big\}
 \end{phiquation*}
 
-\cref{fig:order} shows five actors that represent the code in runtime.
-When being asked to \ff{take()}, actors behave differently.
+\cref{fig:order} shows five objects that represent the code in runtime.
+When being asked to \ff{take()}, objects behave differently.
 Their behavior constitutes the semantics of the language.
-Actors belong to one of three types: application, dispatch, and formation.
+Objects belong to one of three types: application, dispatch, and formation.
 
 \begin{figure*}
 \begin{mdframed}
 \begin{tikzpicture}
 [every node/.style={draw},
 up/.style={draw=none, anchor=south west, label position=north west, align=left},
-actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
-\node [label={[up, text width=10em]$b_1=[[ qty -> ?, price -> ?, cost -> b_4, \rho -> ? ]]$}, label={[actor]formation}, fill=blue!5] (b1)
+object/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
+\node [label={[up, text width=10em]$b_1=[[ qty -> ?, price -> ?, cost -> b_4, \rho -> ? ]]$}, label={[object]formation}, fill=blue!5] (b1)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{qty}: & \(\varnothing\) \\
@@ -61,28 +61,28 @@ actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south we
   \ff{cost}: & \(b_4\) \\
   \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_2 = b_1.qty$}, label={[actor]dispatch}, above right=0 and 2.5 of b1, fill=green!5] (b2)
+\node [label={[up]$b_2 = b_1.qty$}, label={[object]dispatch}, above right=0 and 2.5 of b1, fill=green!5] (b2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(b_1\) \\
   \ff{attr}: & \ff{qty} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_3 = b_2.mul$}, label={[actor]dispatch}, fill=green!5, right=of b2] (b3)
+\node [label={[up]$b_3 = b_2.mul$}, label={[object]dispatch}, fill=green!5, right=of b2] (b3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(b_2\) \\
   \ff{attr}: & \ff{mul} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_4 = b_3(0-> b_5)$}, label={[actor]application}, fill=red!5, below=of b3] (b4)
+\node [label={[up]$b_4 = b_3(0-> b_5)$}, label={[object]application}, fill=red!5, below=of b3] (b4)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{prototype}: & \(b_3\) \\
   \ff{attr}: & \(\alpha_0\) \\
   \ff{argument}: & \(b_5\) \\
   \end{tabularx}}};
-\node [label={[up]$b_5 = b_1.price$}, label={[actor]dispatch}, fill=green!5, left=of b4] (b5)
+\node [label={[up]$b_5 = b_1.price$}, label={[object]dispatch}, fill=green!5, left=of b4] (b5)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(b_1\) \\
@@ -97,7 +97,7 @@ actor/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south we
 
 \subsection{Application}
 
-The actor representing \emph{application} contains
+The \emph{application} object contains
 \begin{inparaenum}[1)]
 \item a ``prototype'' reference,
 \item an attribute,
@@ -105,7 +105,7 @@ and
 \item an ``argument'' reference.
 \end{inparaenum}
 
-On any request, the actor
+On any request, the object
 \begin{inparaenum}[1)]
 \item asks prototype to \ff{copy()} expecting a ``copy'' reference to be returned,
 \item asks the copy to \ff{put(attribute, argument)},
@@ -115,7 +115,7 @@ and
 
 \subsection{Dispatch}
 
-The actor representing \emph{dispatch} contains
+The \emph{dispatch} object contains
 \begin{inparaenum}[1)]
 \item a ``base'' reference,
 \item an attribute,
@@ -123,7 +123,7 @@ and
 \item a mutable initially blank ``memo'' reference.
 \end{inparaenum}
 
-On any request, the actor does two things.
+On any request, the object does two things.
 First, if memo is blank, it
 \begin{inparaenum}[1)]
 \item asks base to \ff{take(attribute)} expecting a ``target'' reference to be returned,
@@ -135,7 +135,7 @@ Then, it passes the request to the memo.
 
 \subsection{Formation}
 
-The actor representing \emph{formation} contains
+The \emph{formation} object contains
 \begin{inparaenum}[1)]
 \item an associative array of attributes and references,
 \item a possibly blank \(\lambda\)-asset,
@@ -143,23 +143,23 @@ and
 \item a possibly blank \(\Delta\)-asset.
 \end{inparaenum}
 
-When being asked to \ff{put()}, the actor saves the reference to the array if the given attribute is not yet attached.
-If the attribute is already attached, the actor returns an error.
+When being asked to \ff{put()}, the object saves the reference to the array if the given attribute is not yet attached.
+If the attribute is already attached, the object returns an error.
 
-When being asked to \ff{take()}, the actor returns the reference that corresponds to the given attribute.
-If the attribute is attached to a blank, the actor returns an error.
-If the attribute is absent and the \(\varphi\)-attribute is present, the actor asks the actor referenced by the attribute to \ff{take()}.
-If the \(\varphi\)-attribute is absent but the \(\lambda\)-asset is present, the actor calls the function attached to the asset, which returns a reference, and the actor uses it to \ff{take()}.
-Otherwise, the actor returns an error.
+When being asked to \ff{take()}, the object returns the reference that corresponds to the given attribute.
+If the attribute is attached to a blank, the object returns an error.
+If the attribute is absent and the \(\varphi\)-attribute is present, the object asks the object referenced by the attribute to \ff{take()}.
+If the \(\varphi\)-attribute is absent but the \(\lambda\)-asset is present, the object calls the function attached to the asset, which returns a reference, and the object uses it to \ff{take()}.
+Otherwise, the object returns an error.
 
-When being asked to \ff{delta()}, the actor returns the \(\Delta\)-asset if it has one.
-If it doesn't have it but the \(\lambda\)-asset is present, the actor calls the function attached to the \(\lambda\)-asset, gets a reference, and uses it to \ff{delta()}.
-If the \(\lambda\)-asset is also absent but the \(\varphi\)-attribute is present, the actor asks the actor referenced by the attribute to \ff{delta()}.
-Otherwise, the actor returns an error.
+When being asked to \ff{delta()}, the object returns the \(\Delta\)-asset if it has one.
+If it doesn't have it but the \(\lambda\)-asset is present, the object calls the function attached to the \(\lambda\)-asset, gets a reference, and uses it to \ff{delta()}.
+If the \(\lambda\)-asset is also absent but the \(\varphi\)-attribute is present, the object asks the object referenced by the attribute to \ff{delta()}.
+Otherwise, the object returns an error.
 
 \subsection{FFI Atoms}
 
-A formation actor with a non-blank \(\lambda\)-asset is an \emph{atom}.
-The execution of a function attached to the \(\lambda\)-asset is implemented via foreign function interface (FFI).
+A formation object with a non-blank \(\lambda\)-asset is an \emph{atom}.
+The execution of a function attached to the \(\lambda\)-asset may be implemented via foreign function interface (FFI).
 
 The function accepts a reference to the owner of the \(\lambda\)-asset and returns a reference.
