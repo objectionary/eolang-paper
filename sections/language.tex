@@ -37,12 +37,12 @@ Consider the following code:
     price (*@\label{ln:order-stop}@*)
 \end{ffcode}
 
-The code is equivalent to the following \phic{} expression:
+This code is equivalent to the following \phic{} expression:
 \begin{phiquation*}
 \Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul( 0-> \xi.price ) ]] \Big\}
 \end{phiquation*}
 
-\cref{fig:order} shows five objects that represent the code in runtime.
+\cref{fig:order} shows five objects that represent the code at runtime.
 When being asked to \ff{take()}, objects behave differently.
 Their behavior constitutes the semantics of the language.
 Objects belong to one of three types: application, dispatch, and formation.
@@ -170,21 +170,21 @@ The function accepts a reference to the owner of the \(\lambda\)-asset and retur
 \subsection{Surging Object DiGraph}
 
 A program is a static graph of objects, known as Surging Object DiGraph (SODG).
-The compiler transorms a program into a SODG.
+The compiler transforms a program into a SODG.
 At runtime, additional objects may be created and then deleted in the SODG.
 The objects created by the compiler may never be deleted.
 
 The function may do the following with the SODG:
 \begin{enumerate}
   \item \ff{formation(o, attr\(_0\), attr\(_1\), ...)} -- creates a new formation object;
-  \item \ff{dispatch(o, base, attr)} -- creates a new dispath object;
+  \item \ff{dispatch(o, base, attr)} -- creates a new dispatch object;
   \item \ff{application(o, proto, attr, arg)} -- creates a new application object;
   \item \ff{delta(o, data)} -- sets \(\Delta\)-asset to the object;
-  \item \ff{lamda(o, name)} -- sets \(\lambda\)-asset to the object;
+  \item \ff{lambda(o, name)} -- sets \(\lambda\)-asset to the object;
   \item \ff{put(o, attr, kid)} -- sets attribute of the object.
 \end{enumerate}
 
-The code at the lines \ref{ln:order-start}--\ref{ln:order-stop} may be transformed to a SODG using the following sequence of instructions:
+The code at lines \ref{ln:order-start}--\ref{ln:order-stop} may be transformed to a SODG using the following sequence of instructions:
 
 \begin{ffcode}
 formation(b1, "qty", "price", "cost")
@@ -197,7 +197,6 @@ application(b4, b3, (*@\(\alpha_0\)@*), b5)
 Both compile-time and runtime optimizations may infer attribute names.
 For example, the \(\alpha_0\) attribute of the \(b_5\) object may be replaced by the actual name.
 
-The SODG may store
 
 \subsection{Deterministic Object Destruction}
 
