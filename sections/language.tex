@@ -60,6 +60,8 @@ object/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south w
   \ff{price}: & \(\varnothing\) \\
   \ff{cost}: & \(b_4\) \\
   \(\rho\): & \(\varnothing\) \\
+  \(\lambda\): & \(\times\) \\
+  \(\Delta\): & \(\times\) \\
   \end{tabularx}}};
 \node [label={[up]$b_2 = b_1.qty$}, label={[object]dispatch}, above right=0 and 2.5 of b1, fill=green!5] (b2)
   {\parbox{7em}{
@@ -157,9 +159,23 @@ If it doesn't have it but the \(\lambda\)-asset is present, the object calls the
 If the \(\lambda\)-asset is also absent but the \(\varphi\)-attribute is present, the object asks the object referenced by the attribute to \ff{delta()}.
 Otherwise, the object returns an error.
 
+\subsection{Program}
+
+A program is a static graph of objects, known as Surging Object DiGraph (SODG).
+The compiler transorms a program into a SODG.
+At runtime, additional objects may be created in the SODG, but the objects created by the compiler may not be deleted.
+
 \subsection{Atoms}
 
 A formation object with a non-blank \(\lambda\)-asset is an \emph{atom}.
 The execution of a function attached to the \(\lambda\)-asset may be implemented via foreign function interface (FFI).
 
 The function accepts a reference to the owner of the \(\lambda\)-asset and returns a reference.
+
+The function may do the following with the SODG:
+\begin{enumerate}
+  \item create new object, optionally with \(\lambda\)-asset and \(\Delta\)-asset;
+  \item set attribute name
+  \item bind two objects, with a label
+\end{enumerate}
+
