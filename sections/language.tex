@@ -39,7 +39,7 @@ Consider the following code:
 
 The code is equivalent to the following \phic{} expression:
 \begin{phiquation*}
-\Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul(\xi.price) ]] \Big\}
+\Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul( 0-> \xi.price ) ]] \Big\}
 \end{phiquation*}
 
 \cref{fig:order} shows five objects that represent the code in runtime.
@@ -63,7 +63,7 @@ object/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south w
   \(\lambda\): & \(\times\) \\
   \(\Delta\): & \(\times\) \\
   \end{tabularx}}};
-\node [label={[up]$b_2 = b_1.qty$}, label={[object]dispatch}, above right=0 and 2.5 of b1, fill=green!5] (b2)
+\node [label={[up]$b_2 = b_1.qty$}, label={[object]dispatch}, above right=-1 and 2.5 of b1, fill=green!5] (b2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(b_1\) \\
@@ -159,23 +159,34 @@ If it doesn't have it but the \(\lambda\)-asset is present, the object calls the
 If the \(\lambda\)-asset is also absent but the \(\varphi\)-attribute is present, the object asks the object referenced by the attribute to \ff{delta()}.
 Otherwise, the object returns an error.
 
-\subsection{Program}
+\subsection{Atoms}
+
+A formation object with a non-blank \(\lambda\)-asset is an \emph{atom}.
+The execution of a function attached to the \(\lambda\)-asset may be implemented via foreign function interface (FFI).
+The \(\lambda\)-asset may be a name of the function or a pointer to its location in memory.
+
+The function accepts a reference to the owner of the \(\lambda\)-asset and returns a reference.
+
+\subsection{Surging Object DiGraph}
 
 A program is a static graph of objects, known as Surging Object DiGraph (SODG).
 The compiler transorms a program into a SODG.
 At runtime, additional objects may be created in the SODG, but the objects created by the compiler may not be deleted.
 
-\subsection{Atoms}
-
-A formation object with a non-blank \(\lambda\)-asset is an \emph{atom}.
-The execution of a function attached to the \(\lambda\)-asset may be implemented via foreign function interface (FFI).
-
-The function accepts a reference to the owner of the \(\lambda\)-asset and returns a reference.
-
 The function may do the following with the SODG:
 \begin{enumerate}
-  \item create new object, optionally with \(\lambda\)-asset and \(\Delta\)-asset;
-  \item set attribute name
-  \item bind two objects, with a label
+  \item \ff{dispatch(base, attr)} -- creates a new dispath object;
+  \item \ff{application(prototype, attr, argument)} -- creates a new application object;
+  \item \ff{formation(attr\(_0\), attr\(_1\), ...)} -- creates a new formation object;
+  \item \ff{delta(object, data)} -- sets \(\Delta\)-asset to the object;
+  \item \ff{lamda(object, name)} -- sets \(\lambda\)-asset to the object;
+  \item \ff{put(base, attr, kid)} -- sets attribute of the object.
 \end{enumerate}
+
+\subsection{Deterministic Object Destruction}
+
+The function may not delete objects from the SODG.
+Instead, they get deleted automatically.
+All objects created by the function are deleted, except the object that the function returns.
+The objects that are directly or indirectly referenced by the returned object are not deleted either.
 
