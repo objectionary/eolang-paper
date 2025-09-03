@@ -192,6 +192,7 @@ dispatch(b2, b1, "qty")
 dispatch(b3, b2, "mul")
 dispatch(b5, b1, "price")
 application(b4, b3, (*@\(\alpha_0\)@*), b5)
+put(b1, "cost", b4)
 \end{ffcode}
 
 Both compile-time and runtime optimizations may infer attribute names.
