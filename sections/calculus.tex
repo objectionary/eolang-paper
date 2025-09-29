@@ -204,18 +204,6 @@ where keys are either attributes or assets and values are either
 ``\stx{\varnothing},'' expressions, data, or functions.
 \end{definition}
 
-The following is an example of an object with four pairs, where the first one
-is an asset attached to data, while the other three are attributes attached to
-expressions:
-\begin{phiquation}
-\label{eq:object-example}
-[[ D> 00-2A, |a| -> b_2(0-> b_3).|bar|, |b| -> [[ L> Sqrt ]], foo -> \dead ]]
-\end{phiquation}
-
-The arrow ``\stx{\mapsto}'' denotes an attachment of an expression (right-hand side)
-to an attribute (left-hand side). The arrow ``\stx{\phiDotted}'' denotes
-an attachment of data or function to an asset.
-
 \subsection{Domain}\label{sec:domain}
 
 \begin{definition}[Domain]
@@ -230,7 +218,7 @@ Assets ``\stx{\Delta}'' and ``\stx{\lambda}'' do not belong to object domain.
 
 \begin{definition}[Formation]
 Object \textbf{formation}, denoted as ``\(\stx{\llbracket} B \stx{\rrbracket}\)'',
-is a construction of a new object.
+  is a construction of a new object.
 \end{definition}
 
 We introduce the term ``object formation'' rather than using a more traditional
@@ -238,6 +226,18 @@ We introduce the term ``object formation'' rather than using a more traditional
 class from which an object is being constructed or instantiated. Instead,
 object formation is closer to the creation of a prototype, which may either be
 used ``as is'' or copied.
+
+The following is an example of an object formation with four pairs, where the first one
+  is an asset attached to data, while the other three are attributes attached to
+  expressions:
+\begin{phiquation}
+\label{eq:object-example}
+[[ D> 00-2A, |a| -> b_2(0-> b_3).|bar|, |b| -> [[ L> Sqrt ]], foo -> \dead ]]
+\end{phiquation}
+
+The arrow ``\stx{\mapsto}'' denotes an attachment of an expression (right-hand side)
+  to an attribute (left-hand side). The arrow ``\stx{\phiDotted}'' denotes
+  an attachment of data or function to an asset.
 
 \subsection{Program}\label{sec:program}
 
