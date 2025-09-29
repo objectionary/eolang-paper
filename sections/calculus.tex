@@ -154,27 +154,27 @@ certain transformations.
 
 \begin{definition}[Attribute]
 \textbf{Attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\),
-is an identifier to which either ``\stx{\varnothing}'' or an expression
-may be attached.
+  is an identifier to which either ``\stx{\varnothing}'' or an expression
+  may be attached.
 \end{definition}
 
 \begin{definition}[Void vs. Attached]
 An attribute is \textbf{void} if it is attached to ``\stx{\varnothing},''
-otherwise it is an \textbf{attached} attribute.
+  otherwise it is an \textbf{attached} attribute.
 \end{definition}
 
 \subsection{Data}\label{sec:data}
 
 \begin{definition}[Data]
-\textbf{Data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly
-empty sequence of 8-bit bytes.
+\textbf{Data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly empty sequence of 8-bit bytes.
 \end{definition}
 
 \subsection{Binding}\label{sec:binding}
 
 \begin{definition}[Binding]
-\textbf{Binding}, ranged over \(\mathcal{G}\) by \(B\), is a possibly empty set of key-value pairs,
-denoted as \( k_1 \to v_1, k_2 \to v_2, \dots, k_n \to v_n \), where all keys are unique.
+\textbf{Binding}, ranged over \(\mathcal{G}\) by \(B\), is a possibly empty
+  ordered set of key-value pairs, denoted as
+  \( k_1 \to v_1, k_2 \to v_2, \dots, k_n \to v_n \), where all keys are unique.
 \end{definition}
 
 The predicate \(k \in B\) holds if \(k\) is present in any pair of \(B\).
@@ -184,8 +184,8 @@ The predicate \(k \in B\) holds if \(k\) is present in any pair of \(B\).
 \begin{definition}[Function]
 \textbf{Function} is a total mapping
 \(\langle \mathcal{G}, \mathcal{S} \rangle \to \langle \mathcal{G}, \mathcal{S} \rangle\)
-that maps binding to binding, possibly modifying the \emph{state} of evaluation \(s_i\),
-which itself ranges over \(\mathcal{S}\).
+  that maps binding to binding, possibly modifying the \emph{state} of evaluation \(s_i\),
+  which itself ranges over \(\mathcal{S}\).
 \end{definition}
 
 \subsection{Asset}\label{sec:asset}
