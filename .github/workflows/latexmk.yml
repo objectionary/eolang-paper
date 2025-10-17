@@ -5,7 +5,11 @@
 name: latexmk
 'on':
   push:
+    branches:
+      - master
   pull_request:
+    branches:
+      - master
 concurrency:
   group: latexmk-${{ github.ref }}
   cancel-in-progress: true
