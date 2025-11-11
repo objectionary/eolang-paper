@@ -30,6 +30,7 @@ path = [
     "**/*.png",
     "**/*.svg",
     "**/*.txt",
+    "**/*.phi",
     "**/*.vm",
     "**/aspell.en.pws",
     "**/CNAME",
