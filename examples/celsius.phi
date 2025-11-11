@@ -1,0 +1,13 @@
+{[[
+  @ -> $.c.times( 1.8 ).plus( 32.0 ),
+  c -> 25.0,
+  org -> [[
+    eolang -> [[
+      number -> [[
+        as-bytes -> ?,
+        times -> [[ x -> ?, L> Times ]],
+        plus -> [[ x -> ?, L> Plus ]]
+      ]]
+    ]]
+  ]]
+]]}
