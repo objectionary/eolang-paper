@@ -49,43 +49,43 @@ highlighted as \(\Pi_i\)):
 %     \trans \dead.
 % \end{phiquation*}
 
-\begin{phiquation*}
-\exmp{int} [[ |x| -> \unorm{u:17}{ [[ |t| -> 42 ]] }.|t| ]].|x| \trans_{\nameref{r:dot}}
-    \trans [[ |x| -> \ctx{42}{\cref{u:17}} (\rho -> \cref{u:17} ) ]].|x| \trans_{\ref{C:forma}}
-    \trans [[ |x| -> 42 (\rho -> \cref{u:17} ) ]].|x| \trans_{\nameref{r:stay}}
-    \trans \unorm{u:int:1}{ [[ |x| -> 42 ]] }.|x| \trans_{\nameref{r:dot}}
-    \trans \ctx{ 42 }{\cref{u:int:1}} ( \rho -> \cref{u:int:1} ) \trans_{\ref{C:forma}}
-    \trans 42 ( \rho -> \cref{u:int:1} ) \trans_{\nameref{r:stay}}
-    \trans 42.
-\end{phiquation*}
+% \begin{phiquation*}
+% \exmp{int} [[ |x| -> \unorm{u:17}{ [[ |t| -> 42 ]] }.|t| ]].|x| \trans_{\nameref{r:dot}}
+%     \trans [[ |x| -> \ctx{42}{\cref{u:17}} (\rho -> \cref{u:17} ) ]].|x| \trans_{\ref{C:forma}}
+%     \trans [[ |x| -> 42 (\rho -> \cref{u:17} ) ]].|x| \trans_{\nameref{r:stay}}
+%     \trans \unorm{u:int:1}{ [[ |x| -> 42 ]] }.|x| \trans_{\nameref{r:dot}}
+%     \trans \ctx{ 42 }{\cref{u:int:1}} ( \rho -> \cref{u:int:1} ) \trans_{\ref{C:forma}}
+%     \trans 42 ( \rho -> \cref{u:int:1} ) \trans_{\nameref{r:stay}}
+%     \trans 42.
+% \end{phiquation*}
 
-\begin{phiquation*}
-\exmp{cpy} [[ |x| -> ?, |y| -> \xi.|x| ]] ( |x| -> 42 ) . |y| \trans_{\nameref{r:copy}}
-    \trans \unorm{u:cpy:1}{ [[ |x| -> 42, |y| -> \xi.|x| ]] } . |y| \trans_{\nameref{r:dot}}
-    \trans \ctx{\xi.|x|}{\cref{u:cpy:1}} ( \rho -> \cref{u:cpy:1} ) \trans_{\ref{C:dot}}
-    \trans \ctx{\xi}{\cref{u:cpy:1}}.|x| ( \rho -> \cref{u:cpy:1} ) \trans_{\ref{C:xi}}
-    \trans \cref{u:cpy:1}.|x| ( \rho -> \cref{u:cpy:1} ) \trans_{\nameref{r:dot}}
-    \trans \ctx{ 42 }{\cref{u:cpy:1}} ( \rho -> \cref{u:cpy:1} ) ( \rho -> \cref{u:cpy:1} ) \trans_{\ref{C:forma}}
-    \trans 42 ( \rho -> \cref{u:cpy:1} ) ( \rho -> \cref{u:cpy:1} ) \trans_{\nameref{r:stay}}
-    \trans 42 ( \rho -> \cref{u:cpy:1} ) \trans_{\nameref{r:stay}}
-    \trans 42.
-\end{phiquation*}
+% \begin{phiquation*}
+% \exmp{cpy} [[ |x| -> ?, |y| -> \xi.|x| ]] ( |x| -> 42 ) . |y| \trans_{\nameref{r:copy}}
+%     \trans \unorm{u:cpy:1}{ [[ |x| -> 42, |y| -> \xi.|x| ]] } . |y| \trans_{\nameref{r:dot}}
+%     \trans \ctx{\xi.|x|}{\cref{u:cpy:1}} ( \rho -> \cref{u:cpy:1} ) \trans_{\ref{C:dot}}
+%     \trans \ctx{\xi}{\cref{u:cpy:1}}.|x| ( \rho -> \cref{u:cpy:1} ) \trans_{\ref{C:xi}}
+%     \trans \cref{u:cpy:1}.|x| ( \rho -> \cref{u:cpy:1} ) \trans_{\nameref{r:dot}}
+%     \trans \ctx{ 42 }{\cref{u:cpy:1}} ( \rho -> \cref{u:cpy:1} ) ( \rho -> \cref{u:cpy:1} ) \trans_{\ref{C:forma}}
+%     \trans 42 ( \rho -> \cref{u:cpy:1} ) ( \rho -> \cref{u:cpy:1} ) \trans_{\nameref{r:stay}}
+%     \trans 42 ( \rho -> \cref{u:cpy:1} ) \trans_{\nameref{r:stay}}
+%     \trans 42.
+% \end{phiquation*}
 
-\begin{phiquation*}
-\exmp{phi} \unorm{u:phi:1}{ [[ |x| -> \xi.|t|, @ -> [[ |t| -> [[]] ]] ]] }.|x| \trans_{\nameref{r:dot}}
-    \trans \ctx{\xi.|t|}{\cref{u:phi:1}} ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:dot}}
-    \trans \ctx{\xi}{\cref{u:phi:1}}.|t| ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:xi}}
-    \trans \cref{u:phi:1}.|t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:phi}}
-    \trans \cref{u:phi:1}.@.|t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:dot}}
-    \trans \ctx{[[ |t| -> [[]] ]]}{\cref{u:phi:1}} ( \rho -> \cref{u:phi:1} ) . |t| ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:forma}}
-    \trans [[ |t| -> [[]] ]] ( \rho -> \cref{u:phi:1} ) . |t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:copy}}
-    \trans [[ |t| -> [[]], \rho -> \cref{u:phi:1} ]] . |t| ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:forma}}
-    \trans \unorm{u:phi:4}{ [[ |t| -> [[]], \rho -> \cref{u:phi:1} ]] } . |t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:dot}}
-    \trans \ctx{[[]]}{\cref{u:phi:4}} ( \rho -> \cref{u:phi:4} ) ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:forma}}
-    \trans [[]] ( \rho -> \cref{u:phi:4} ) ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:copy}}
-    \trans [[ \rho -> \cref{u:phi:4} ]] ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:stay}}
-    \trans [[ \rho -> \cref{u:phi:4} ]].
-\end{phiquation*}
+% \begin{phiquation*}
+% \exmp{phi} \unorm{u:phi:1}{ [[ |x| -> \xi.|t|, @ -> [[ |t| -> [[]] ]] ]] }.|x| \trans_{\nameref{r:dot}}
+%     \trans \ctx{\xi.|t|}{\cref{u:phi:1}} ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:dot}}
+%     \trans \ctx{\xi}{\cref{u:phi:1}}.|t| ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:xi}}
+%     \trans \cref{u:phi:1}.|t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:phi}}
+%     \trans \cref{u:phi:1}.@.|t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:dot}}
+%     \trans \ctx{[[ |t| -> [[]] ]]}{\cref{u:phi:1}} ( \rho -> \cref{u:phi:1} ) . |t| ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:forma}}
+%     \trans [[ |t| -> [[]] ]] ( \rho -> \cref{u:phi:1} ) . |t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:copy}}
+%     \trans [[ |t| -> [[]], \rho -> \cref{u:phi:1} ]] . |t| ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:forma}}
+%     \trans \unorm{u:phi:4}{ [[ |t| -> [[]], \rho -> \cref{u:phi:1} ]] } . |t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:dot}}
+%     \trans \ctx{[[]]}{\cref{u:phi:4}} ( \rho -> \cref{u:phi:4} ) ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:forma}}
+%     \trans [[]] ( \rho -> \cref{u:phi:4} ) ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:copy}}
+%     \trans [[ \rho -> \cref{u:phi:4} ]] ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:stay}}
+%     \trans [[ \rho -> \cref{u:phi:4} ]].
+% \end{phiquation*}
 
 % \begin{phiquation*}
 % \exmp{lam} \unorm{u:lam:1}{ [[ |x| -> [[ L> Fn ]].\rho.|k|, |k| -> 42 ]] }.|x| \trans_{\nameref{r:dot}}
