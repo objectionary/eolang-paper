@@ -87,26 +87,26 @@ highlighted as \(\Pi_i\)):
     \trans [[ \rho -> \cref{u:phi:4} ]].
 \end{phiquation*}
 
-\begin{phiquation*}
-\exmp{lam} \unorm{u:lam:1}{ [[ |x| -> [[ L> Fn ]].\rho.|k|, |k| -> 42 ]] }.|x| \trans_{\nameref{r:dot}}
-    \trans \ctx{[[ L> Fn ]].\rho.|k|}{\cref{u:lam:1}} ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:dot}}
-    \trans \ctx{[[ L> Fn ]].\rho}{\cref{u:lam:1}}.|k| ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:dot}}
-    \trans \ctx{[[ L> Fn ]]}{\cref{u:lam:1}}.\rho.|k| ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:forma}}
-    \trans [[ L> Fn ]].\rho.|k| ( \rho -> \cref{u:lam:1} ).
-\end{phiquation*}
+% \begin{phiquation*}
+% \exmp{lam} \unorm{u:lam:1}{ [[ |x| -> [[ L> Fn ]].\rho.|k|, |k| -> 42 ]] }.|x| \trans_{\nameref{r:dot}}
+%     \trans \ctx{[[ L> Fn ]].\rho.|k|}{\cref{u:lam:1}} ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:dot}}
+%     \trans \ctx{[[ L> Fn ]].\rho}{\cref{u:lam:1}}.|k| ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:dot}}
+%     \trans \ctx{[[ L> Fn ]]}{\cref{u:lam:1}}.\rho.|k| ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:forma}}
+%     \trans [[ L> Fn ]].\rho.|k| ( \rho -> \cref{u:lam:1} ).
+% \end{phiquation*}
 
-\begin{phiquation*}
-\exmp{rho} \unorm{u:rho:1}{ [[ |x| -> \xi.\rho.\rho.|t| ]] }.|x| \trans_{\nameref{r:dot}}
-    \trans \ctx{\xi.\rho.\rho.|t|}{\cref{u:rho:1}} ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
-    \trans \ctx{\xi.\rho.\rho}{\cref{u:rho:1}}.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
-    \trans \ctx{\xi.\rho}{\cref{u:rho:1}}.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
-    \trans \ctx{\xi}{\cref{u:rho:1}}.\rho.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:xi}}
-    \trans \cref{u:rho:1}.\rho.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\nameref{r:stop}}
-    \trans \dead.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\nameref{r:dd}}
-    \trans \dead.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\nameref{r:dd}}
-    \trans \dead ( \rho -> \cref{u:rho:1} ) \trans_{\nameref{r:dc}}
-    \trans \dead.
-\end{phiquation*}
+% \begin{phiquation*}
+% \exmp{rho} \unorm{u:rho:1}{ [[ |x| -> \xi.\rho.\rho.|t| ]] }.|x| \trans_{\nameref{r:dot}}
+%     \trans \ctx{\xi.\rho.\rho.|t|}{\cref{u:rho:1}} ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
+%     \trans \ctx{\xi.\rho.\rho}{\cref{u:rho:1}}.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
+%     \trans \ctx{\xi.\rho}{\cref{u:rho:1}}.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
+%     \trans \ctx{\xi}{\cref{u:rho:1}}.\rho.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:xi}}
+%     \trans \cref{u:rho:1}.\rho.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\nameref{r:stop}}
+%     \trans \dead.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\nameref{r:dd}}
+%     \trans \dead.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\nameref{r:dd}}
+%     \trans \dead ( \rho -> \cref{u:rho:1} ) \trans_{\nameref{r:dc}}
+%     \trans \dead.
+% \end{phiquation*}
 
 % \begin{phiquation*}
 % \exmp{rha} [[ |x| -> [[ \rho -> ? ]].\rho.|k|, |k| -> 42 ]].|x| \trans_{\nameref{r:null}}
