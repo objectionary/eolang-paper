@@ -6,7 +6,7 @@
 \label{app:normalization-examples}
 
 \newcounter{exmp}
-\newcommand\exmp[1]{%
+\newcommand\phiExpression[1]{%
     \stepcounter{exmp}%
     e_\text{%
         \scshape #1%
@@ -22,12 +22,12 @@ highlighted as \(\Pi_i\)):
 \iexec{./examples-to-tex.sh examples/basic}
 
 % \begin{phiquation*}
-% \exmp{app} [[ |k| -> [[ |x| -> \xi.|t|, |t| -> ? ]] ( |t| -> 42 ) ]] \trans_{\nameref{r:copy}}
+% \phiExpression{app} [[ |k| -> [[ |x| -> \xi.|t|, |t| -> ? ]] ( |t| -> 42 ) ]] \trans_{\nameref{r:copy}}
 %     \trans [[ |k| -> [[ |x| -> \xi.|t|, |t| -> 42 ]] ]].
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{alp} [[ |k| -> [[ |x| -> ? ]] ( 0-> 42 ).|x| ]] \trans_{\nameref{r:alpha}}
+% \phiExpression{alp} [[ |k| -> [[ |x| -> ? ]] ( 0-> 42 ).|x| ]] \trans_{\nameref{r:alpha}}
 %     \trans [[ |k| -> [[ |x| -> ? ]] ( |x| -> 42 ).|x| ]] \trans_{\nameref{r:copy}}
 %     \trans [[ |k| -> \unorm{u:alp:1}{[[ |x| -> 42 ]]}.|x| ]] \trans_{\nameref{r:dot}}
 %     \trans \ctx{42}{\cref{u:alp:1}} \trans_{\ref{C:forma}}
@@ -35,13 +35,13 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{ald} [[ |k| -> [[ |x| -> ? ]] ( 1-> 42 ).|x| ]] \trans_{\nameref{r:miss}}
+% \phiExpression{ald} [[ |k| -> [[ |x| -> ? ]] ( 1-> 42 ).|x| ]] \trans_{\nameref{r:miss}}
 %     \trans [[ |k| -> \dead.|x| ]] \trans_{\nameref{r:dd}}
 %     \trans [[ |k| -> \dead ]].
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{xxi} \unorm{u:xxi:1}{ [[ |x| -> \xi.|t|, |t| -> ? ]] }.|x| \trans_{\nameref{r:dot}}
+% \phiExpression{xxi} \unorm{u:xxi:1}{ [[ |x| -> \xi.|t|, |t| -> ? ]] }.|x| \trans_{\nameref{r:dot}}
 %     \trans \ctx{\xi.|t|}{\cref{u:xxi:1}} ( \rho -> \cref{u:xxi:1} ) \trans_{\ref{C:dot}}
 %     \trans \ctx{\xi}{\cref{u:xxi:1}}.|t| ( \rho -> \cref{u:xxi:1} ) \trans_{\ref{C:xi}}
 %     \trans \cref{u:xxi:1}.|t| ( \rho -> \cref{u:xxi:1} ) \trans_{\nameref{r:stop}}
@@ -50,7 +50,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{int} [[ |x| -> \unorm{u:17}{ [[ |t| -> 42 ]] }.|t| ]].|x| \trans_{\nameref{r:dot}}
+% \phiExpression{int} [[ |x| -> \unorm{u:17}{ [[ |t| -> 42 ]] }.|t| ]].|x| \trans_{\nameref{r:dot}}
 %     \trans [[ |x| -> \ctx{42}{\cref{u:17}} (\rho -> \cref{u:17} ) ]].|x| \trans_{\ref{C:forma}}
 %     \trans [[ |x| -> 42 (\rho -> \cref{u:17} ) ]].|x| \trans_{\nameref{r:stay}}
 %     \trans \unorm{u:int:1}{ [[ |x| -> 42 ]] }.|x| \trans_{\nameref{r:dot}}
@@ -60,7 +60,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{cpy} [[ |x| -> ?, |y| -> \xi.|x| ]] ( |x| -> 42 ) . |y| \trans_{\nameref{r:copy}}
+% \phiExpression{cpy} [[ |x| -> ?, |y| -> \xi.|x| ]] ( |x| -> 42 ) . |y| \trans_{\nameref{r:copy}}
 %     \trans \unorm{u:cpy:1}{ [[ |x| -> 42, |y| -> \xi.|x| ]] } . |y| \trans_{\nameref{r:dot}}
 %     \trans \ctx{\xi.|x|}{\cref{u:cpy:1}} ( \rho -> \cref{u:cpy:1} ) \trans_{\ref{C:dot}}
 %     \trans \ctx{\xi}{\cref{u:cpy:1}}.|x| ( \rho -> \cref{u:cpy:1} ) \trans_{\ref{C:xi}}
@@ -72,7 +72,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{phi} \unorm{u:phi:1}{ [[ |x| -> \xi.|t|, @ -> [[ |t| -> [[]] ]] ]] }.|x| \trans_{\nameref{r:dot}}
+% \phiExpression{phi} \unorm{u:phi:1}{ [[ |x| -> \xi.|t|, @ -> [[ |t| -> [[]] ]] ]] }.|x| \trans_{\nameref{r:dot}}
 %     \trans \ctx{\xi.|t|}{\cref{u:phi:1}} ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:dot}}
 %     \trans \ctx{\xi}{\cref{u:phi:1}}.|t| ( \rho -> \cref{u:phi:1} ) \trans_{\ref{C:xi}}
 %     \trans \cref{u:phi:1}.|t| ( \rho -> \cref{u:phi:1} ) \trans_{\nameref{r:phi}}
@@ -88,7 +88,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{lam} \unorm{u:lam:1}{ [[ |x| -> [[ L> Fn ]].\rho.|k|, |k| -> 42 ]] }.|x| \trans_{\nameref{r:dot}}
+% \phiExpression{lam} \unorm{u:lam:1}{ [[ |x| -> [[ L> Fn ]].\rho.|k|, |k| -> 42 ]] }.|x| \trans_{\nameref{r:dot}}
 %     \trans \ctx{[[ L> Fn ]].\rho.|k|}{\cref{u:lam:1}} ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:dot}}
 %     \trans \ctx{[[ L> Fn ]].\rho}{\cref{u:lam:1}}.|k| ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:dot}}
 %     \trans \ctx{[[ L> Fn ]]}{\cref{u:lam:1}}.\rho.|k| ( \rho -> \cref{u:lam:1} ) \trans_{\ref{C:forma}}
@@ -96,7 +96,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{rho} \unorm{u:rho:1}{ [[ |x| -> \xi.\rho.\rho.|t| ]] }.|x| \trans_{\nameref{r:dot}}
+% \phiExpression{rho} \unorm{u:rho:1}{ [[ |x| -> \xi.\rho.\rho.|t| ]] }.|x| \trans_{\nameref{r:dot}}
 %     \trans \ctx{\xi.\rho.\rho.|t|}{\cref{u:rho:1}} ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
 %     \trans \ctx{\xi.\rho.\rho}{\cref{u:rho:1}}.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
 %     \trans \ctx{\xi.\rho}{\cref{u:rho:1}}.\rho.|t| ( \rho -> \cref{u:rho:1} ) \trans_{\ref{C:dot}}
@@ -109,7 +109,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{rha} [[ |x| -> [[ \rho -> ? ]].\rho.|k|, |k| -> 42 ]].|x| \trans_{\nameref{r:null}}
+% \phiExpression{rha} [[ |x| -> [[ \rho -> ? ]].\rho.|k|, |k| -> 42 ]].|x| \trans_{\nameref{r:null}}
 %     \trans [[ |x| -> \dead.|k|, |k| -> 42 ]].|x| \trans_{\nameref{r:dd}}
 %     \trans \unorm{u:rha:1}{ [[ |x| -> \dead, |k| -> 42 ]] }.|x| \trans_{\nameref{r:dd}}
 %     \trans \ctx{\dead}{\cref{u:rha:1}} ( \rho -> \cref{u:rha:1} ) \trans_{\ref{C:dead}}
@@ -118,7 +118,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{apk} \uplace{u:apk:1}{ [[ |x| -> [[ |x| -> ? ]] ( |x| -> \xi.|t| ), |t| -> 42 ]] } \trans_{\nameref{r:copy}}
+% \phiExpression{apk} \uplace{u:apk:1}{ [[ |x| -> [[ |x| -> ? ]] ( |x| -> \xi.|t| ), |t| -> 42 ]] } \trans_{\nameref{r:copy}}
 %   \trans [[ |x| -> [[ |x| -> 42 ]], |t| -> 42 ]].
 % \ctx{\xi.|t|}{\cref{u:apk:1}} \trans_{\ref{C:dot}}
 %   \trans \ctx{\xi}{\cref{u:apk:1}}.|t| \trans_{\ref{C:xi}}
@@ -129,7 +129,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{rep} \unorm{u:1}{ [[ |x| -> \xi.|t|( |k| -> \xi.|f| ).|k|, |t| -> [[ |k| -> ? ]], |f| -> [[]] ]] }.|x| \trans_{\nameref{r:dot}}
+% \phiExpression{rep} \unorm{u:1}{ [[ |x| -> \xi.|t|( |k| -> \xi.|f| ).|k|, |t| -> [[ |k| -> ? ]], |f| -> [[]] ]] }.|x| \trans_{\nameref{r:dot}}
 %     \trans \ctx{\xi.|t|( |k| -> \xi.|f| ).|k|}{\cref{u:1}} ( \rho -> \cref{u:1} ) \trans_{\ref{C:dot}}
 %     \trans \ctx{\xi.|t|( |k| -> \xi.|f| )}{\cref{u:1}}.|k| ( \rho -> \cref{u:1} ) \trans_{\ref{C:app}}
 %     \trans \ctx{\xi.|t|}{\cref{u:1}}( |k| -> \xi.|f| ).|k| ( \rho -> \cref{u:1} ) \trans_{\ref{C:dot}}
@@ -149,7 +149,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{rhi} [[ |x| -> [[ |t| -> \unorm{u:rhi:1}{ [[ |p| -> \xi.\rho.\rho.|k| ]] }.|p| ]].|t|, |k| -> 42 ]].|x| \trans_{\nameref{r:dot}}
+% \phiExpression{rhi} [[ |x| -> [[ |t| -> \unorm{u:rhi:1}{ [[ |p| -> \xi.\rho.\rho.|k| ]] }.|p| ]].|t|, |k| -> 42 ]].|x| \trans_{\nameref{r:dot}}
 %   \trans [[ |x| -> [[ |t| -> \ctx{\xi.\rho.\rho.|k|}{\cref{u:rhi:1}} ( \rho -> \cref{u:rhi:1} ) ]].|t|, |k| -> 42 ]].|x| \trans_{\ref{C:dot}}
 %   \trans [[ |x| -> [[ |t| -> \ctx{\xi.\rho.\rho}{\cref{u:rhi:1}}.|k| ( \rho -> \cref{u:rhi:1} ) ]].|t|, |k| -> 42 ]].|x| \trans_{\ref{C:dot}}
 %   \trans [[ |x| -> [[ |t| -> \ctx{\xi.\rho}{\cref{u:rhi:1}}.\rho.|k| ( \rho -> \cref{u:rhi:1} ) ]].|t|, |k| -> 42 ]].|x| \trans_{\ref{C:dot}}
@@ -165,7 +165,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{twi} \unorm{u:twi:1}{ [[ |x| -> [[ |t| -> \xi.\rho.|k|.\rho.|t| ]], |k| -> [[ ]], |t| -> [[]] ]] }.|x|.|t| \trans_{\nameref{r:dot}}
+% \phiExpression{twi} \unorm{u:twi:1}{ [[ |x| -> [[ |t| -> \xi.\rho.|k|.\rho.|t| ]], |k| -> [[ ]], |t| -> [[]] ]] }.|x|.|t| \trans_{\nameref{r:dot}}
 %     \trans \ctx{[[ |t| -> \xi.\rho.|k|.\rho.|t| ]]}{\cref{u:twi:1}} ( \rho -> \cref{u:twi:1} ).|t| \trans_{\ref{C:forma}}
 %     \trans [[ |t| -> \xi.\rho.|k|.\rho.|t| ]] ( \rho -> \cref{u:twi:1} ).|t| \trans_{\nameref{r:copy}}
 %     \trans \unorm{u:twi:2}{ [[ |t| -> \xi.\rho.|k|.\rho.|t|, \rho -> \cref{u:twi:1} ]] }.|t| \trans_{\nameref{r:dot}}
@@ -192,7 +192,7 @@ highlighted as \(\Pi_i\)):
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \exmp{fnk} \uplace{u:11}{ [[ |x| -> [[ |t| -> ? ]] ( |t| -> \xi.|k| ), |k| -> [[ L> Fn(\xi.\rho) ]] ]] }.|x|.|t|.|p| \trans_{\nameref{r:dot}}
+% \phiExpression{fnk} \uplace{u:11}{ [[ |x| -> [[ |t| -> ? ]] ( |t| -> \xi.|k| ), |k| -> [[ L> Fn(\xi.\rho) ]] ]] }.|x|.|t|.|p| \trans_{\nameref{r:dot}}
 %     \trans \ctx{[[ |t| -> ? ]] ( |t| -> \cref{u:11}.|k| )}{\cref{u:11}} ( \rho -> \cref{u:11} ) .|t|.|p| \trans_{\ref{C:app}}
 %     \trans \ctx{[[ |t| -> ? ]]}{\cref{u:11}} ( |t| -> \cref{u:11}.|k| ) ( \rho -> \cref{u:11} ) .|t|.|p| \trans_{\ref{C:forma}}
 %     \trans [[ |t| -> ? ]] ( |t| -> \cref{u:11}.|k| ) ( \rho -> \cref{u:11} ) .|t|.|p| \trans_{\nameref{r:copy}}
@@ -212,23 +212,23 @@ The following expressions may not be reduced any further, they are in normal for
 \iexec{./examples-to-tex.sh examples/nf}
 
 % \begin{phiquation*}
-% \exmp{nk} [[ |x| -> \xi.|k|, |k| -> 42 ]].
+% \phiExpression{nk} [[ |x| -> \xi.|k|, |k| -> 42 ]].
 
-% \exmp{np} [[ |x| -> \xi.|t|, L> Fn ]].
+% \phiExpression{np} [[ |x| -> \xi.|t|, L> Fn ]].
 
-% \exmp{nt} [[ |x| -> 42, L> Fn ]].|y|.
+% \phiExpression{nt} [[ |x| -> 42, L> Fn ]].|y|.
 
-% \exmp{nr} [[ |x| -> \xi.|k|, |t| -> 42 ]].
+% \phiExpression{nr} [[ |x| -> \xi.|k|, |t| -> 42 ]].
 
-% \exmp{nf} \Big\{ [[ |x| -> [[ |t| -> Q.|x| ]] ]] \Big\}
+% \phiExpression{nf} \Big\{ [[ |x| -> [[ |t| -> Q.|x| ]] ]] \Big\}
 % \end{phiquation*}
 
 Normalization of these expressions leads to endless recursion:
 
 \begin{phiquation*}
-\exmp{e1} [[ |x| -> [[ ]].\rho.|y|, |y| -> \xi.|x| ]].|x| \trans \dots
+\phiExpression{e1} [[ |x| -> [[ ]].\rho.|y|, |y| -> \xi.|x| ]].|x| \trans \dots
 
-\exmp{e2} [[ |x| -> \xi.|y|, |y| -> \xi.|x| ]].|x| \trans \dots
+\phiExpression{e2} [[ |x| -> \xi.|y|, |y| -> \xi.|x| ]].|x| \trans \dots
 
-\exmp{e3} [[ |x| -> [[ |k| -> ? ]] ( |k| -> \xi.|y| ), |y| -> 42 ]] \trans \dots
+\phiExpression{e3} [[ |x| -> [[ |k| -> ? ]] ( |k| -> \xi.|y| ), |y| -> 42 ]] \trans \dots
 \end{phiquation*}

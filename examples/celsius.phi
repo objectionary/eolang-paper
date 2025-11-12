@@ -3,10 +3,13 @@
   c -> 25.0,
   org -> [[
     eolang -> [[
-      number -> [[
-        as-bytes -> ?,
-        times -> [[ x -> ?, L> Times ]],
-        plus -> [[ x -> ?, L> Plus ]]
+      bytes(data) -> [[
+        @ -> $.data
+      ]],
+      number(as-bytes) -> [[
+        @ -> $.as-bytes,
+        times -> [[ x -> ?, L> L_org_eolang_number_times ]],
+        plus -> [[ x -> ?, L> L_org_eolang_number_plus ]]
       ]]
     ]]
   ]]
