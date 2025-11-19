@@ -41,6 +41,7 @@ rm -rf ./*.aux ./*.bcf ./*.blg ./*.fdb_latexmk ./*.fls ./*.log ./*.run.xml ./*.o
 rm -rf bibliography
 zip="paper-${version}.zip"
 zip -x paper.pdf -r "${zip}" ./*
-mv "${zip}" ..
 echo "🍒 ZIP is ready for arXiv at ${zip} ($(du -sh "${zip}" | cut -f1))"
+
+mv "${zip}" ..
 cd ..
