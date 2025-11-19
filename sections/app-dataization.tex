@@ -8,8 +8,8 @@
 Consider a program that converts degrees from Celsius to Fahrenheit using
 the formula \(^{\circ}F = (^{\circ}C \times 1.8) + 32\), assuming that
 \(^{\circ}C\) already equals \ff{25.0} and is attached to the \ff{c} attribute (instead of being provided by a user):
-\iexec{phino rewrite --output=latex --sweet --nonumber ./examples/celsius.phi}
-% \label{eq:celsius}
+\iexec[maybe]{phino rewrite --output=latex --sweet --nonumber --label=eq:celsius ./examples/celsius.phi > celsius-formula.tex}
+\input{celsius-formula.tex}
 
 The functions are defined as follows:
 \begin{phiquation*}
@@ -19,4 +19,6 @@ Plus(b,s) \to \langle QQ.number( D> \mathbb{D}(b.^) \boldsymbol{+} \mathbb{D}(b.
 
 The following sequence of transformations constitutes the evaluation of the program:
 
-\tbd{Write it up.}
+\iexec[maybe]{phino rewrite --output=latex --sweet --nonumber --sequence --normalize --flat ./examples/celsius.phi > celsius-dataization.tex}
+\input{celsius-dataization.tex}
+% \iexec{phino dataize --sweet ./examples/celsius.phi}

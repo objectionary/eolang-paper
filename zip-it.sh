@@ -10,6 +10,9 @@ rm -rf package
 mkdir package
 cd package
 cp ../paper.tex .
+cp ../examples-to-tex.sh .
+cp ../runtime.phi .
+cp -R ../examples .
 mkdir bibliography
 cp ../bibliography/main.bib bibliography/main.bib
 
@@ -29,11 +32,11 @@ fi
 
 sed -i "s|0\.0\.0|${version}|g" paper.tex
 sed -i "s|REPOSITORY|${REPO}|g" paper.tex
-pdflatex -shell-escape -halt-on-error paper.tex > /dev/null
+pdflatex -shell-escape -halt-on-error paper.tex
 
 bibtex paper
-pdflatex -halt-on-error paper.tex > /dev/null
-pdflatex -halt-on-error paper.tex > /dev/null
+pdflatex -halt-on-error paper.tex
+pdflatex -halt-on-error paper.tex
 rm -rf ./*.aux ./*.bcf ./*.blg ./*.fdb_latexmk ./*.fls ./*.log ./*.run.xml ./*.out ./*.exc ./*.ret
 rm -rf bibliography
 zip -x paper.pdf -r "paper-${version}.zip" ./*
