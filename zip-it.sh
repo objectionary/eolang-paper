@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 
-set -ex -o pipefail
+set -e -o pipefail
 
 REPO=$1
 
@@ -39,6 +39,8 @@ pdflatex -halt-on-error paper.tex
 pdflatex -halt-on-error paper.tex
 rm -rf ./*.aux ./*.bcf ./*.blg ./*.fdb_latexmk ./*.fls ./*.log ./*.run.xml ./*.out ./*.exc ./*.ret
 rm -rf bibliography
-zip -x paper.pdf -r "paper-${version}.zip" ./*
-mv "paper-${version}.zip" ..
+zip="paper-${version}.zip"
+zip -x paper.pdf -r "${zip}" ./*
+mv "${zip}" ..
+echo "🍒 ZIP is ready for arXiv at ${zip} ($(du -sh "${zip}" | cut -f1))"
 cd ..
