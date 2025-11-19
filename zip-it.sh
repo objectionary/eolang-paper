@@ -26,7 +26,7 @@ version=$(curl --silent -H "Accept: application/vnd.github.v3+json" "https://api
 echo "Version is: ${version}"
 
 if ! sed --version; then
-    echo "You must have gsed instead of sed"
+    echo "⚠️ You must have GNU sed"
     exit 1
 fi
 
