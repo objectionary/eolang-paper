@@ -19,8 +19,8 @@ some expressions, involving the contextualization function (\cref{sec:contextual
 (expressions in normal forms are highlighted as \(\mathrm{H}_i\) while others are
 highlighted as \(\Pi_i\)):
 
-\iexec[maybe]{./examples-to-tex.sh examples/basic > examples.tex}
-\input{examples.tex}
+\iexec[maybe]{./examples-to-tex.sh examples/basic > _tex/examples.tex}
+\input{_tex/examples.tex}
 
 % \begin{phiquation*}
 % \phiExpression{app} [[ |k| -> [[ |x| -> \xi.|t|, |t| -> ? ]] ( |t| -> 42 ) ]] \trans_{\nameref{r:copy}}
@@ -210,8 +210,8 @@ highlighted as \(\Pi_i\)):
 
 The following expressions may not be reduced any further, they are in normal form:
 
-\iexec[maybe]{./examples-to-tex.sh examples/nf > examples-nf.tex}
-\input{examples-nf.tex}
+\iexec[maybe]{./examples-to-tex.sh examples/nf > _tex/examples-nf.tex}
+\input{_tex/examples-nf.tex}
 
 % \begin{phiquation*}
 % \phiExpression{nk} [[ |x| -> \xi.|k|, |k| -> 42 ]].

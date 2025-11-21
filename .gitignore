@@ -21,3 +21,4 @@ iexec.ret
 iexec.tmp
 node_modules/
 package/
+_tex/*.tex
