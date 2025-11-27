@@ -26,7 +26,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
-          java-version: ${{ matrix.java }}
+          java-version: 21
       - uses: yegor256/latexmk-action@0.17.0
         with:
           opts: -pdf
