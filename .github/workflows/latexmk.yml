@@ -25,8 +25,8 @@ jobs:
       - uses: yegor256/latexmk-action@0.18.1
         with:
           cmd: >-
-            apt-get update --yes &&
-            apt-get install --yes node &&
+            (curl -fsSL https://deb.nodesource.com/setup_18.x | sh) &&
+            apt-get install --yes nodejs &&
             wget -q -O /usr/bin/phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest &&
             chmod a+x /usr/bin/phino &&
             npm install -g eolang &&
