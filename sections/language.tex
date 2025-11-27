@@ -185,13 +185,20 @@ If the memo is empty, the cell asks the decorator to \ff{take()}.
 If \(\dead\) is returned, the cell asks the decoratee to \ff{take()}.
 The cell stores the result into the memo and returns it.
 
-\subsection{Atoms}
+\subsection{Atom}
 
-A formation cell with a non-blank \(\lambda\)-asset is an \emph{atom}.
-The execution of a function attached to the \(\lambda\)-asset may be implemented via foreign function interface (FFI).
-The \(\lambda\)-asset may be a name of the function or a pointer to its location in memory.
+The \emph{atom} cell contains
+\begin{inparaenum}[1)]
+\item a \(\lambda\)-asset attached to a function
+and
+\item a ``base'' reference.
+\end{inparaenum}
 
-The function accepts a reference to the owner of the \(\lambda\)-asset and returns a reference.
+On any request, the cell passes the request to the base and returns the result.
+If the result is \(\dead\), the cell calls the function and then passes the request to the result of the function.
+The execution of a function attached may be implemented via foreign function interface (FFI).
+
+The function accepts a reference to the cell.
 
 \subsection{Surging Object DiGraph}
 
