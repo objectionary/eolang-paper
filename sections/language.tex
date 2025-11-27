@@ -200,6 +200,19 @@ The execution of a function attached may be implemented via foreign function int
 
 The function accepts a reference to the cell.
 
+\subsection{Payload}
+
+The \emph{payload} cell contains
+\begin{inparaenum}[1)]
+\item a \(\Delta\)-asset attached to data
+and
+\item a ``base'' reference.
+\end{inparaenum}
+
+On the \ff{delta()} request, the cell returns the data attached to the \(\Delta\)-asset.
+
+The cell passes all other requests to the ``base'' reference.
+
 \subsection{Surging Object DiGraph}
 
 A program is a static graph of cells, known as Surging Object DiGraph (SODG).
