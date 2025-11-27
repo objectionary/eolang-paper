@@ -24,7 +24,7 @@ At runtime, every \eolang{} object consists of a few \emph{cells}.
 A cell responds to a few requests, where ``reference'' resembles a pointer:
 \begin{enumerate}
   \item \ff{take(attr)} --- returns a reference, by provided attribute;
-  \item \ff{put(attr, cell)} --- saves a reference, by the attribute;
+  \item \ff{put(attr, cell)} --- stores a reference, by the attribute;
   \item \ff{delta()} --- turns itself to data;
   \item \ff{copy()} --- makes a copy of itself.
 \end{enumerate}
@@ -43,7 +43,7 @@ This code is equivalent to the following \phic{} expression:
 \Big\{ order -> [[ @ -> \xi.qty.mul( 0-> \xi.price ), qty -> ?, price -> 19.99, L> |F| ]] \Big\}.
 \end{phiquation*}
 
-\cref{fig:order} shows six cells that represent the \ff{order} object at runtime.
+\cref{fig:order} shows eight cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
 Their behavior constitutes the semantics of the language.
 Cells belong to one of six types, denoted by different colors: application, dispatch, formation, decoration, atom, and payload.
