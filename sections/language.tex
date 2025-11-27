@@ -122,7 +122,7 @@ On any request, if the memo is blank, the cell
 and
 \item stores the copy to the memo.
 \end{inparaenum}
-Then, the cell passes the request to the memo.
+Then, the cell passes the request to the memo and returns the result.
 
 \subsection{Dispatch}
 
@@ -134,15 +134,14 @@ and
 \item a mutable initially blank ``memo'' reference.
 \end{inparaenum}
 
-On any request, the cell does two things.
-First, if memo is blank, it
+On any request, if memo is blank, the cell
 \begin{inparaenum}[1)]
 \item asks base to \ff{take(attribute)} expecting a ``target'' reference to be returned,
 \item asks target to \ff{put(\(\rho\),base)},
 and
-\item saves target to the memo.
+\item stores target to the memo.
 \end{inparaenum}
-Then, it passes the request to the memo.
+Then, it passes the request to the memo and returns the result.
 
 \subsection{Formation}
 
