@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: npm install -g eolang
       - run: |
           sudo wget -q -O /usr/bin/phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest
