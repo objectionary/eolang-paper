@@ -22,12 +22,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - uses: yegor256/latexmk-action@0.18.0
+      - uses: yegor256/latexmk-action@0.18.1
         with:
           cmd: |
-              wget -q -O /usr/bin/phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest \
-              && chmod a+x /usr/bin/phino \
-              && npm install -g eolang \
+              wget -q -O /usr/bin/phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest
+              && chmod a+x /usr/bin/phino
+              && npm install -g eolang
               && latexmk
           opts: -pdf
           depends: DEPENDS.txt

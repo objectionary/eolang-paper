@@ -41,7 +41,7 @@ A cell responds to a few requests, where ``reference'' resembles a pointer:
 Consider EO code at \cref{fig:order}.
 This code is equivalent to the following \phic{} expression:
 \iexec[quiet]{eoc parse --sources=order}
-\iexec{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
+\iexec{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --hide=Q.order.json.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
 \cref{fig:cells} shows eight cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
@@ -54,13 +54,7 @@ Cells belong to one of six types, denoted by different colors: application, disp
 [every node/.style={draw},
 up/.style={draw=none, anchor=south west, label position=north west, align=left},
 cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
-\node [label={[up]$c_0$}, label={[cell]atom}, fill=purple!5] (c0)
-  {\parbox{7em}{
-  \begin{tabularx}{\linewidth}{Xl}
-  \(\lambda\): & \ff{F} \\
-  \ff{base}: & \(c_1\) \\
-  \end{tabularx}}};
-\node [label={[up, text width=10em]$c_1$}, label={[cell]decoration}, fill=orange!5, below=of c0] (c1)
+\node [label={[up, text width=10em]$c_1$}, label={[cell]decoration}, fill=orange!5] (c1)
   {\parbox{9em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{decorator}: & \(c_2\) \\
@@ -74,7 +68,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \ff{price}: & \(c_7\) \\
   \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$c_3 = c_0.qty$}, label={[cell]dispatch}, right=of c0, fill=green!5] (c3)
+\node [label={[up]$c_3 = c_0.qty$}, label={[cell]dispatch}, right=of c1, fill=green!5] (c3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(c_2\) \\
@@ -88,7 +82,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \ff{attr}: & \ff{mul} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$c_6 = c_0.price$}, label={[cell]dispatch}, fill=green!5, right=of c1] (c6)
+\node [label={[up]$c_6 = c_0.price$}, label={[cell]dispatch}, fill=green!5, right=of c2] (c6)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(c_2\) \\
@@ -107,6 +101,12 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \(\Delta\): & \ff{19.99} \\
+  \ff{base}: & \(\dead\) \\
+  \end{tabularx}}};
+\node [label={[up]\(c_8\)}, label={[cell]atom}, fill=purple!5, right=of c7] (c8)
+  {\parbox{5em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \(\lambda\): & \ff{J} \\
   \ff{base}: & \(\dead\) \\
   \end{tabularx}}};
 \end{tikzpicture}
@@ -215,4 +215,3 @@ and
 On the \ff{delta()} request, the cell returns the data attached to the \(\Delta\)-asset.
 
 The cell passes all other requests to the ``base'' reference.
-
