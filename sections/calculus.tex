@@ -690,14 +690,14 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 \newrule[\lambda]{lambda} \
 \frac \
 { \langle e \bullet t, s_1 \rangle \stepto \langle p, s_2 \rangle} \
-{ \langle [[ B_1, L> f, B_2 ]] \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
-\;\text{if}\; f( [[ B_1, B_2 ]], s_1 ) \to \langle e, s_2 \rangle
+{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; f( \stx{ [[ } B_1, B_2 \stx{ ]] }, s_1 ) \to \langle e, s_2 \rangle
 
 \newrule[\Phi]{Phi} \
 \frac \
 { \langle e \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle} \
-{ \langle \Phi.\tau \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
-\;\text{if}\; \Phi \mapsto \llbracket B_1, \tau \mapsto e, B_2 \rrbracket
+{ \langle \stx{ \Phi } \stx{ . } \tau \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; \stx{ \Phi } \stx{ \mapsto } \stx{ \llbracket } B_1 , \tau \stx{ \mapsto } e, B_2 \rrbracket
 \end{phiquation*}
 \end{mdframed}
 \capt{Morphing rules.}
@@ -727,7 +727,7 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule[\Delta]{delta} \
 \frac \
 { } \
-{ \langle [[ B_1, D> \delta, B_2 ]], s \rangle \stepto \langle \delta, s \rangle } \
+{ \langle \stx{ [[ } B_1, \stx{ D> } \delta, B_2 \stx{ ]] }, s \rangle \stepto \langle \delta, s \rangle } \
 \quad\quad \
 \newrule{norm} \
 \frac{ \langle p, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
@@ -736,8 +736,8 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule{box} \
 \frac \
 { \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
-{ \langle [[ B_1, @ -> e, B_2 ]], s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
-\;\text{if}\; [\Delta, \lambda] \cap ( B_1 \cup B_2 ) = \emptyset
+{ \langle \stx{ [[ } B_1, \stx{ @ } \stx{ -> } e, B_2 \stx{ ]] }, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+\;\text{if}\; [ \stx{ \Delta }, \stx{ \lambda } ] \cap ( B_1 \cup B_2 ) = \emptyset
 \end{phiquation*}
 \end{mdframed}
 \capt{Dataization rules.}
@@ -791,13 +791,13 @@ or \textbf{congruent} (denoted by \(\cong\)) if for any state \(s\): \(\mathbb{D
 \begin{figure*}
 \begin{mdframed}
 \begin{phiquation*}
-\nf \cong [[ @ -> \nf ]] \quad \text{(by \nameref{r:phi})}
+\nf \cong \stx{ [[ } \stx{ @ } \stx{ -> } \nf \stx{ ]] } \quad \text{(by \nameref{r:phi})}
   \text{Transparency of Decoration}
 
-[[ \tau_1 -> ?, B]] \cong [[ B ]] \quad \text{(by \nameref{r:stop})}
+\stx{ [[ } \tau_1 \stx{ -> } \stx{ ? }, B \stx{ ]] } \cong \stx{ [[ } B \stx{ ]] } \quad \text{(by \nameref{r:stop})}
   \text{Redundancy of Void Attributes}
 
-[[ B ]] \cong [[ B ]].@ \quad\text{if}\; \stx{@} \in B \;\text{and}\; \stx{\Delta} \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
+\stx{ [[ } B \stx{ ]] } \cong \stx{ [[ } B \stx{ ]] .@ } \quad\text{if}\; \stx{ @ } \in B \;\text{and}\; \stx{ \Delta } \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
   \text{Implicitness of Decoration}
 \end{phiquation*}
 \end{mdframed}

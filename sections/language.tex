@@ -20,104 +20,124 @@ In this section, we only explain key concepts of the language.
 
 \subsection{Informal Overview}
 
-At runtime, every \eolang{} object resembles an associative array.
-It responds to a few requests, where ``reference'' resembles a pointer:
+At runtime, every \eolang{} object consists of a few \emph{cells}.
+A cell responds to a few requests, where ``reference'' resembles a pointer:
 \begin{enumerate}
   \item \ff{take(attr)} --- returns a reference, by provided attribute;
-  \item \ff{put(attr, object)} --- saves a reference, by the attribute;
+  \item \ff{put(attr, cell)} --- stores a reference, by the attribute;
   \item \ff{delta()} --- turns itself to data;
   \item \ff{copy()} --- makes a copy of itself.
 \end{enumerate}
 
-Consider the following code:
+\begin{figure*}
+\begin{mdframed}
+\ffinput{order/order.eo}
+\end{mdframed}
+\capt{Order object}
+\label{fig:order}
+\end{figure*}
 
-\begin{ffcode}
-[qty price] > order (*@\label{ln:order-start}@*)
-  qty.mul > cost
-    price (*@\label{ln:order-stop}@*)
-\end{ffcode}
 
+Consider EO code at \cref{fig:order}.
 This code is equivalent to the following \phic{} expression:
-\begin{phiquation*}
-\Big\{ order -> [[ qty -> ?, price -> ?, cost -> \xi.qty.mul( 0-> \xi.price ) ]] \Big\}
-\end{phiquation*}
+\iexec[quiet]{eoc parse --sources=order}
+\iexec{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
-\cref{fig:order} shows five objects that represent the code at runtime.
-When being asked to \ff{take()}, objects behave differently.
+\cref{fig:cells} shows eight cells that represent the \ff{order} object at runtime.
+When being asked to \ff{take()}, cells behave differently.
 Their behavior constitutes the semantics of the language.
-Objects belong to one of three types: application, dispatch, and formation.
+Cells belong to one of six types, denoted by different colors: application, dispatch, formation, decoration, atom, and payload.
 
 \begin{figure*}
 \begin{mdframed}
 \begin{tikzpicture}
 [every node/.style={draw},
 up/.style={draw=none, anchor=south west, label position=north west, align=left},
-object/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
-\node [label={[up, text width=10em]$b_1=[[ qty -> ?, price -> ?, cost -> b_4, \rho -> ? ]]$}, label={[object]formation}, fill=blue!5] (b1)
+cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
+\node [label={[up]$c_0$}, label={[cell]atom}, fill=purple!5] (c0)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \(\lambda\): & \ff{F} \\
+  \ff{base}: & \(c_1\) \\
+  \end{tabularx}}};
+\node [label={[up, text width=10em]$c_1$}, label={[cell]decoration}, fill=orange!5, below=of c0] (c1)
+  {\parbox{9em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{decorator}: & \(c_2\) \\
+  \ff{decoratee}: & \(c_5\) \\
+  \ff{memo}: & \(\langle\varnothing, \varnothing\rangle\) \\
+  \end{tabularx}}};
+\node [label={[up, text width=10em]$c_2=[[ qty -> ?, \newline price -> c_7, \rho -> ? ]]$}, label={[cell]formation}, below=1.2 of c1, fill=blue!5] (c2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{qty}: & \(\varnothing\) \\
-  \ff{price}: & \(\varnothing\) \\
-  \ff{cost}: & \(b_4\) \\
+  \ff{price}: & \(c_7\) \\
   \(\rho\): & \(\varnothing\) \\
-  \(\lambda\): & \(\times\) \\
-  \(\Delta\): & \(\times\) \\
   \end{tabularx}}};
-\node [label={[up]$b_2 = b_1.qty$}, label={[object]dispatch}, above right=-1 and 2.5 of b1, fill=green!5] (b2)
+\node [label={[up]$c_3 = c_0.qty$}, label={[cell]dispatch}, right=of c0, fill=green!5] (c3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{base}: & \(b_1\) \\
+  \ff{base}: & \(c_2\) \\
   \ff{attr}: & \ff{qty} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_3 = b_2.mul$}, label={[object]dispatch}, fill=green!5, right=of b2] (b3)
+\node [label={[up]$c_4 = c_3.mul$}, label={[cell]dispatch}, fill=green!5, right=of c3] (c4)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{base}: & \(b_2\) \\
+  \ff{base}: & \(c_3\) \\
   \ff{attr}: & \ff{mul} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_4 = b_3(0-> b_5)$}, label={[object]application}, fill=red!5, below=of b3] (b4)
+\node [label={[up]$c_6 = c_0.price$}, label={[cell]dispatch}, fill=green!5, right=of c1] (c6)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{prototype}: & \(b_3\) \\
-  \ff{attr}: & \(\alpha_0\) \\
-  \ff{argument}: & \(b_5\) \\
-  \end{tabularx}}};
-\node [label={[up]$b_5 = b_1.price$}, label={[object]dispatch}, fill=green!5, left=of b4] (b5)
-  {\parbox{8em}{
-  \begin{tabularx}{\linewidth}{Xl}
-  \ff{base}: & \(b_1\) \\
+  \ff{base}: & \(c_2\) \\
   \ff{attr}: & \ff{price} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
+\node [label={[up]$c_5 = c_4(0-> c_6)$}, label={[cell]application}, fill=red!5, right=of c6] (c5)
+  {\parbox{8em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{prototype}: & \(c_4\) \\
+  \ff{attribute}: & \(\alpha_0\) \\
+  \ff{argument}: & \(c_6\) \\
+  \ff{memo}: & \(\varnothing\) \\
+  \end{tabularx}}};
+\node [label={[up]$c_7 = \ff{19.99}$}, label={[cell]payload}, fill=cyan!5, below=of c6] (c7)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \(\Delta\): & \ff{19.99} \\
+  \ff{base}: & \(\dead\) \\
+  \end{tabularx}}};
 \end{tikzpicture}
 \end{mdframed}
-\capt{Actors representing the program at the lines \ref{ln:order-start}--\ref{ln:order-stop}.}
-\label{fig:order}
+\capt{Cells representing the object \ff{order} of \cref{fig:order}.}
+\label{fig:cells}
 \end{figure*}
 
 \subsection{Application}
 
-The \emph{application} object contains
+The \emph{application} cell contains
 \begin{inparaenum}[1)]
 \item a ``prototype'' reference,
 \item an attribute,
+\item an ``argument'' reference,
 and
-\item an ``argument'' reference.
+\item a mutable initially blank ``memo'' reference.
 \end{inparaenum}
 
-On any request, the object
+On any request, if the memo is blank, the cell
 \begin{inparaenum}[1)]
 \item asks prototype to \ff{copy()} expecting a ``copy'' reference to be returned,
 \item asks the copy to \ff{put(attribute, argument)},
 and
-\item passes the request to the copy.
+\item stores the copy to the memo.
 \end{inparaenum}
+Then, the cell passes the request to the memo and returns the result.
 
 \subsection{Dispatch}
 
-The \emph{dispatch} object contains
+The \emph{dispatch} cell contains
 \begin{inparaenum}[1)]
 \item a ``base'' reference,
 \item an attribute,
@@ -125,19 +145,18 @@ and
 \item a mutable initially blank ``memo'' reference.
 \end{inparaenum}
 
-On any request, the object does two things.
-First, if memo is blank, it
+On any request, if memo is blank, the cell
 \begin{inparaenum}[1)]
 \item asks base to \ff{take(attribute)} expecting a ``target'' reference to be returned,
 \item asks target to \ff{put(\(\rho\),base)},
 and
-\item saves target to the memo.
+\item stores target to the memo.
 \end{inparaenum}
-Then, it passes the request to the memo.
+Then, it passes the request to the memo and returns the result.
 
 \subsection{Formation}
 
-The \emph{formation} object contains
+The \emph{formation} cell contains
 \begin{inparaenum}[1)]
 \item an associative array of attributes and references,
 \item a possibly blank \(\lambda\)-asset,
@@ -145,63 +164,90 @@ and
 \item a possibly blank \(\Delta\)-asset.
 \end{inparaenum}
 
-When being asked to \ff{put()}, the object saves the reference to the array if the given attribute is not yet attached.
-If the attribute is already attached, the object returns an error.
+When being asked to \ff{put()}, the cell stores the reference to the array if the given attribute is not yet attached.
+If the attribute is already attached, the cell returns \(\dead\).
 
-When being asked to \ff{take()}, the object returns the reference that corresponds to the given attribute.
-If the attribute is attached to a blank, the object returns an error.
-If the attribute is absent and the \(\varphi\)-attribute is present, the object asks the object referenced by the attribute to \ff{take()}.
-If the \(\varphi\)-attribute is absent but the \(\lambda\)-asset is present, the object calls the function attached to the asset, which returns a reference, and the object uses it to \ff{take()}.
-Otherwise, the object returns an error.
+When being asked to \ff{take()}, the cell returns the cell that is referenced by the corresponding attribute.
+If the attribute is attached to a blank, the cell returns \(\dead\).
 
-When being asked to \ff{delta()}, the object returns the \(\Delta\)-asset if it has one.
-If it doesn't have it but the \(\lambda\)-asset is present, the object calls the function attached to the \(\lambda\)-asset, gets a reference, and uses it to \ff{delta()}.
-If the \(\lambda\)-asset is also absent but the \(\varphi\)-attribute is present, the object asks the object referenced by the attribute to \ff{delta()}.
-Otherwise, the object returns an error.
+\subsection{Decoration}
 
-\subsection{Atoms}
+The \emph{decoration} cell contains
+\begin{inparaenum}[1)]
+\item a ``decorator'' reference,
+\item a ``decoratee'' reference,
+and
+\item a mutable initially blank ``memo'' associative array of attributes and references.
+\end{inparaenum}
 
-A formation object with a non-blank \(\lambda\)-asset is an \emph{atom}.
-The execution of a function attached to the \(\lambda\)-asset may be implemented via foreign function interface (FFI).
-The \(\lambda\)-asset may be a name of the function or a pointer to its location in memory.
+When being asked to \ff{take()}, the cell returns the cell stored in the memo.
+If the memo is empty, the cell asks the decorator to \ff{take()}.
+If \(\dead\) is returned, the cell asks the decoratee to \ff{take()}.
+The cell stores the result into the memo and returns it.
 
-The function accepts a reference to the owner of the \(\lambda\)-asset and returns a reference.
+\subsection{Atom}
+
+The \emph{atom} cell contains
+\begin{inparaenum}[1)]
+\item a \(\lambda\)-asset attached to a function
+and
+\item a ``base'' reference.
+\end{inparaenum}
+
+On any request, the cell passes the request to the base and returns the result.
+If the result is \(\dead\), the cell calls the function and then passes the request to the result of the function.
+The execution of a function attached may be implemented via foreign function interface (FFI).
+
+The function accepts a reference to the cell.
+
+\subsection{Payload}
+
+The \emph{payload} cell contains
+\begin{inparaenum}[1)]
+\item a \(\Delta\)-asset attached to data
+and
+\item a ``base'' reference.
+\end{inparaenum}
+
+On the \ff{delta()} request, the cell returns the data attached to the \(\Delta\)-asset.
+
+The cell passes all other requests to the ``base'' reference.
 
 \subsection{Surging Object DiGraph}
 
-A program is a static graph of objects, known as Surging Object DiGraph (SODG).
+A program is a static graph of cells, known as Surging Object DiGraph (SODG).
 The compiler transforms a program into a SODG.
-At runtime, additional objects may be created and then deleted in the SODG.
-The objects created by the compiler may never be deleted.
+At runtime, additional cells may be created and then deleted in the SODG.
+The cells created by the compiler may never be deleted.
 
 The function may do the following with the SODG:
 \begin{enumerate}
-  \item \ff{formation(o, attr\(_0\), attr\(_1\), ...)} -- creates a new formation object;
-  \item \ff{dispatch(o, base, attr)} -- creates a new dispatch object;
-  \item \ff{application(o, proto, attr, arg)} -- creates a new application object;
-  \item \ff{delta(o, data)} -- sets \(\Delta\)-asset to the object;
-  \item \ff{lambda(o, name)} -- sets \(\lambda\)-asset to the object;
-  \item \ff{put(o, attr, kid)} -- sets attribute of the object.
+  \item \ff{formation(o, attr\(_0\), attr\(_1\), ...)} -- creates a new formation cell;
+  \item \ff{dispatch(o, base, attr)} -- creates a new dispatch cell;
+  \item \ff{application(o, proto, attr, arg)} -- creates a new application cell;
+  \item \ff{payload(o, data, base)} -- creates a new payload cell;
+  \item \ff{atom(o, function, base)} -- creates a new atom cell;
+  \item \ff{put(o, attr, kid)} -- sets attribute of a formation cell.
 \end{enumerate}
 
-The code at lines \ref{ln:order-start}--\ref{ln:order-stop} may be transformed to a SODG using the following sequence of instructions:
+The code of \cref{fig:order} may be transformed to a SODG using the following sequence of instructions:
 
 \begin{ffcode}
-formation(b1, "qty", "price", "cost")
-dispatch(b2, b1, "qty")
-dispatch(b3, b2, "mul")
-dispatch(b5, b1, "price")
-application(b4, b3, (*@\(\alpha_0\)@*), b5)
-put(b1, "cost", b4)
+atom(c1, "qty", "price", "cost")
+formation(c1, "qty", "price", "cost")
+dispatch(c2, c1, "qty")
+dispatch(c3, c2, "mul")
+dispatch(c5, c1, "price")
+application(c4, c3, (*@\(\alpha_0\)@*), c5)
+put(c1, "cost", c4)
 \end{ffcode}
 
 Both compile-time and runtime optimizations may infer attribute names.
-For example, the \(\alpha_0\) attribute of the \(b_5\) object may be replaced by the actual name.
+For example, the \(\alpha_0\) attribute of the \(c_5\) cell may be replaced by the actual name.
 
+\subsection{Deterministic Cells Destruction}
 
-\subsection{Deterministic Object Destruction}
-
-The function may not delete objects from the SODG.
+A function may not delete cell from the SODG.
 Instead, they get deleted automatically.
-All objects created by the function are deleted, except the object that the function returns.
-The objects that are directly or indirectly referenced by the returned object are not deleted either.
+All cell created by a function are deleted, except the cell that the function returns.
+The cells that are directly or indirectly referenced by the returned cell are not deleted either.
