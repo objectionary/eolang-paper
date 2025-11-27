@@ -39,9 +39,7 @@ Consider the following code:
 \end{ffcode}
 
 This code is equivalent to the following \phic{} expression:
-\begin{phiquation*}
-\Big\{ order -> [[ @ -> \xi.qty.mul( 0-> \xi.price ), qty -> ?, price -> 19.99, L> |F| ]] \Big\}.
-\end{phiquation*}
+\iexec{phino rewrite --sweet --flat --nonumber --output=latex < order.phi}
 
 \cref{fig:order} shows eight cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
