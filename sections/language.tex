@@ -42,10 +42,10 @@ This code is equivalent to the following \phic{} expression:
 \Big\{ order -> [[ @ -> \xi.qty.mul( 0-> \xi.price ), qty -> ?, price -> ? ]] \Big\}.
 \end{phiquation*}
 
-\cref{fig:order} shows five cells that represent the code at runtime.
+\cref{fig:order} shows six cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
 Their behavior constitutes the semantics of the language.
-Cells belong to one of four types: application, dispatch, formation, and decoration.
+Cells belong to one of four types, denoted by different colors: application, dispatch, formation, and decoration.
 
 \begin{figure*}
 \begin{mdframed}
@@ -87,8 +87,9 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{prototype}: & \(b_3\) \\
-  \ff{attr}: & \(\alpha_0\) \\
+  \ff{attribute}: & \(\alpha_0\) \\
   \ff{argument}: & \(b_5\) \\
+  \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$b_5 = b_1.price$}, label={[cell]dispatch}, fill=green!5, left=of b4] (b5)
   {\parbox{8em}{
@@ -99,7 +100,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \end{tabularx}}};
 \end{tikzpicture}
 \end{mdframed}
-\capt{Cellss representing the object \ff{order} at the lines \ref{ln:order-start}--\ref{ln:order-stop}.}
+\capt{Cells representing the object \ff{order} at the lines \ref{ln:order-start}--\ref{ln:order-stop}.}
 \label{fig:order}
 \end{figure*}
 
@@ -109,17 +110,19 @@ The \emph{application} cell contains
 \begin{inparaenum}[1)]
 \item a ``prototype'' reference,
 \item an attribute,
+\item an ``argument'' reference,
 and
-\item an ``argument'' reference.
+\item a mutable initially blank ``memo'' reference.
 \end{inparaenum}
 
-On any request, the cell
+On any request, if the memo is blank, the cell
 \begin{inparaenum}[1)]
 \item asks prototype to \ff{copy()} expecting a ``copy'' reference to be returned,
 \item asks the copy to \ff{put(attribute, argument)},
 and
-\item passes the request to the copy.
+\item stores the copy to the memo.
 \end{inparaenum}
+Then, the cell passes the request to the memo.
 
 \subsection{Dispatch}
 
@@ -151,19 +154,32 @@ and
 \item a possibly blank \(\Delta\)-asset.
 \end{inparaenum}
 
-When being asked to \ff{put()}, the cell saves the reference to the array if the given attribute is not yet attached.
-If the attribute is already attached, the cell returns an error.
+When being asked to \ff{put()}, the cell stores the reference to the array if the given attribute is not yet attached.
+If the attribute is already attached, the cell returns \(\dead\).
 
-When being asked to \ff{take()}, the cell returns the reference that corresponds to the given attribute.
-If the attribute is attached to a blank, the cell returns an error.
-If the attribute is absent and the \(\varphi\)-attribute is present, the cell asks the cell referenced by the attribute to \ff{take()}.
-If the \(\varphi\)-attribute is absent but the \(\lambda\)-asset is present, the cell calls the function attached to the asset, which returns a reference, and the cell uses it to \ff{take()}.
-Otherwise, the cell returns an error.
+When being asked to \ff{take()}, the cell returns the cell that is referenced by the corresponding attribute.
+If the attribute is attached to a blank, the cell returns \(\dead\).
+If the attribute is absent and the \(\lambda\)-asset is present, the cell calls the function attached to the asset, which returns a reference, and the cell calls \ff{take()} on it.
+Otherwise, the cell returns \(\dead\).
 
 When being asked to \ff{delta()}, the cell returns the \(\Delta\)-asset if it has one.
-If it doesn't have it but the \(\lambda\)-asset is present, the cell calls the function attached to the \(\lambda\)-asset, gets a reference, and uses it to \ff{delta()}.
-If the \(\lambda\)-asset is also absent but the \(\varphi\)-attribute is present, the cell asks the cell referenced by the attribute to \ff{delta()}.
-Otherwise, the cell returns an error.
+If it doesn't have it but the \(\lambda\)-asset is present, the cell calls the function attached to the \(\lambda\)-asset, gets a reference, and calls \ff{delta()} on it.
+Otherwise, the cell returns \(\dead\).
+
+\subsection{Decoration}
+
+The \emph{decoration} cell contains
+\begin{inparaenum}[1)]
+\item a ``decorator'' reference,
+\item a ``decoratee'' reference,
+and
+\item a mutable initially blank ``memo'' associative array of attributes and references.
+\end{inparaenum}
+
+When being asked to \ff{take()}, the cell returns the cell stored in the memo.
+If the memo is empty, the cell asks the decorator to \ff{take()}.
+If \(\dead\) is returned, the cell asks the decoratee to \ff{take()}.
+The cell stores the result into the memo and returns it.
 
 \subsection{Atoms}
 
