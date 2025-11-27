@@ -29,17 +29,19 @@ A cell responds to a few requests, where ``reference'' resembles a pointer:
   \item \ff{copy()} --- makes a copy of itself.
 \end{enumerate}
 
-Consider the following code:
+\begin{figure*}
+\begin{mdframed}
+\ffinput{order/order.eo}
+\end{mdframed}
+\capt{Order object}
+\label{fig:order}
+\end{figure*}
 
-\begin{ffcode}
-[qty] > order ? (*@\label{ln:order-start}@*)
-  19.99 > price
-  qty.mul > @
-    price (*@\label{ln:order-stop}@*)
-\end{ffcode}
+\iexec[quiet]{eoc parse --sources=order}
 
+Consider EO code at \cref{fig:order}.
 This code is equivalent to the following \phic{} expression:
-\iexec{phino rewrite --sweet --flat --nonumber --output=latex < order.phi}
+\iexec{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
 \cref{fig:order} shows eight cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
@@ -109,7 +111,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \end{tabularx}}};
 \end{tikzpicture}
 \end{mdframed}
-\capt{Cells representing the object \ff{order} at the lines \ref{ln:order-start}--\ref{ln:order-stop}.}
+\capt{Cells representing the object \ff{order} of \cref{fig:order}.}
 \label{fig:order}
 \end{figure*}
 
@@ -228,7 +230,7 @@ The function may do the following with the SODG:
   \item \ff{put(o, attr, kid)} -- sets attribute of a formation cell.
 \end{enumerate}
 
-The code at lines \ref{ln:order-start}--\ref{ln:order-stop} may be transformed to a SODG using the following sequence of instructions:
+The code of \cref{fig:order} may be transformed to a SODG using the following sequence of instructions:
 
 \begin{ffcode}
 atom(c1, "qty", "price", "cost")

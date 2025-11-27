@@ -1,8 +1,3 @@
-_eolang/
-_minted-*
-paper-*/
-.DS_Store
-.idea/
 *-SAVE-ERROR
 *.aux
 *.bbl
@@ -17,8 +12,14 @@ paper-*/
 *.run.xml
 *.synctex.gz
 *.zip
+.DS_Store
+.eoc/
+.idea/
+_eolang/
+_minted-*
+_tex/*.tex
 iexec.ret
 iexec.tmp
 node_modules/
 package/
-_tex/*.tex
+paper-*/
