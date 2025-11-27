@@ -13,6 +13,9 @@ name: latexmk
 concurrency:
   group: latexmk-${{ github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    shell: sh
 jobs:
   latexmk:
     timeout-minutes: 15
