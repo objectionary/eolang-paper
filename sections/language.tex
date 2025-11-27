@@ -200,6 +200,9 @@ The execution of a function attached may be implemented via foreign function int
 
 The function accepts a reference to the cell.
 
+A function may create cells, but it man not delete them.
+Instead, they get deleted automatically except the cell that the function returns and the cells directly or indirectly referenced by it.
+
 \subsection{Payload}
 
 The \emph{payload} cell contains
@@ -213,41 +216,3 @@ On the \ff{delta()} request, the cell returns the data attached to the \(\Delta\
 
 The cell passes all other requests to the ``base'' reference.
 
-\subsection{Surging Object DiGraph}
-
-A program is a static graph of cells, known as Surging Object DiGraph (SODG).
-The compiler transforms a program into a SODG.
-At runtime, additional cells may be created and then deleted in the SODG.
-The cells created by the compiler may never be deleted.
-
-The function may do the following with the SODG:
-\begin{enumerate}
-  \item \ff{formation(o, attr\(_0\), attr\(_1\), ...)} -- creates a new formation cell;
-  \item \ff{dispatch(o, base, attr)} -- creates a new dispatch cell;
-  \item \ff{application(o, proto, attr, arg)} -- creates a new application cell;
-  \item \ff{payload(o, data, base)} -- creates a new payload cell;
-  \item \ff{atom(o, function, base)} -- creates a new atom cell;
-  \item \ff{put(o, attr, kid)} -- sets attribute of a formation cell.
-\end{enumerate}
-
-The code of \cref{fig:order} may be transformed to a SODG using the following sequence of instructions:
-
-\begin{ffcode}
-atom(c1, "qty", "price", "cost")
-formation(c1, "qty", "price", "cost")
-dispatch(c2, c1, "qty")
-dispatch(c3, c2, "mul")
-dispatch(c5, c1, "price")
-application(c4, c3, (*@\(\alpha_0\)@*), c5)
-put(c1, "cost", c4)
-\end{ffcode}
-
-Both compile-time and runtime optimizations may infer attribute names.
-For example, the \(\alpha_0\) attribute of the \(c_5\) cell may be replaced by the actual name.
-
-\subsection{Deterministic Cells Destruction}
-
-A function may not delete cell from the SODG.
-Instead, they get deleted automatically.
-All cell created by a function are deleted, except the cell that the function returns.
-The cells that are directly or indirectly referenced by the returned cell are not deleted either.
