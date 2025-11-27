@@ -43,7 +43,7 @@ This code is equivalent to the following \phic{} expression:
 \iexec[quiet]{eoc parse --sources=order}
 \iexec{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
-\cref{fig:order} shows eight cells that represent the \ff{order} object at runtime.
+\cref{fig:cells} shows eight cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
 Their behavior constitutes the semantics of the language.
 Cells belong to one of six types, denoted by different colors: application, dispatch, formation, decoration, atom, and payload.
@@ -112,7 +112,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
 \end{tikzpicture}
 \end{mdframed}
 \capt{Cells representing the object \ff{order} of \cref{fig:order}.}
-\label{fig:order}
+\label{fig:cells}
 \end{figure*}
 
 \subsection{Application}
