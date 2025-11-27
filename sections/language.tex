@@ -32,14 +32,15 @@ A cell responds to a few requests, where ``reference'' resembles a pointer:
 Consider the following code:
 
 \begin{ffcode}
-[qty price] > order (*@\label{ln:order-start}@*)
+[qty] > order ? (*@\label{ln:order-start}@*)
+  19.99 > price
   qty.mul > @
     price (*@\label{ln:order-stop}@*)
 \end{ffcode}
 
 This code is equivalent to the following \phic{} expression:
 \begin{phiquation*}
-\Big\{ order -> [[ @ -> \xi.qty.mul( 0-> \xi.price ), qty -> ?, price -> ? ]] \Big\}.
+\Big\{ order -> [[ @ -> \xi.qty.mul( 0-> \xi.price ), qty -> ?, price -> 19.99, L> |Order| ]] \Big\}.
 \end{phiquation*}
 
 \cref{fig:order} shows six cells that represent the \ff{order} object at runtime.
@@ -53,50 +54,60 @@ Cells belong to one of four types, denoted by different colors: application, dis
 [every node/.style={draw},
 up/.style={draw=none, anchor=south west, label position=north west, align=left},
 cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
-\node [label={[up, text width=10em]$b_0=b_1$}, label={[cell]decoration}, fill=orange!5] (b0)
+\node [label={[up]$c_0$}, label={[cell]atom}, fill=cyan!5] (c0)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \(\lambda\): & \ff{Order} \\
+  \ff{base}: & \(c_1\) \\
+  \end{tabularx}}};
+\node [label={[up, text width=10em]$c_1$}, label={[cell]decoration}, fill=orange!5, below=of c0] (c1)
   {\parbox{9em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{decorator}: & \(b_1\) \\
-  \ff{decoratee}: & \(b_4\) \\
+  \ff{decorator}: & \(c_2\) \\
+  \ff{decoratee}: & \(c_5\) \\
   \ff{memo}: & \(\langle\varnothing, \varnothing\rangle\) \\
   \end{tabularx}}};
-\node [label={[up, text width=10em]$b_1=[[ qty -> ?, \newline price -> ?, \rho -> ? ]]$}, label={[cell]formation}, below=1.2 of b0, fill=blue!5] (b1)
+\node [label={[up, text width=10em]$c_2=[[ qty -> ?, \newline price -> ?, \rho -> ? ]]$}, label={[cell]formation}, below=1.2 of c1, fill=blue!5] (c2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{qty}: & \(\varnothing\) \\
-  \ff{price}: & \(\varnothing\) \\
+  \ff{price}: & \(c_7\) \\
   \(\rho\): & \(\varnothing\) \\
-  \(\lambda\): & \(\times\) \\
-  \(\Delta\): & \(\times\) \\
   \end{tabularx}}};
-\node [label={[up]$b_2 = b_1.qty$}, label={[cell]dispatch}, right=of b0, fill=green!5] (b2)
+\node [label={[up]$c_3 = c_1.qty$}, label={[cell]dispatch}, right=of c0, fill=green!5] (c3)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{base}: & \(b_1\) \\
+  \ff{base}: & \(c_2\) \\
   \ff{attr}: & \ff{qty} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_3 = b_2.mul$}, label={[cell]dispatch}, fill=green!5, right=of b2] (b3)
+\node [label={[up]$c_4 = c_3.mul$}, label={[cell]dispatch}, fill=green!5, right=of c3] (c4)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{base}: & \(b_2\) \\
+  \ff{base}: & \(c_3\) \\
   \ff{attr}: & \ff{mul} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$b_4 = b_3(0-> b_5)$}, label={[cell]application}, fill=red!5, below=of b3] (b4)
+\node [label={[up]$c_6 = c_1.price$}, label={[cell]dispatch}, fill=green!5, right=of c1] (c6)
   {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{prototype}: & \(b_3\) \\
-  \ff{attribute}: & \(\alpha_0\) \\
-  \ff{argument}: & \(b_5\) \\
-  \ff{memo}: & \(\varnothing\) \\
-  \end{tabularx}}};
-\node [label={[up]$b_5 = b_1.price$}, label={[cell]dispatch}, fill=green!5, left=of b4] (b5)
-  {\parbox{8em}{
-  \begin{tabularx}{\linewidth}{Xl}
-  \ff{base}: & \(b_1\) \\
+  \ff{base}: & \(c_2\) \\
   \ff{attr}: & \ff{price} \\
   \ff{memo}: & \(\varnothing\) \\
+  \end{tabularx}}};
+\node [label={[up]$c_5 = c_4(0-> c_6)$}, label={[cell]application}, fill=red!5, right=of c6] (c5)
+  {\parbox{8em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{prototype}: & \(c_4\) \\
+  \ff{attribute}: & \(\alpha_0\) \\
+  \ff{argument}: & \(c_6\) \\
+  \ff{memo}: & \(\varnothing\) \\
+  \end{tabularx}}};
+\node [label={[up]$c_7 = \ff{19.99}$}, label={[cell]data}, fill=cyan!5, below=of c6] (c7)
+  {\parbox{7em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \(\Delta\): & \ff{19.99} \\
+  \ff{base}: & \(\dead\) \\
   \end{tabularx}}};
 \end{tikzpicture}
 \end{mdframed}
@@ -158,12 +169,6 @@ If the attribute is already attached, the cell returns \(\dead\).
 
 When being asked to \ff{take()}, the cell returns the cell that is referenced by the corresponding attribute.
 If the attribute is attached to a blank, the cell returns \(\dead\).
-If the attribute is absent and the \(\lambda\)-asset is present, the cell calls the function attached to the asset, which returns a reference, and the cell calls \ff{take()} on it.
-Otherwise, the cell returns \(\dead\).
-
-When being asked to \ff{delta()}, the cell returns the \(\Delta\)-asset if it has one.
-If it doesn't have it but the \(\lambda\)-asset is present, the cell calls the function attached to the \(\lambda\)-asset, gets a reference, and calls \ff{delta()} on it.
-Otherwise, the cell returns \(\dead\).
 
 \subsection{Decoration}
 
@@ -208,16 +213,16 @@ The function may do the following with the SODG:
 The code at lines \ref{ln:order-start}--\ref{ln:order-stop} may be transformed to a SODG using the following sequence of instructions:
 
 \begin{ffcode}
-formation(b1, "qty", "price", "cost")
-dispatch(b2, b1, "qty")
-dispatch(b3, b2, "mul")
-dispatch(b5, b1, "price")
-application(b4, b3, (*@\(\alpha_0\)@*), b5)
-put(b1, "cost", b4)
+formation(c1, "qty", "price", "cost")
+dispatch(c2, c1, "qty")
+dispatch(c3, c2, "mul")
+dispatch(c5, c1, "price")
+application(c4, c3, (*@\(\alpha_0\)@*), c5)
+put(c1, "cost", c4)
 \end{ffcode}
 
 Both compile-time and runtime optimizations may infer attribute names.
-For example, the \(\alpha_0\) attribute of the \(b_5\) cell may be replaced by the actual name.
+For example, the \(\alpha_0\) attribute of the \(c_5\) cell may be replaced by the actual name.
 
 \subsection{Deterministic Cells Destruction}
 
