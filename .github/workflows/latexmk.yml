@@ -27,6 +27,7 @@ jobs:
           cmd: >-
             (curl -fsSL https://deb.nodesource.com/setup_18.x | sh) &&
             apt-get install --yes nodejs &&
+            apt-get install --yes openjdk-17-jdk &&
             wget -q -O /usr/bin/phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest &&
             chmod a+x /usr/bin/phino &&
             npm install -g eolang &&
