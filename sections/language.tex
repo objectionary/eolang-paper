@@ -103,7 +103,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \ff{argument}: & \(c_6\) \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$c_7 = \ff{19.99}$}, label={[cell]data}, fill=cyan!5, below=of c6] (c7)
+\node [label={[up]$c_7 = \ff{19.99}$}, label={[cell]payload}, fill=cyan!5, below=of c6] (c7)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \(\Delta\): & \ff{19.99} \\
@@ -212,9 +212,9 @@ The function may do the following with the SODG:
   \item \ff{formation(o, attr\(_0\), attr\(_1\), ...)} -- creates a new formation cell;
   \item \ff{dispatch(o, base, attr)} -- creates a new dispatch cell;
   \item \ff{application(o, proto, attr, arg)} -- creates a new application cell;
-  \item \ff{delta(o, data)} -- sets \(\Delta\)-asset to the cell;
-  \item \ff{lambda(o, name)} -- sets \(\lambda\)-asset to the cell;
-  \item \ff{put(o, attr, kid)} -- sets attribute of the cell.
+  \item \ff{payload(o, data, base)} -- creates a new payload cell;
+  \item \ff{atom(o, function, base)} -- creates a new atom cell;
+  \item \ff{put(o, attr, kid)} -- sets attribute of a formation cell.
 \end{enumerate}
 
 The code at lines \ref{ln:order-start}--\ref{ln:order-stop} may be transformed to a SODG using the following sequence of instructions:
