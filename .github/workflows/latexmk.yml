@@ -22,17 +22,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          npm install -g eolang
-          eoc --version
-      - run: |
-          sudo wget -q -O /usr/bin/phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest
-          sudo chmod a+x /usr/bin/phino
-      - uses: actions/setup-java@v5
-        with:
-          distribution: 'zulu'
-          java-version: 21
       - uses: yegor256/latexmk-action@0.18.0
         with:
+          cmd: |
+              wget -q -O /usr/bin/phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest \
+              && chmod a+x /usr/bin/phino \
+              && npm install -g eolang \
+              && latexmk
           opts: -pdf
           depends: DEPENDS.txt
