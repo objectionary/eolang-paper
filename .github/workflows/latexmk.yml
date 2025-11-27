@@ -27,7 +27,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: yegor256/latexmk-action@0.17.0
+      - uses: yegor256/latexmk-action@0.18.0
         with:
           opts: -pdf
           depends: DEPENDS.txt
