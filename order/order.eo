@@ -2,3 +2,4 @@
   qty.mul > @
     price
   19.99 > price
+  [] > uuid ?

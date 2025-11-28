@@ -41,7 +41,7 @@ A cell responds to a few requests, where ``reference'' resembles a pointer:
 Consider EO code at \cref{fig:order}.
 This code is equivalent to the following \phic{} expression:
 \iexec[quiet]{eoc parse --sources=order}
-\iexec{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --hide=Q.order.json.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
+\iexec{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --canonize --hide=Q.order.uuid.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
 \cref{fig:cells} shows eight cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
