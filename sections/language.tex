@@ -145,7 +145,7 @@ Dispatch(base, attribute, memo):
   copy(): return self
   m():
     if memo.blank():
-      c = base.take(attribute)
+      c := base.take(attribute)
       c.put((*@\(\rho\)@*), base)
       memo.store(c)
     return memo.get()
@@ -164,10 +164,10 @@ Formation(attributes):
 \begin{ffcode}
 Decoration(decorator, decoratee, memos):
   take(attr):
-    if not memos.has(attr):
-      c = decorator.get(attr)
-      if c = (*@\(\rho\)@*):
-        c = decoratee.get(attr)
+    if memos.absent(attr):
+      c := decorator.get(attr)
+      if c is (*@\(\dead\)@*):
+        c := decoratee.get(attr)
       memos.put(attr, c)
     return memos.get(attr)
   put(attr, cell): fail
@@ -179,8 +179,8 @@ Decoration(decorator, decoratee, memos):
 Atom((*@\(\lambda\)@*), base):
   take(attr):
     c = base.get(attr)
-    if c = (*@\(\rho\)@*):
-      c = (*@\(\rho\)@*) (self)
+    if c is (*@\(\dead\)@*):
+      c := (*@\(\lambda(\ff{self})\)@*)
     return c
   put(attr, cell): base.put(attr, cell)
   delta(): return base.delta()
