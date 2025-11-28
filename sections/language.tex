@@ -178,7 +178,7 @@ Decoration(decorator, decoratee, memos):
 \begin{ffcode}
 Atom((*@\(\lambda\)@*), base):
   take(attr):
-    c = base.get(attr)
+    c := base.get(attr)
     if c is (*@\(\dead\)@*):
       c := (*@\(\lambda(\ff{self})\)@*)
     return c
