@@ -154,9 +154,15 @@ Dispatch(base, attribute, memo):
 
 \begin{ffcode}
 Formation(attributes):
-  take(attr): return attributes.get(attr)
+  take(attr):
+    if attributes.absent(attr): return (*@\(\dead\)@*)
+    c := attributes.get(attr)
+    if c is (*@\(\varnothing\)@*): return (*@\(\dead\)@*)
+    return c
   put(attr, cell):
-    if attributes.has(attr): return (*@\(\dead\)@*)
+    if attributes.absent(attr): return (*@\(\dead\)@*)
+    c := attributes.get(attr)
+    if c is not (*@\(\varnothing\)@*): return (*@\(\dead\)@*)
     attributes.put(attr, cell)
   delta(): return (*@\(\dead\)@*)
   copy(): return new Formation(attributes)
