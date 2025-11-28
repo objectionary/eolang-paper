@@ -18,7 +18,7 @@ The entire syntax of the \eolang{} language in BNF is available on the first pag
   \footnote{\url{https://github.com/objectionary/eo}}.
 In this section, we only explain key concepts of the language.
 
-\subsection{Informal Overview}
+\subsection{Cells}
 
 At runtime, every \eolang{} object consists of a few \emph{cells}.
 A cell responds to a few requests, where ``reference'' resembles a pointer:
@@ -36,7 +36,6 @@ A cell responds to a few requests, where ``reference'' resembles a pointer:
 \capt{Order object}
 \label{fig:order}
 \end{figure*}
-
 
 Consider EO code at \cref{fig:order}, which is equivalent to the following expression:
 \iexec[quiet,maybe]{eoc parse --sources=order}
@@ -61,29 +60,30 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \ff{memos}: & \(\langle\varnothing, \varnothing\rangle\) \\
   \end{tabularx}}};
 \node [label={[up, text width=10em]$c_2=[[ qty -> ?, \newline price -> c_7, ship -> c_8 ]]$}, label={[cell]formation}, below=1.2 of c1, fill=blue!5] (c2)
-  {\parbox{7em}{
+  {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{qty}: & \(\varnothing\) \\
-  \ff{price}: & \(c_7\) \\
-  \ff{ship}: & \(c_8\) \\
-  \(\rho\): & \(\varnothing\) \\
+  \ff{attributes}: \\
+  \(\cdot\) \ff{qty}: & \(\varnothing\) \\
+  \(\cdot\) \ff{price}: & \(c_7\) \\
+  \(\cdot\) \ff{ship}: & \(c_8\) \\
+  \(\cdot\) \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$c_3 = c_0.qty$}, label={[cell]dispatch}, right=of c1, fill=green!5] (c3)
-  {\parbox{7em}{
+  {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(c_2\) \\
   \ff{attribute}: & \ff{qty} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$c_4 = c_3.mul$}, label={[cell]dispatch}, fill=green!5, right=of c3] (c4)
-  {\parbox{7em}{
+  {\parbox{8em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(c_3\) \\
   \ff{attribute}: & \ff{mul} \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$c_6 = c_0.price$}, label={[cell]dispatch}, fill=green!5, right=of c2] (c6)
-  {\parbox{8em}{
+  {\parbox{9em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{base}: & \(c_2\) \\
   \ff{attribute}: & \ff{price} \\
@@ -110,10 +110,11 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \ff{base}: & \(c_9\) \\
   \end{tabularx}}};
 \node [label={[up]$c_9 = [[ city -> ? ]]$}, label={[cell]formation}, fill=blue!5, right=of c8] (c9)
-  {\parbox{5em}{
+  {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \ff{city}: & \(\varnothing\) \\
-  \(\rho\): & \(\varnothing\) \\
+  \ff{attributes}: \\
+  \(\cdot\) \ff{city}: & \(\varnothing\) \\
+  \(\cdot\) \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
 \end{tikzpicture}
 \end{mdframed}
@@ -165,9 +166,9 @@ Formation(attributes):
 Decoration(decorator, decoratee, memos):
   take(attr):
     if memos.absent(attr):
-      c := decorator.get(attr)
+      c := decorator.take(attr)
       if c is (*@\(\dead\)@*):
-        c := decoratee.get(attr)
+        c := decoratee.take(attr)
       memos.put(attr, c)
     return memos.get(attr)
   put(attr, cell): fail
