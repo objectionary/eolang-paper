@@ -127,7 +127,7 @@ The following pseudo-code explains the semantic of every cell type:
 \begin{ffcode}
 Application(prototype, attribute, argument, memo):
   take(attr): return m().take(attr)
-  put(attr, cell): fail
+  put(attr, cell): return (*@\(\dead\)@*)
   delta(): return m().delta()
   copy(): return self
   m():
@@ -141,7 +141,7 @@ Application(prototype, attribute, argument, memo):
 \begin{ffcode}
 Dispatch(base, attribute, memo):
   take(attr): return m().take(attr)
-  put(attr, cell): fail
+  put(attr, cell): return (*@\(\dead\)@*)
   delta(): return m().delta()
   copy(): return self
   m():
@@ -156,9 +156,9 @@ Dispatch(base, attribute, memo):
 Formation(attributes):
   take(attr): return attributes.get(attr)
   put(attr, cell):
-    if attributes.has(attr): fail
+    if attributes.has(attr): return (*@\(\dead\)@*)
     attributes.put(attr, cell)
-  delta(): fail
+  delta(): return (*@\(\dead\)@*)
   copy(): return new Formation(attributes)
 \end{ffcode}
 
@@ -171,8 +171,8 @@ Decoration(decorator, decoratee, memos):
         c := decoratee.take(attr)
       memos.put(attr, c)
     return memos.get(attr)
-  put(attr, cell): fail
-  delta(): fail
+  put(attr, cell): return (*@\(\dead\)@*)
+  delta(): return decoratee.delta()
   copy(): return self
 \end{ffcode}
 
