@@ -38,12 +38,11 @@ A cell responds to a few requests, where ``reference'' resembles a pointer:
 \end{figure*}
 
 
-Consider EO code at \cref{fig:order}.
-This code is equivalent to the following \phic{} expression:
+Consider EO code at \cref{fig:order}, which is equivalent to the following expression:
 \iexec[quiet,maybe]{eoc parse --sources=order}
 \iexec[maybe]{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --canonize --hide=Q.order.ship.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
-\cref{fig:cells} shows eight cells that represent the \ff{order} object at runtime.
+\cref{fig:cells} shows the cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
 Their behavior constitutes the semantics of the language.
 Cells belong to one of six types, denoted by different colors: application, dispatch, formation, decoration, atom, and payload.
@@ -53,7 +52,7 @@ Cells belong to one of six types, denoted by different colors: application, disp
 \begin{tikzpicture}
 [every node/.style={draw},
 up/.style={draw=none, anchor=south west, label position=north west, align=left},
-cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west}]
+cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south west, label position=south west, fill=gray!10}]
 \node [label={[up, text width=10em]$c_1$}, label={[cell]decoration}, fill=orange!5] (c1)
   {\parbox{9em}{
   \begin{tabularx}{\linewidth}{Xl}
@@ -61,7 +60,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \ff{decoratee}: & \(c_5\) \\
   \ff{memo}: & \(\langle\varnothing, \varnothing\rangle\) \\
   \end{tabularx}}};
-\node [label={[up, text width=10em]$c_2=[[ qty -> ?, \newline price -> c_7, \rho -> ? ]]$}, label={[cell]formation}, below=1.2 of c1, fill=blue!5] (c2)
+\node [label={[up, text width=10em]$c_2=[[ qty -> ?, \newline price -> c_7, ship -> c_8 ]]$}, label={[cell]formation}, below=1.2 of c1, fill=blue!5] (c2)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \ff{qty}: & \(\varnothing\) \\
@@ -107,8 +106,9 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
 \node [label={[up]$c_8 = [[ L> |F1| ]]$}, label={[cell]atom}, fill=purple!5, right=of c7] (c8)
   {\parbox{5em}{
   \begin{tabularx}{\linewidth}{Xl}
-  \(\lambda\): & \ff{J} \\
+  \(\lambda\): & \ff{F1} \\
   \ff{base}: & \(c_9\) \\
+  \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$c_9 = [[ city -> ? ]]$}, label={[cell]formation}, fill=blue!5, right=of c8] (c9)
   {\parbox{5em}{
