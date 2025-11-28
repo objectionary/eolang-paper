@@ -1,5 +1,4 @@
 [qty] > order
-  qty.mul > @
-    price
+  qty.mul price > @
   19.99 > price
-  [] > uuid ?
+  [city] > ship ?

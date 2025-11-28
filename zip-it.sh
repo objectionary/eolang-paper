@@ -20,7 +20,9 @@ TLROOT=$(kpsewhich -var-value TEXMFDIST)
 for p in ffcode to-be-determined href-ul iexec eolang naive-ebnf; do
     cp "${TLROOT}/tex/latex/${p}/${p}.sty" .
 done
-cp -r ../sections .
+for d in _tex sections order examples; do
+    cp -r "../${d}" .
+done
 
 version=$(curl --silent -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${REPO}/releases/latest" | jq -r '.tag_name')
 echo "Version is: ${version}"

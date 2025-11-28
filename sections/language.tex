@@ -40,8 +40,8 @@ A cell responds to a few requests, where ``reference'' resembles a pointer:
 
 Consider EO code at \cref{fig:order}.
 This code is equivalent to the following \phic{} expression:
-\iexec[quiet]{eoc parse --sources=order}
-\iexec{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --canonize --hide=Q.order.uuid.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
+\iexec[quiet,maybe]{eoc parse --sources=order}
+\iexec[maybe]{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --canonize --hide=Q.order.ship.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
 \cref{fig:cells} shows eight cells that represent the \ff{order} object at runtime.
 When being asked to \ff{take()}, cells behave differently.
@@ -66,6 +66,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \begin{tabularx}{\linewidth}{Xl}
   \ff{qty}: & \(\varnothing\) \\
   \ff{price}: & \(c_7\) \\
+  \ff{ship}: & \(c_8\) \\
   \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
 \node [label={[up]$c_3 = c_0.qty$}, label={[cell]dispatch}, right=of c1, fill=green!5] (c3)
@@ -97,17 +98,23 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \ff{argument}: & \(c_6\) \\
   \ff{memo}: & \(\varnothing\) \\
   \end{tabularx}}};
-\node [label={[up]$c_7 = \ff{19.99}$}, label={[cell]payload}, fill=cyan!5, below=of c6] (c7)
+\node [label={[up]$c_7 = \ff{19.99}$}, label={[cell]payload}, fill=cyan!5, below=of c2] (c7)
   {\parbox{7em}{
   \begin{tabularx}{\linewidth}{Xl}
   \(\Delta\): & \ff{19.99} \\
   \ff{base}: & \(\dead\) \\
   \end{tabularx}}};
-\node [label={[up]\(c_8\)}, label={[cell]atom}, fill=purple!5, right=of c7] (c8)
+\node [label={[up]$c_8 = [[ L> |F1| ]]$}, label={[cell]atom}, fill=purple!5, right=of c7] (c8)
   {\parbox{5em}{
   \begin{tabularx}{\linewidth}{Xl}
   \(\lambda\): & \ff{J} \\
-  \ff{base}: & \(\dead\) \\
+  \ff{base}: & \(c_9\) \\
+  \end{tabularx}}};
+\node [label={[up]$c_9 = [[ city -> ? ]]$}, label={[cell]formation}, fill=blue!5, right=of c8] (c9)
+  {\parbox{5em}{
+  \begin{tabularx}{\linewidth}{Xl}
+  \ff{city}: & \(\varnothing\) \\
+  \(\rho\): & \(\varnothing\) \\
   \end{tabularx}}};
 \end{tikzpicture}
 \end{mdframed}
