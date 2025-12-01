@@ -41,7 +41,7 @@ finally, the \(.|y|\) part retrieves object \(b\).
 Each object has a \emph{parent} attribute \(\rho\), which is attached to the
 formation from where the object was dispatched.
 
-Attributes are \emph{immutable}, i.e. an application of a binding to an object, where the attribute is already attached, results in a \emph{terminator} denoted as \stx{\(\dead\)} (runtime error), for example:
+Attributes are \emph{immutable}, i.e. an application of a binding to an object, where the attribute is already attached, results in a \emph{terminator} denoted as \(\stx{\dead}\) (runtime error), for example:
 \begin{phiquation*}
 [[ |x| -> b_1 ]]( |x| -> b_2 ) \trans \dead{}.
 \end{phiquation*}
@@ -378,7 +378,7 @@ while the locator \stx{\xi} means the scope of the expression.
 
 \begin{definition}
 Since any expression may recursively be defined as either \begin{inparaenum}[1)]
-    \item \stx{\(\dead\)},
+    \item \(\stx{\dead}\),
     \item formation,
     \item application,
     or
@@ -429,7 +429,7 @@ the subject of a dispatch or an application:
 
 \begin{definition}[Immutability]
 Every object is \textbf{immutable}, meaning that an application of
-its already attached attribute equals to \stx{\(\dead\)}:
+its already attached attribute equals to \(\stx{\dead}\):
 \begin{equation*}
 \forall \tau, e_1, e_2 : \llbracket \tau \mapsto e_1 \rrbracket ( \tau \mapsto e_2 ) \trans \dead
 \end{equation*}
@@ -617,7 +617,7 @@ An expression may not have a normal form.
 
 \begin{definition}[Primitive]
 \textbf{Primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
-is either \stx{\(\dead\)} or object formation without \(\lambda\) asset.
+is either \(\stx{\dead}\) or object formation without \(\lambda\) asset.
 \end{definition}
 
 \begin{theorem}\label{th:norm-head}
@@ -775,7 +775,7 @@ with an inner object:
 \Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> \xi.^.\alpha_0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> \xi.|x|( |42| ) \Big\}.
 \end{phiquation*}
 Here, if the parent of \(\Phi.\ff{x}.\ff{next}\) were attached in the formation, the result of \(\mathbb{D}(\Phi.\ff{k}.\ff{next})\)
-  would not be equal to |43|. Instead, it would be equal to \stx{\(\dead\), because \(\Phi.\ff{k}.\ff{next}.\rho\)
+  would not be equal to |43|. Instead, it would be equal to \(\stx{\dead}\), because \(\Phi.\ff{k}.\ff{next}.\rho\)
 would still be attached to \(\Phi.\ff{x}\) after the dispatch of \(\Phi.\ff{k}.\ff{next}\).
 The parent attribute may be compared with the |this| pointer in Java or C++, which
 does not point anywhere until a method of a class is called. Then, when the method
