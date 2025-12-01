@@ -154,12 +154,12 @@ certain transformations.
 
 \begin{definition}[Attribute]
 \textbf{Attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\),
-  is an identifier to which either ``\stx{\varnothing}'' or an expression
+  is an identifier to which either \stx{\varnothing} or an expression
   may be attached.
 \end{definition}
 
 \begin{definition}[Void vs. Attached]
-An attribute is \textbf{void} if it is attached to ``\stx{\varnothing},''
+An attribute is \textbf{void} if it is attached to \stx{\varnothing},
   otherwise it is an \textbf{attached} attribute.
 \end{definition}
 
@@ -192,8 +192,8 @@ The predicate \(k \in B\) holds if \(k\) is present in any pair of \(B\).
 
 \begin{definition}[Asset]
 \textbf{Asset} is an identifier to which either data
-(denoted as ``\stx{\Delta}''-asset) or function
-(denoted as ``\stx{\lambda}''-asset) is attached.
+(denoted as \stx{\Delta}-asset) or function
+(denoted as \stx{\lambda}-asset) is attached.
 \end{definition}
 
 \subsection{Object}\label{sec:object}
@@ -201,7 +201,7 @@ The predicate \(k \in B\) holds if \(k\) is present in any pair of \(B\).
 \begin{definition}[Object]
 \textbf{Object}, ranged over \(\mathcal{B}\) by \(b_i\), is a binding
 where keys are either attributes or assets and values are either
-``\stx{\varnothing},'' expressions, data, or functions.
+\stx{\varnothing}, expressions, data, or functions.
 \end{definition}
 
 \subsection{Domain}\label{sec:domain}
@@ -212,12 +212,12 @@ that includes all attributes of \(b\).
 \end{definition}
 
 The domain of the object in \cref{eq:object-example} is \(\{ |a|, |b|, |foo| \}\).
-Assets ``\stx{\Delta}'' and ``\stx{\lambda}'' do not belong to object domain.
+Assets \stx{\Delta} and \stx{\lambda} do not belong to object domain.
 
 \subsection{Formation}\label{sec:formation}
 
 \begin{definition}[Formation]
-Object \textbf{formation}, denoted as ``\(\stx{\llbracket} B \stx{\rrbracket}\)'',
+Object \textbf{formation}, denoted as \(\stx{\llbracket} B \stx{\rrbracket}\),
   is a construction of a new object.
 \end{definition}
 
@@ -235,8 +235,8 @@ The following is an example of an object formation with four pairs, where the fi
 [[ D> 00-2A, |a| -> b_2(0-> b_3).|bar|, |b| -> [[ L> Sqrt ]], foo -> \dead ]]
 \end{phiquation}
 
-The arrow ``\stx{\mapsto}'' denotes an attachment of an expression (right-hand side)
-  to an attribute (left-hand side). The arrow ``\stx{\phiDotted}'' denotes
+The arrow \stx{\mapsto} denotes an attachment of an expression (right-hand side)
+  to an attribute (left-hand side). The arrow \stx{\phiDotted} denotes
   an attachment of data or function to an asset.
 
 \subsection{Program}\label{sec:program}
@@ -371,8 +371,8 @@ In~\cref{eq:simple-scope}, the scope of \ff{author} is the formation where the \
 
 \subsection{Locators}\label{sec:locators}
 
-In an expression, the locator ``\stx{\Phi}'' means the program,
-while the locator ``\stx{\xi}'' means the scope of the expression.
+In an expression, the locator \stx{\Phi} means the program,
+while the locator \stx{\xi} means the scope of the expression.
 
 \subsection{Head and Tail}
 
@@ -452,7 +452,7 @@ such as Java or C++.
 
 \begin{definition}[Decoration]
 Object \textbf{decoration} is a mechanism of extending an object (``decoratee'')
-by attaching it to the ``\stx{\varphi}''-attribute of another object (``decorator''),
+by attaching it to the \stx{\varphi}-attribute of another object (``decorator''),
 which makes attributes of the decoratee retrievable from the decorator,
 unless the decorator has its own attributes with the same names.
 \end{definition}
