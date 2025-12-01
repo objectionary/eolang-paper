@@ -15,6 +15,7 @@
 .DS_Store
 .eoc/
 .idea/
+_eolang-xe/
 _eolang/
 _minted-*
 _tex/*.tex
