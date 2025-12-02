@@ -1,16 +1,16 @@
-formation = (attributes) => ({
+formation = (attrs) => ({
   take(attr) {
-    if (!attributes.has(attr)) throw new Error;
-    const c = attributes.get(attr);
+    if (!attrs.has(attr)) throw new Error;
+    const c = attrs.get(attr);
     if (c === null) throw new Error;
     return c;
   },
   put(attr, cell) {
-    if (!attributes.has(attr)) throw new Error;
-    const c = attributes.get(attr);
+    if (!attrs.has(attr)) throw new Error;
+    const c = attrs.get(attr);
     if (c !== null) throw new Error;
-    attributes.set(attr, cell);
+    attrs.set(attr, cell);
   },
   delta() { throw new Error; },
-  copy() { return formation(new Map(attributes)); }
+  copy() { return formation(new Map(attrs)); }
 });

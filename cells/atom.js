@@ -1,8 +1,7 @@
 atom = (lambda, base) => ({
   take(attr) {
-    const c = base.take(attr);
-    if (c === null) return lambda(this);
-    return c;
+    try { return base.take(attr); }
+    catch { return lambda(this); }
   },
   put(attr, cell) { base.put(attr, cell); },
   delta() { return base.delta(); },

@@ -2,8 +2,9 @@ decoration = (decorator, decoratee) => ({
   memos: new Map(),
   take(attr) {
     if (!this.memos.has(attr)) {
-      let c = decorator.take(attr);
-      if (c === null) c = decoratee.take(attr);
+      var c;
+      try { c = decorator.take(attr); }
+      catch { c = decoratee.take(attr); }
       this.memos.set(attr, c);
     }
     return this.memos.get(attr);
