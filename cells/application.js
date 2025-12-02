@@ -1,13 +1,13 @@
-application = (prototype, attribute, argument, memo) => ({
+application = (proto, attribute, arg) => ({
+  memo: null,
   take(attr) { return this.m().take(attr); },
-  put() { throw new Error('put is not allowed'); },
+  put() { throw new Error; },
   delta() { return this.m().delta(); },
   copy() { return this; },
-  memo: null,
   m() {
     if (memo === null) {
-      const c = prototype.copy();
-      c.put(attribute, argument);
+      const c = proto.copy();
+      c.put(attribute, arg);
       memo = c;
     }
     return memo;
