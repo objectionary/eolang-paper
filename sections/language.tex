@@ -20,30 +20,13 @@ In this section, we only explain key concepts of the language.
 
 \subsection{Cells}
 
-At runtime, every \eolang{} object consists of a few \emph{cells}.
-A cell responds to a few requests, where ``reference'' resembles a pointer:
-\begin{enumerate}
-  \item \ff{take(attr)} --- returns a reference, by provided attribute;
-  \item \ff{put(attr, cell)} --- stores a reference, by the attribute;
-  \item \ff{delta()} --- turns itself to data;
-  \item \ff{copy()} --- makes a copy of itself.
-\end{enumerate}
-
-\begin{figure*}
-\begin{mdframed}
+Consider this EO code:
 \ffinput{order/order.eo}
-\end{mdframed}
-\capt{Order object}
-\label{fig:order}
-\end{figure*}
-
-Consider EO code at \cref{fig:order}, which is equivalent to the following expression:
+It is equivalent to the following expression:
 \iexec[quiet,maybe]{eoc parse --sources=order}
-\iexec[maybe]{phino rewrite --sweet --flat --nonumber --output=latex --input=xmir --canonize --hide=Q.order.ship.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
+\iexec[maybe]{phino rewrite --sweet --flat --label=eq:order --output=latex --input=xmir --canonize --hide=Q.order.ship.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
-\cref{fig:cells} shows the cells that represent the \ff{order} object at runtime.
-When being asked to \ff{take()}, cells behave differently.
-Their behavior constitutes the semantics of the language.
+In a VM, the object may be presented by a few \emph{cells}, as \cref{fig:cells} shows.
 Cells belong to one of six types, denoted by different colors: application, dispatch, formation, decoration, atom, and payload.
 
 \begin{figure*}
@@ -118,9 +101,17 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
   \end{tabularx}}};
 \end{tikzpicture}
 \end{mdframed}
-\capt{Cells representing the object \ff{order} of \cref{fig:order}.}
+\capt{Cells representing the object of \cref{eq:order}.}
 \label{fig:cells}
 \end{figure*}
+
+If a VM written in JavaScript, a cell would be an object with four methods:
+\begin{ffcode}
+take(attr) { /* Returns an attribute */ }
+put(attr, cell) { /* Stores an attribute */ }
+delta() { /* Turns itself to data */ }
+copy() { /* Makes a copy of itself */ }
+\end{ffcode}
 
 \Cref{fig:js-cells} shows JavaScript code snippets that explain the semantic of every cell type.
 
