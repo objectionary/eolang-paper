@@ -124,69 +124,21 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
 
 The following JavaScript code snippets explain the semantic of every cell type.
 
-\begin{ffcode}
-Dispatch(base, attribute, memo):
-  take(attr): return m().take(attr)
-  put(attr, cell): return (*@\(\dead\)@*)
-  delta(): return m().delta()
-  copy(): return self
-  m():
-    if memo.blank():
-      c := base.take(attribute)
-      c.put((*@\(\rho\)@*), base)
-      memo.store(c)
-    return memo.get()
-\end{ffcode}
+\iexec[maybe]{find cells/ -name '*.js' -exec node \{\} \\;}
 
-\begin{ffcode}
-Formation(attributes):
-  take(attr):
-    if attributes.absent(attr): return (*@\(\dead\)@*)
-    c := attributes.get(attr)
-    if c is (*@\(\varnothing\)@*): return (*@\(\dead\)@*)
-    return c
-  put(attr, cell):
-    if attributes.absent(attr): return (*@\(\dead\)@*)
-    c := attributes.get(attr)
-    if c is not (*@\(\varnothing\)@*): return (*@\(\dead\)@*)
-    attributes.put(attr, cell)
-  delta(): return (*@\(\dead\)@*)
-  copy(): return new Formation(attributes)
-\end{ffcode}
-
-\begin{ffcode}
-Decoration(decorator, decoratee, memos):
-  take(attr):
-    if memos.absent(attr):
-      c := decorator.take(attr)
-      if c is (*@\(\dead\)@*):
-        c := decoratee.take(attr)
-      memos.put(attr, c)
-    return memos.get(attr)
-  put(attr, cell): return (*@\(\dead\)@*)
-  delta(): return decoratee.delta()
-  copy(): return self
-\end{ffcode}
-
-\begin{ffcode}
-Atom((*@\(\lambda\)@*), base):
-  take(attr):
-    c := base.get(attr)
-    if c is (*@\(\dead\)@*):
-      c := (*@\(\lambda(\ff{self})\)@*)
-    return c
-  put(attr, cell): base.put(attr, cell)
-  delta(): return base.delta()
-  copy(): return self
-\end{ffcode}
-
-\begin{ffcode}
-Payload((*@\(\Delta\)@*), base):
-  take(attr): return base.take(attr)
-  put(attr, cell): base.put(attr, cell)
-  delta(): return (*@\(\Delta\)@*)
-  copy(): return self
-\end{ffcode}
+\begin{figure*}
+\scriptsize
+\begin{mdframed}
+\ffinput{cells/formation.js}
+\ffinput{cells/application.js}
+\ffinput{cells/dispatch.js}
+\ffinput{cells/decoration.js}
+\ffinput{cells/atom.js}
+\ffinput{cells/payload.js}
+\end{mdframed}
+\capt{Cells in JavaScript.}
+\label{fig:js-cells}
+\end{figure*}
 
 \subsection{Garbage Collection}
 

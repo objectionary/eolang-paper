@@ -1,4 +1,4 @@
-const application = (prototype, attribute, argument, memo) => ({
+application = (prototype, attribute, argument, memo) => ({
   take(attr) { return this.m().take(attr); },
   put() { throw new Error('put is not allowed'); },
   delta() { return this.m().delta(); },
