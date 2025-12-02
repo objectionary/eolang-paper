@@ -122,21 +122,7 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
 \label{fig:cells}
 \end{figure*}
 
-The following pseudo-code explains the semantic of every cell type:
-
-\begin{ffcode}
-Application(prototype, attribute, argument, memo):
-  take(attr): return m().take(attr)
-  put(attr, cell): return (*@\(\dead\)@*)
-  delta(): return m().delta()
-  copy(): return self
-  m():
-    if memo.blank():
-      c = prototype.copy()
-      c.put(attr, argument)
-      memo.store(c)
-    return memo.get()
-\end{ffcode}
+The following JavaScript code snippets explain the semantic of every cell type.
 
 \begin{ffcode}
 Dispatch(base, attribute, memo):

@@ -11,6 +11,7 @@ path = [
     ".latexmkrc",
     ".proselintrc",
     ".texsc",
+    "cells/*.js",
     "order/order.eo",
     "**.jpg",
     "**.json",
