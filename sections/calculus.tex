@@ -675,25 +675,25 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 \begin{figure*}
 \begin{mdframed}
 \begin{phiquation*}
-\newrule{prim} \
+\newrule{Mprim} \
 \frac \
 {  } \
 { \langle e, s \rangle \stepto \langle p, s \rangle }  \
 \;\text{if}\; e \in \mathcal{P} \
 \quad\quad \
-\newrule{nmz} \
+\newrule{Mnmz} \
 \frac \
 { \langle \nf, s_1 \rangle \stepto \langle p, s_2 \rangle } \
 { \langle e, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
 \;\text{if}\; e \strans \nf \;\text{and}\; e \not\equiv n
 
-\newrule[\lambda]{lambda} \
+\newrule[\lambda]{Mlambda} \
 \frac \
 { \langle e \bullet t, s_1 \rangle \stepto \langle p, s_2 \rangle} \
 { \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
 \;\text{if}\; f( \stx{ [[ } B_1, B_2 \stx{ ]] }, s_1 ) \to \langle e, s_2 \rangle
 
-\newrule[\Phi]{Phi} \
+\newrule[\Phi]{Mphi} \
 \frac \
 { \langle e \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle} \
 { \langle \stx{ \Phi } \stx{ . } \tau \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \

@@ -12,7 +12,7 @@ path = [
     ".proselintrc",
     ".texsc",
     "cells/*.js",
-    "order/order.eo",
+    "eo/*.eo",
     "**.jpg",
     "**.json",
     "**.md",

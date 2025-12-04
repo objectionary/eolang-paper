@@ -14,16 +14,33 @@
 % number
 % const
 
+\iexec[quiet,maybe]{eoc parse --sources=eo}
+
 The entire syntax of the \eolang{} language in BNF is available on the first page of the \texttt{objectionary/eo} GitHub repository%
   \footnote{\url{https://github.com/objectionary/eo}}.
 In this section, we only explain key concepts of the language.
 
+\subsection{Forma Inference}
+
+Consider a program with three objects:
+\begin{multicols}{3}
+\ffinput{eo/circle.eo}
+\par\columnbreak\par
+\ffinput{eo/app.eo}
+\par\columnbreak\par
+\ffinput{eo/number.eo}
+\end{multicols}
+The \ff{circle} object is equivalent to the following expression:
+\iexec[maybe]{phino rewrite --sweet --flat --input=xmir --canonize --hide=Q.circle.xi🌵 < .eoc/1-parse/circle.xmir > .eoc/circle.phi}
+\iexec[maybe]{phino rewrite --sweet --flat --input=xmir --canonize --hide=Q.number.xi🌵 --hide=Q.number.mul.xi🌵 < .eoc/1-parse/number.xmir > .eoc/number.phi}
+\iexec[maybe]{phino rewrite --sweet --flat --input=xmir --canonize --hide=Q.app.xi🌵 < .eoc/1-parse/app.xmir > .eoc/app.phi}
+\iexec[maybe]{phino merge .eoc/number.phi .eoc/app.phi .eoc/circle.phi runtime.phi --sweet --output=latex > _tex/program-circle.tex}
+
 \subsection{Cells}
 
 Consider this EO code:
-\ffinput{order/order.eo}
+\ffinput{eo/order.eo}
 It is equivalent to the following expression:
-\iexec[quiet,maybe]{eoc parse --sources=order}
 \iexec[maybe]{phino rewrite --sweet --flat --label=eq:order --output=latex --input=xmir --canonize --hide=Q.order.ship.xi🌵 --hide=Q.order.xi🌵 < .eoc/1-parse/order.xmir}
 
 In a VM, the object may be presented by a few \emph{cells}, as \cref{fig:cells} shows.
@@ -105,10 +122,10 @@ cell/.style={rotate=90, font={\scriptsize\sffamily}, draw=none, anchor=south wes
 \label{fig:cells}
 \end{figure*}
 
-If a VM written in JavaScript, a cell would be an object with four methods:
+In a VM written in JavaScript, a cell would be an object with four methods:
 \begin{ffcode}
-take(attr) { /* Returns an attribute */ }
-put(attr, cell) { /* Stores an attribute */ }
+take(attr) { /* Returns an attribute by name */ }
+put(attr, cell) { /* Stores an attribute by name */ }
 delta() { /* Turns itself to data */ }
 copy() { /* Makes a copy of itself */ }
 \end{ffcode}
