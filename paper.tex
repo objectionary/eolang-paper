@@ -84,14 +84,15 @@
 \makeatother
 \crefformat{uplace}{{\color{gray}\Pi_{#2#1#3}}}
 
-\newcounter{unorm}
+\newcounter{phimeet}
 \makeatletter
-\newcommand\unorm[2]{%
-  \ifmeasuring@\else\refstepcounter{unorm}\cref@label{#1}\fi%
+\newcommand\phiMeet[2]{%
+  \ifmeasuring@\else\refstepcounter{phimeet}\cref@label{phimeet:#1}\fi%
   \def\param{#1}%
-  {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\ifx\param\empty\else\color{gray}\mathrm{H}_{\theunorm}\fi}}}}
+  {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\ifx\param\empty\else\color{gray}\mathrm{H}_{\thephimeet}\fi}}}}
 \makeatother
-\crefformat{unorm}{{\color{gray}\mathrm{H}_{#2#1#3}}}
+\crefformat{phimeet}{{\color{gray}\mathrm{H}_{#2#1#3}}}
+\newcommand\phiAgain[1]{\cref{phimeet:#1}}
 
 \acmBooktitle{untitled}
 \title{EOLANG and \texorpdfstring{\(\varphi\)}{phi}-calculus}

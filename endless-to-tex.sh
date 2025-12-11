@@ -10,7 +10,7 @@ while IFS= read -r f; do
     e=$(basename "${f}")
     e=${e//.phi}
     phino merge "${f}" runtime.phi | \
-        phino rewrite --normalize --hide=Q.org --show=Q.ex "--expression=${e}" \
+        phino rewrite --normalize --show=Q.ex "--expression=${e}" --max-depth=5 --max-cycles=1 \
             --nonumber --sequence --compress "--meet-prefix=${e}" --output=latex \
             --flat --sweet
 done < <(find "${dir}" -name '*.phi' -type f)

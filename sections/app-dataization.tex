@@ -8,7 +8,7 @@
 Consider a program that converts degrees from Celsius to Fahrenheit using
 the formula \(^{\circ}F = (^{\circ}C \times 1.8) + 32\), assuming that
 \(^{\circ}C\) already equals \ff{25} and is attached to the \ff{c} attribute (instead of being provided by a user):
-\iexec[maybe]{phino rewrite --output=latex --sweet --nonumber --label=eq:celsius --canonize < ./examples/celsius.phi > _tex/celsius-formula.tex}
+\iexec[maybe]{phino rewrite --output=latex --sweet --nonumber --label=eq:celsius --canonize ./examples/celsius.phi > _tex/celsius-formula.tex}
 \input{_tex/celsius-formula.tex}
 
 The functions are defined as follows:
@@ -19,5 +19,5 @@ The functions are defined as follows:
 
 The following sequence of transformations constitutes the evaluation of the program:
 
-\iexec[maybe]{phino dataize --output=latex --sweet --nonumber --sequence --flat --quiet --hide=Q.org < ./examples/celsius.phi > _tex/celsius-dataization.tex}
+\iexec[maybe]{phino dataize --output=latex --sweet --nonumber --compress --meet-prefix=dataization --sequence --flat --quiet --hide=Q.org ./examples/celsius.phi > _tex/celsius-dataization.tex}
 \input{_tex/celsius-dataization.tex}
