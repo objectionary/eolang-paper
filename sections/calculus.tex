@@ -676,8 +676,8 @@ e\stx{.}\tau \stx{(} \stx{\rho} \stx{->} e_2 \stx{)} \equiv e\stx{.}\tau \
 
 \subsection{Morphing}\label{sec:morphing}
 
-The \emph{morphing} function \(\mathbb{M} : \langle \mathcal{E}, \mathcal{S} \rangle \to \langle \mathcal{P}, \mathcal{S} \rangle\)
-maps expressions to primitives, possibly modifying the \emph{state} of evaluation.
+The \emph{morphing} function \(\mathbb{M} : \langle \mathcal{E}, \mathcal{B}, \mathcal{S} \rangle \to \langle \mathcal{P}, \mathcal{S} \rangle\)
+  maps expressions to primitives, possibly modifying the \emph{state} of evaluation.
 The inference rules at \cref{fig:morphing} inductively describe the algorithm of morphing.
 
 \begin{figure*}
@@ -686,35 +686,36 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 \newrule{Mprim} \
 \frac \
 {  } \
-{ \langle e, s \rangle \stepto \langle p, s \rangle }  \
+{ \langle e, b, s \rangle \stepto \langle p, s \rangle }  \
 \;\text{if}\; e \in \mathcal{P} \
 \quad\quad \
 \newrule{Mnmz} \
 \frac \
-{ \langle \nf, s_1 \rangle \stepto \langle p, s_2 \rangle } \
-{ \langle e, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+{ \langle \nf, b, s_1 \rangle \stepto \langle p, s_2 \rangle } \
+{ \langle e, b, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
 \;\text{if}\; e \strans \nf \;\text{and}\; e \not\equiv n
 
 \newrule[\lambda]{Mlambda} \
 \frac \
-{ \langle e \bullet t, s_1 \rangle \stepto \langle p, s_2 \rangle} \
-{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+{ \langle e \bullet t, b, s_1 \rangle \stepto \langle p, s_2 \rangle} \
+{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, b, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
 \;\text{if}\; f( \stx{ [[ } B_1, B_2 \stx{ ]] }, s_1 ) \to \langle e, s_2 \rangle
 
 \newrule[\Phi]{Mphi} \
 \frac \
-{ \langle e \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle} \
-{ \langle \stx{ \Phi } \stx{ . } \tau \bullet{} t, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
-\;\text{if}\; \stx{ \Phi } \stx{ \mapsto } \stx{ \llbracket } B_1 , \tau \stx{ \mapsto } e, B_2 \rrbracket
+{ \langle e \bullet{} t, b, s_1 \rangle \stepto \langle p, s_2 \rangle} \
+{ \langle \stx{ \Phi } \stx{ . } \tau \bullet{} t, b, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; b = \stx{ \llbracket } B_1 , \tau \stx{ \mapsto } e, B_2 \rrbracket
 \end{phiquation*}
 \end{mdframed}
 \capt{Morphing rules.}
 \label{fig:morphing}
 \end{figure*}
 
-The notation \(\langle e, s_1 \rangle \stepto \langle p, s_2 \rangle\)
-means that \(\mathbb{M}(e, s_1)\) evaluates to \(p\), thus \emph{morphing} \(e\)
-with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\).
+The notation \(\langle e, b, s_1 \rangle \stepto \langle p, s_2 \rangle\)
+  means that \(\mathbb{M}(e, b, s_1)\) evaluates to \(p\), thus \emph{morphing} \(e\)
+  with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\),
+  in the context of \(b\).
 
 In \nameref{r:Mlambda}, the function \(f\) is called by value.
 
