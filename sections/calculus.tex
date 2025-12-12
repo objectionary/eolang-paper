@@ -726,8 +726,8 @@ The morphing function is not total because not every expression has a normal for
 \subsection{Dataization}\label{sec:dataization}
 
 The \emph{dataization} function
-\(\mathbb{D} : \langle \mathcal{E}, \mathcal{S} \rangle \rightharpoonup \langle \mathcal{D}, \mathcal{S} \rangle\)
-maps expressions to data, possibly modifying the \emph{state} of evaluation.
+\(\mathbb{D} : \langle \mathcal{E}, \mathcal{B}, \mathcal{S} \rangle \rightharpoonup \langle \mathcal{D}, \mathcal{S} \rangle\)
+maps expressions to data, possibly modifying the \emph{state} of evaluation, in a given context.
 The inference rules in \cref{fig:dataization} inductively describe the algorithm of dataization.
 
 \begin{figure*}
@@ -736,16 +736,16 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule[\Delta]{delta} \
 \frac \
 { } \
-{ \langle \stx{ [[ } B_1, \stx{ D> } \delta, B_2 \stx{ ]] }, s \rangle \stepto \langle \delta, s \rangle } \
+{ \langle \stx{ [[ } B_1, \stx{ D> } \delta, B_2 \stx{ ]] }, b, s \rangle \stepto \langle \delta, s \rangle } \
 \quad\quad \
 \newrule{norm} \
-\frac{ \langle p, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
-\;\text{if}\; \mathbb{M}(e, s_1) \to \langle p, s_2 \rangle
+\frac{ \langle p, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, b, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+\;\text{if}\; \mathbb{M}(e, b, s_1) \to \langle p, s_2 \rangle
 
 \newrule{box} \
 \frac \
-{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
-{ \langle \stx{ [[ } B_1, \stx{ @ } \stx{ -> } e, B_2 \stx{ ]] }, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
+{ \langle \stx{ [[ } B_1, \stx{ @ } \stx{ -> } e, B_2 \stx{ ]] }, b, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
 \;\text{if}\; [ \stx{ \Delta }, \stx{ \lambda } ] \cap ( B_1 \cup B_2 ) = \emptyset
 \end{phiquation*}
 \end{mdframed}
@@ -756,16 +756,16 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 The rules \nameref{r:box} and \nameref{r:phi} coexist because
 \(\Delta \notin \mathcal{T}\), thus making the expression $ [[ @ -> 42 ]].\Delta $ invalid.
 
-The notation \(\langle e, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
-means that \(\mathbb{D}(e, s_1)\) evaluates to \(\delta\),
-thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\).
-The notation \(\mathbb{D}(e)\) is a shortened form of \(\mathbb{D}(e, \varnothing)_{(1)}\),
-which is a \emph{pure} dataization --- inputting an empty state of evaluation and ignoring
-the output state of evaluation. Here and later,
-the notation \(x_{(i)}\) denotes the \(i\)-th element of the tuple \(x\).
+The notation \(\langle e, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
+  means that \(\mathbb{D}(e, b, s_1)\) evaluates to \(\delta\),
+  thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\), in the context \(b\).
+The notation \(\mathbb{D}(e, b)\) is a shortened form of \(\mathbb{D}(e, b, \varnothing)_{(1)}\),
+  which is a \emph{pure} dataization --- inputting an empty state of evaluation and ignoring
+  the output state of evaluation.
+Here and later, the notation \(x_{(i)}\) denotes the \(i\)-th element of the tuple \(x\).
 
 \begin{lemma}
-The dataization function is partial, because not every primitive contains \(\Delta\)-asset.
+The dataization function is partial, because not every primitive contains \stx{\Delta}-asset.
 \end{lemma}
 
 \Cref{app:dataization-examples} demonstrates how dataization function works, by examples.
@@ -773,13 +773,12 @@ The dataization function is partial, because not every primitive contains \(\Del
 \subsection{Parent}
 
 \begin{definition}[Parent]
-Attaching expression \(e\) to the \(\rho\) attribute of object \(b\)
-means setting the \textbf{parent} of \(b\) to \(e\).
+Attaching expression \(e\) to the \stx{\rho} attribute of object \(b\)
+  means setting the \textbf{parent} of \(b\) to \(e\).
 \end{definition}
 
-The presence of ``parent'' in each object is essential for the coordination of inner
-objects after dynamic dispatch. Consider the following formation of an abstract object
-with an inner object:
+The presence of ``parent'' in each object is essential for the coordination of inner objects after dynamic dispatch.
+Consider the following formation of an abstract object with an inner object:
 \begin{phiquation*}
 \Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> \xi.^.\alpha_0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> \xi.|x|( |42| ) \Big\}.
 \end{phiquation*}
