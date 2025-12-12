@@ -148,7 +148,7 @@ alphabet includes three non-terminals that rewrite to terminals as follows:
 \subsection{Expression}\label{sec:expression}
 
 \begin{definition}[Expression]
-\textbf{Expression}, ranged over \(\mathcal{E}\) by \(e_i\),
+An \textbf{expression}, ranged over \(\mathcal{E}\) by \(e_i\),
 is a grammatical construct that may result in an object after
 certain transformations.
 \end{definition}
@@ -156,7 +156,7 @@ certain transformations.
 \subsection{Attribute}\label{sec:attribute}
 
 \begin{definition}[Attribute]
-\textbf{Attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\),
+An \textbf{attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\),
   is an identifier to which either \stx{\varnothing} or an expression
   may be attached.
 \end{definition}
@@ -169,13 +169,13 @@ An attribute is \textbf{void} if it is attached to \stx{\varnothing},
 \subsection{Data}\label{sec:data}
 
 \begin{definition}[Data]
-\textbf{Data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly empty sequence of 8-bit bytes.
+A \textbf{data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly empty sequence of 8-bit bytes.
 \end{definition}
 
 \subsection{Binding}\label{sec:binding}
 
 \begin{definition}[Binding]
-\textbf{Binding}, ranged over \(\mathcal{G}\) by \(B\), is a possibly empty
+A \textbf{binding}, ranged over \(\mathcal{G}\) by \(B\), is a possibly empty
   ordered set of key-value pairs, denoted as
   \( k_1 \to v_1, k_2 \to v_2, \dots, k_n \to v_n \), where all keys are unique.
 \end{definition}
@@ -185,7 +185,7 @@ The predicate \(k \in B\) holds if \(k\) is present in any pair of \(B\).
 \subsection{Function}\label{sec:function}
 
 \begin{definition}[Function]
-\textbf{Function} is a total mapping
+A \textbf{function} is a total mapping
 \(\langle \mathcal{G}, \mathcal{S} \rangle \to \langle \mathcal{G}, \mathcal{S} \rangle\)
   that maps binding to binding, possibly modifying the \emph{state} of evaluation \(s_i\),
   which itself ranges over \(\mathcal{S}\).
@@ -194,23 +194,23 @@ The predicate \(k \in B\) holds if \(k\) is present in any pair of \(B\).
 \subsection{Asset}\label{sec:asset}
 
 \begin{definition}[Asset]
-\textbf{Asset} is an identifier to which either data
-(denoted as \stx{\Delta}-asset) or function
-(denoted as \stx{\lambda}-asset) is attached.
+An \textbf{asset} is an identifier to which either data
+  (denoted as \stx{\Delta}-asset) or function
+  (denoted as \stx{\lambda}-asset) is attached.
 \end{definition}
 
 \subsection{Object}\label{sec:object}
 
 \begin{definition}[Object]
-\textbf{Object}, ranged over \(\mathcal{B}\) by \(b_i\), is a binding
-where keys are either attributes or assets and values are either
-\stx{\varnothing}, expressions, data, or functions.
+An \textbf{object}, ranged over \(\mathcal{B}\) by \(b_i\), is a binding
+  where keys are either attributes or assets and values are either
+  \stx{\varnothing}, expressions, data, or functions.
 \end{definition}
 
 \subsection{Domain}\label{sec:domain}
 
 \begin{definition}[Domain]
-\textbf{Domain} of object \(b\), denoted as \(\bar{b}\), is a set
+A \textbf{domain} of object \(b\), denoted as \(\bar{b}\), is a set
 that includes all attributes of \(b\).
 \end{definition}
 
@@ -441,7 +441,7 @@ its already attached attribute equals to \(\stx{\dead}\):
 \subsection{Atoms}\label{sec:atoms}
 
 \begin{definition}[Atom]
-\textbf{Atom} is an object with a function attached to its \stx{\lambda}-asset.
+An \textbf{atom} is an object with a function attached to its \stx{\lambda}-asset.
 \end{definition}
 
 \Cref{eq:Sqrt} demonstrates an atom with a function that calculates
@@ -620,7 +620,7 @@ An expression may not have a normal form.
 \subsection{Primitives}\label{sec:primitives}
 
 \begin{definition}[Primitive]
-\textbf{Primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
+A \textbf{primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
 is either \(\stx{\dead}\) or object formation without \stx{\lambda}-asset.
 \end{definition}
 
