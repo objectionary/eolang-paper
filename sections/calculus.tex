@@ -478,14 +478,17 @@ Syntax sugar & Its more verbose equivalent \\
   {\stx{ QQ }}
   {\stx{ Q } \stx{.} |org| \stx{.} |eolang|}
 \sugar
-  {e \stx{(} \tau_1 \tto e_1, \tau_2 \tto e_2 \stx{)}}
-  {e \stx{(} \tau_1 \tto e_1 \stx{)}\stx{(} \tau_2 \tto e_2 \stx{)}}
+  {e \stx{(} \tau_1 \tto e_1 \stx{,} \tau_2 \tto e_2 \stx{,} \dots \stx{)}}
+  {e \stx{(} \tau_1 \tto e_1 \stx{)}\stx{(} \tau_2 \tto e_2 \stx{)} \dots}
 \sugar
-  {e \stx{(} e_0 \stx{,}\; e_1 \stx{,} \stx{)}}
-  {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,} \stx{)}}
+  {e \stx{(} e_0 \stx{,}\; e_1 \stx{,} \dots \stx{)}}
+  {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,} \dots \stx{)}}
 \sugar
-  {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,} \stx{)} \tto \stx{[[} B \stx{]]}}
-  {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,} \stx{,}\; B \stx{]]}}
+  {\ff{42} \stx{(} \stx{\rho} \tto e \stx{)}}
+  {\ff{42}}
+\sugar
+  {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,} \dots \stx{)} \tto \stx{[[} B \stx{]]}}
+  {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,}\; \dots \stx{,}\; B \stx{]]}}
 \sugar
   {\tau_1 \tto \tau_2}
   {\tau_1 \tto \stx{\xi}\stx{.}\tau_2}
@@ -493,16 +496,16 @@ Syntax sugar & Its more verbose equivalent \\
   {\stx{[[} B \stx{]]}}
   {\stx{[[} B \stx{,}\; \rho \tto \stx{?} \stx{]]} \quad\text{if}\; \rho \notin B}
 \sugar
-  {\tau \;\stx{\mapsto}\; \texttt{\begin{CJK}{UTF8}{gbsn}"你好"\end{CJK}}}
-  {\tau \tto \stx{ QQ } \stx{.} |string| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |E4-BD-A0-E5-A5-BD| \stx{]]} \stx{)} \stx{)}}
+  {\texttt{\begin{CJK}{UTF8}{gbsn}"你好"\end{CJK}}}
+  {\stx{ QQ } \stx{.} |string| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |E4-BD-A0-E5-A5-BD| \stx{]]} \stx{)} \stx{)}}
   \subs{UTF-8 string}
 \sugar
-  {\tau \tto 42}
-  {\tau \tto \stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-45-00-00-00-00-00-00| \stx{]]} \stx{)} \stx{)}}
+  {42}
+  {\stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-45-00-00-00-00-00-00| \stx{]]} \stx{)} \stx{)}}
   \subs{eight bytes per integer}
 \sugar
-  {\tau \tto 3.14}
-  {\tau \tto \stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-09-1E-B8-51-EB-85-1F| \stx{]]} \stx{)} \stx{)}}
+  {3.14}
+  {\stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-09-1E-B8-51-EB-85-1F| \stx{]]} \stx{)} \stx{)}}
   \subs{eight bytes per number with a floating point}
 \sugar
   {\stx{\Big\{} e \stx{\Big\}}}
