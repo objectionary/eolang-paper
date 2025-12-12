@@ -14,7 +14,8 @@ An \emph{object} is a collection of \emph{attributes}, which are uniquely named 
 \end{phiquation}
 This is a \emph{formation} of an object with two attributes \ff{price} and \ff{color}.
 The object is \emph{abstract} because the \ff{price} attribute is \emph{void}, i.e. there is no object \emph{attached} to it.
-The \ff{color} attribute is attached to another object formation with one \(\Delta\)-\emph{asset}, which is attached to \emph{data} (three bytes).
+The \ff{color} attribute is attached to another object formation with one \stx{\Delta}-\emph{asset},
+  which is attached to \emph{data} (three bytes).
 Objects do not have \emph{names}, while only the attributes, which objects are attached to, do.
 
 A \emph{full application} of an abstract object to a pair of attribute and object \emph{results} in a new \emph{closed} object, for example:
@@ -27,21 +28,23 @@ A \emph{partial} application results in a new abstract object, for example:
 [[ |x| -> ?, |y| -> ? ]]( |x| -> b ) \trans [[ |x| -> b, |y| -> ? ]].
 \end{phiquation*}
 
-An object may be \emph{dispatched} from another object with the help of \emph{dot notation} where the right side \emph{accesses} the left side (underlined), for example:
+An object may be \emph{dispatched} from another object with the help of \emph{dot notation}
+  where the right side \emph{accesses} the left side (underlined), for example:
 \begin{phiquation}
 \label{eq:dot-notation}
 [[ |x| -> \underline{\xi.|p|(|t| -> b)}.|y|, |p| -> [[ |t| -> ?, |y| -> \xi.|t| ]] ]].|x| \trans b.
 \end{phiquation}
-The leftmost symbol \(\xi\) denotes the \emph{scope} of the object,
-which is the object formation itself; the following \(.|p|\) part
-retrieves the object attached to the attribute \(|p|\);
-then, the application $(|t|->b)$ makes a copy of the object;
-finally, the \(.|y|\) part retrieves object \(b\).
+The leftmost symbol \stx{\xi} denotes the \emph{scope} of the object, which is the object formation itself;
+  the following \(\stx{.}\ff{p}\) part retrieves the object attached to the attribute \(\ff{p}\);
+  then, the application $(|t|->b)$ makes a copy of the object;
+  finally, the \(\stx{.}\ff{y}\) part retrieves object \(b\).
 
 Each object has a \emph{parent} attribute \(\rho\), which is attached to the
 formation from where the object was dispatched.
 
-Attributes are \emph{immutable}, i.e. an application of a binding to an object, where the attribute is already attached, results in a \emph{terminator} denoted as \(\stx{\dead}\) (runtime error), for example:
+Attributes are \emph{immutable}, i.e. an application of a binding to an object,
+  where the attribute is already attached,
+  results in a \emph{terminator} denoted as \stx{\dead} (runtime error), for example:
 \begin{phiquation*}
 [[ |x| -> b_1 ]]( |x| -> b_2 ) \trans \dead{}.
 \end{phiquation*}
@@ -56,7 +59,7 @@ The object on the left is reduced to the object on the right in two reduction st
 Every object has a \emph{normal form}, which is a form that
 has no more possible applicable reductions.
 
-An object is called a \emph{decorator} if it has the \(\varphi\) attribute
+An object is called a \emph{decorator} if it has the \stx{\varphi}-attribute
 with an object attached to it, known as a \emph{decoratee}. An attribute
 dispatched from a decorator reduces to the same attribute dispatched from the decoratee,
 if the attribute is not present in the decorator, for example:
@@ -64,12 +67,12 @@ if the attribute is not present in the decorator, for example:
 [[ @ -> [[ |x| -> b ]] ]].|x| \trans b.
 \end{phiquation*}
 
-An object may have data attached only to its \(\Delta\)-asset, for example:
+An object may have data attached only to its \stx{\Delta}-asset, for example:
 \begin{phiquation*}
 [[ |x| -> [[ D> 00-2A ]] ]].
 \end{phiquation*}
 
-An object may have a \emph{function} attached to its \(\lambda\)-asset.
+An object may have a \emph{function} attached to its \stx{\lambda}-asset.
 Such an object is referred to as an \emph{atom}.
 An atom may be \emph{morphed} to another object by evaluating
 its function with \begin{inparaenum}[1)]
@@ -84,19 +87,19 @@ as arguments, for example:
   {[[ L> Sqrt, |x| -> 256 ]] \to 16}.
 \end{phiquation}
 There is also a \emph{dataization} function \(\mathbb{D}(b, s)\) that normalizes its first argument
-and then either returns the data attached to the \(\Delta\)-asset of
+and then either returns the data attached to the \stx{\Delta}-asset of
 the normal form or morphs the atom into an object and dataizes it (recursively),
 for example:
 \begin{phiquation*}
 \mathbb{D}([[ |x| -> 42 ]].|x| \trans 42, s) \to 42.
 \end{phiquation*}
 
-A program is an object that is attached to the \(\Phi\) attribute
+A program is an object that is attached to the \stx{\Phi} attribute
 of the \emph{Universe}, for example:
 \begin{phiquation*}
 Q -> [[ D> CA-FE ]].
 \end{phiquation*}
-The dataization of \(\Phi\) is the evaluation of the program.
+The dataization of \stx{\Phi} is the evaluation of the program.
 
 \subsection{Syntax}\label{sec:syntax}
 
