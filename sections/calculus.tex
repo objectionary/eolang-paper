@@ -484,9 +484,6 @@ Syntax sugar & Its more verbose equivalent \\
   {e \stx{(} e_0 \stx{,}\; e_1 \stx{,} \dots \stx{)}}
   {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,}\; \dots \stx{)}}
 \sugar
-  {\ff{42}}
-  {\ff{42} \stx{(} \stx{\rho} \tto e \stx{)}}
-\sugar
   {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,}\; \dots \stx{)} \tto \stx{[[} B \stx{]]}}
   {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,}\; \dots \stx{,}\; B \stx{]]}}
 \sugar
@@ -664,9 +661,13 @@ syntactically identical.
 \begin{figure*}
 \begin{mdframed}
 \begin{phiquation*}
-e(\tau_1 -> e_1)(\tau_2 -> e_2) \equiv e(\tau_2 -> e_2)(\tau_1 -> e_1) \
+e \stx{(} \tau_1 \stx{->} e_1\stx{)} \stx{(} \tau_2 \stx{->} e_2 \stx{)} \equiv e \stx{(} \tau_2 \stx{->} e_2\stx{)} \stx{(}\tau_1 \stx{->} e_1\stx{)} \
 \quad\text{(by \nameref{r:copy})}
   \text{Commutativity of Application}
+
+e\stx{.}\tau \stx{(}\rho \stx{->} e_2 \stx{)} \equiv e\stx{.}\tau \
+\quad\text{(by \nameref{r:dot} and \nameref{r:stay})}
+  \text{Redundancy of Adoption}
 \end{phiquation*}
 \end{mdframed}
 \capt{Equivalence properties that hold.}
