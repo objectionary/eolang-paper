@@ -48,15 +48,7 @@
 \definecolor{rgbTerminals}{HTML}{ff8c00}
 \renewcommand\EbnfTerminal[1]{\textcolor{rgbTerminals}{#1}}
 
-\newcommand\stx[1]{%
-  \EbnfTerminal{%
-    \relax\ifmmode%
-      #1%
-    \else%
-      \(#1\)%
-    \fi%
-  }%
-}
+\newcommand\stx[1]{\textcolor{rgbTerminals}{\ensuremath{\mathinner{#1}}}}
 
 \newcounter{rule}
 \makeatletter

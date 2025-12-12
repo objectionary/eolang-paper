@@ -232,7 +232,7 @@ The following is an example of an object formation with four pairs, where the fi
   expressions:
 \begin{phiquation}
 \label{eq:object-example}
-[[ D> 00-2A, |a| -> b_2(0-> b_3).bar, |b| -> [[ L> Sqrt ]], foo -> \dead ]]
+[[ D> 00-2A, |a| -> b_2(0-> b_3).bar, |b| -> [[ L> Sqrt ]], foo -> \dead ]].
 \end{phiquation}
 
 The arrow \stx{\mapsto} denotes an attachment of an expression (right-hand side)
@@ -242,7 +242,7 @@ The arrow \stx{\mapsto} denotes an attachment of an expression (right-hand side)
 \subsection{Program}\label{sec:program}
 
 \begin{definition}[Program]
-\textbf{Program} is a pair $ Q -> [[ B ]] $ that exists only
+A \textbf{program} is a pair $ Q \stx{ -> } \stx{ [[ } B \stx{ ]] } $ that exists only
 in the \textit{Universe} binding.
 \end{definition}
 
@@ -431,19 +431,19 @@ the subject of a dispatch or an application:
 Every object is \textbf{immutable}, meaning that an application of
 its already attached attribute equals to \(\stx{\dead}\):
 \begin{equation*}
-\forall \tau, e_1, e_2 : \llbracket \tau \mapsto e_1 \rrbracket ( \tau \mapsto e_2 ) \trans \dead
+\forall \tau, e_1, e_2 : \stx{\llbracket} \tau \stx{\mapsto} e_1 \stx{\rrbracket} \stx{(} \tau \stx{\mapsto} e_2 \stx{)} \trans \stx{\dead}
 \end{equation*}
 \end{definition}
 
 \subsection{Atoms}\label{sec:atoms}
 
 \begin{definition}[Atom]
-\textbf{Atom} is an object with a function attached to its \(\lambda\)-asset.
+\textbf{Atom} is an object with a function attached to its \stx{\lambda}-asset.
 \end{definition}
 
 \Cref{eq:Sqrt} demonstrates an atom with a function that calculates
-the square root of a number, which it retrieves from the \(\Delta\)-asset
-of \(b.\alpha_0\) with the help of the morphing function (\cref{sec:morphing}).
+the square root of a number, which it retrieves from the \stx{\Delta}-asset
+of \(b\stx{.}\alpha_0\) with the help of the morphing function (\cref{sec:morphing}).
 The implementation of functions is outside the scope of \phic{}: they may be implemented,
 for example, in \(\lambda\)-calculus or a programming language
 such as Java or C++.
@@ -510,6 +510,7 @@ Syntax sugar & Its more verbose equivalent \\
 
 \newpage
 \subsection{Contextualization}\label{sec:contextualization}
+\label{r:contextualize}
 \newcommand\ctx[2]{\lceil #1 \;\textcolor{gray}{\shortmid}\; #2 \rfloor}
 
 \begin{definition}[Contextualization]
@@ -617,7 +618,7 @@ An expression may not have a normal form.
 
 \begin{definition}[Primitive]
 \textbf{Primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
-is either \(\stx{\dead}\) or object formation without \(\lambda\) asset.
+is either \(\stx{\dead}\) or object formation without \stx{\lambda}-asset.
 \end{definition}
 
 \begin{theorem}\label{th:norm-head}
@@ -774,12 +775,14 @@ with an inner object:
 \begin{phiquation*}
 \Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> \xi.^.\alpha_0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> \xi.|x|( |42| ) \Big\}.
 \end{phiquation*}
-Here, if the parent of \(\Phi.\ff{x}.\ff{next}\) were attached in the formation, the result of \(\mathbb{D}(\Phi.\ff{k}.\ff{next})\)
-  would not be equal to \ff{43}. Instead, it would be equal to \(\stx{\dead}\), because \(\Phi.\ff{k}.\ff{next}.\rho\)
-would still be attached to \(\Phi.\ff{x}\) after the dispatch of \(\Phi.\ff{k}.\ff{next}\).
+Here, if the parent of \(\stx{\Phi}\stx{.}\ff{x}\stx{.}\ff{next}\) were attached in the formation,
+  the result of \(\mathbb{D}(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next})\)
+  would not be equal to \ff{43}.
+Instead, it would be equal to \(\stx{\dead}\), because \(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next}\stx{.}\stx{\rho}\)
+  would still be attached to \(\stx{\Phi}\stx{.}\ff{x}\) after the dispatch of \(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next}\).
 The parent attribute may be compared with the \ff{this} pointer in Java or C++, which
-does not point anywhere until a method of a class is called. Then, when the method
-is called, the \ff{this} pointer refers to the object that owns the method.
+  does not point anywhere until a method of a class is called.
+Then, when the method is called, the \ff{this} pointer refers to the object that owns the method.
 
 \subsection{Congruence}
 
