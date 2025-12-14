@@ -17,5 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: yegor256/copyrights-action@0.0.12
-        ignore: >-
-          cells/*.js
+        with:
+          ignore: >-
+            cells/*.js
