@@ -117,7 +117,7 @@ some expressions, involving the contextualization function (\cref{sec:contextual
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \phiExpression{apk} \uplace{u:apk:1}{ [[ |x| -> [[ |x| -> ? ]] ( |x| -> \xi.|t| ), |t| -> 42 ]] } \trans_{\nameref{r:copy}}
+% \phiExpression{apk} \phiMeet{u:apk:1}{ [[ |x| -> [[ |x| -> ? ]] ( |x| -> \xi.|t| ), |t| -> 42 ]] } \trans_{\nameref{r:copy}}
 %   \trans [[ |x| -> [[ |x| -> 42 ]], |t| -> 42 ]].
 % \ctx{\xi.|t|}{\cref{u:apk:1}} \trans_{\ref{C:dot}}
 %   \trans \ctx{\xi}{\cref{u:apk:1}}.|t| \trans_{\ref{C:xi}}
@@ -191,12 +191,12 @@ some expressions, involving the contextualization function (\cref{sec:contextual
 % \end{phiquation*}
 
 % \begin{phiquation*}
-% \phiExpression{fnk} \uplace{u:11}{ [[ |x| -> [[ |t| -> ? ]] ( |t| -> \xi.|k| ), |k| -> [[ L> Fn(\xi.\rho) ]] ]] }.|x|.|t|.|p| \trans_{\nameref{r:dot}}
+% \phiExpression{fnk} \phiMeet{u:11}{ [[ |x| -> [[ |t| -> ? ]] ( |t| -> \xi.|k| ), |k| -> [[ L> Fn(\xi.\rho) ]] ]] }.|x|.|t|.|p| \trans_{\nameref{r:dot}}
 %     \trans \ctx{[[ |t| -> ? ]] ( |t| -> \cref{u:11}.|k| )}{\cref{u:11}} ( \rho -> \cref{u:11} ) .|t|.|p| \trans_{\ref{C:app}}
 %     \trans \ctx{[[ |t| -> ? ]]}{\cref{u:11}} ( |t| -> \cref{u:11}.|k| ) ( \rho -> \cref{u:11} ) .|t|.|p| \trans_{\ref{C:forma}}
 %     \trans [[ |t| -> ? ]] ( |t| -> \cref{u:11}.|k| ) ( \rho -> \cref{u:11} ) .|t|.|p| \trans_{\nameref{r:copy}}
 %     \trans [[ |t| -> \cref{u:11}.|k| ]] ( \rho -> \cref{u:11} ) .|t|.|p| \trans_{\nameref{r:copy}}
-%     \trans \uplace{u:12}{ [[ |t| -> \cref{u:11}.|k|, \rho -> \cref{u:11} ]] } . |t|.|p| \trans_{\nameref{r:dot}}
+%     \trans \phiMeet{u:12}{ [[ |t| -> \cref{u:11}.|k|, \rho -> \cref{u:11} ]] } . |t|.|p| \trans_{\nameref{r:dot}}
 %     \trans \ctx{\cref{u:11}.|k|}{\cref{u:12}} ( \rho -> \cref{u:12} ) .|p| \trans_{\ref{C:dot}}
 %     \trans \ctx{\cref{u:11}}{\cref{u:12}}.|k| ( \rho -> \cref{u:12} ) .|p| \trans_{\ref{C:forma}}
 %     \trans \cref{u:11}.|k| ( \rho -> \cref{u:12} ) .|p| \trans_{\nameref{r:dot}}

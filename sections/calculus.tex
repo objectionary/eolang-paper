@@ -351,7 +351,7 @@ In simpler terms, the scope is the formation that is the ``closest'' to the pair
 In~\cref{eq:simple-scope}, the scope of \ff{author} is the formation where the \ff{source} attribute stays, while the scope of \ff{cite} is the formation where the \ff{ref} attribute stays.
 \begin{phiquation}
 \label{eq:simple-scope}
-  [[ ref -> \uplace{}{ [[ source -> Q.book( author -> b_1 ) ]] }, cite -> b_2 ]]
+  [[ ref -> \phiOver{ [[ source -> Q.book( author -> b_1 ) ]] }, cite -> b_2 ]]
 \end{phiquation}
 
 \Cref{fig:scopes} illustrates the concept of scope of a pair.
@@ -359,13 +359,13 @@ In~\cref{eq:simple-scope}, the scope of \ff{author} is the formation where the \
 \begin{figure*}
 \begin{mdframed}
 \begin{phiquation*}
-[[ |a| -> \uplace{}{ [[ |y| -> b_2.|t|( |f| -> [[ |z| -> b_3 ]] ( |x| -> e ) ) ]] } ]]
+[[ |a| -> \phiOver{ [[ |y| -> b_2.|t|( |f| -> [[ |z| -> b_3 ]] ( |x| -> e ) ) ]] } ]]
 
-[[ |f| -> \uplace{}{ [[ |k| -> b_1( |x| -> e ) ]] } ]]
+[[ |f| -> \phiOver{ [[ |k| -> b_1( |x| -> e ) ]] } ]]
 
-[[ |k| -> [[ |y| -> b( |f| -> \uplace{}{ [[ |x| -> e ]] } ) ]] ]]
+[[ |k| -> [[ |y| -> b( |f| -> \phiOver{ [[ |x| -> e ]] } ) ]] ]]
 
-[[ |k| -> \uplace{}{ [[ |f| -> [[ |x| -> ? ]] ( |x| -> b_2 ) ( |x| -> b_3 ) ( |x| -> e ) ]] } ]]
+[[ |k| -> \phiOver{ [[ |f| -> [[ |x| -> ? ]] ( |x| -> b_2 ) ( |x| -> b_3 ) ( |x| -> e ) ]] } ]]
 \end{phiquation*}
 \end{mdframed}
 \label{fig:scopes}

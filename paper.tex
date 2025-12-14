@@ -67,27 +67,23 @@
 }
 \makeatother
 
-\newcounter{uplace}
 \makeatletter
-\newcommand\uplace[2]{%
-  \def\param{#1}%
-  \ifx\param\empty\else\ifmeasuring@\else\refstepcounter{uplace}\cref@label{#1}\fi\fi%
-  {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\ifx\param\empty\else\color{gray}\Pi_{\theuplace}\fi}}}}
+\newcommand\phiOver[1]{%
+  {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#1}}}}
 \makeatother
-\crefformat{uplace}{{\color{gray}\Pi_{#2#1#3}}}
 
 \newcounter{phimeet}
 \makeatletter
 \newcommand\phiMeet[2]{%
   \ifmeasuring@\else\refstepcounter{phimeet}\cref@label{phimeet:#1}\fi%
   \def\param{#1}%
-  {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\ifx\param\empty\else\color{gray}\mathrm{H}_{\thephimeet}\fi}}}}
+  {\color{gray}\overbracket[0.4pt][1pt]{{\color{black}#2}}^{{\color{gray}\Pi_{\thephimeet}}}}}
 \makeatother
-\crefformat{phimeet}{{\color{gray}\mathrm{H}_{#2#1#3}}}
+\crefformat{phimeet}{{\color{gray}\Pi_{#2#1#3}}}
 \newcommand\phiAgain[1]{\cref{phimeet:#1}}
 
 \acmBooktitle{untitled}
-\title{EOLANG and \texorpdfstring{\(\varphi\)}{phi}-calculus}
+\title{The \texorpdfstring{\(\varphi\)}{phi}-Calculus: Object-Oriented Formalism}
 \subtitle{%
   Ver:
   \texorpdfstring{
