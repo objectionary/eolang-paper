@@ -1,4 +1,0 @@
-[qty] > order
-  qty.mul price > @
-  19.99 > price
-  [city] > ship ?

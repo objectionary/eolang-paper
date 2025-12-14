@@ -11,6 +11,7 @@ mkdir package
 cd package
 cp ../paper.tex .
 cp ../examples-to-tex.sh .
+cp ../endless-to-tex.sh .
 cp ../runtime.phi .
 cp -R ../examples .
 mkdir bibliography
@@ -20,7 +21,7 @@ TLROOT=$(kpsewhich -var-value TEXMFDIST)
 for p in ffcode to-be-determined href-ul iexec eolang naive-ebnf; do
     cp "${TLROOT}/tex/latex/${p}/${p}.sty" .
 done
-for d in _tex sections order examples; do
+for d in _tex sections examples; do
     cp -r "../${d}" .
 done
 

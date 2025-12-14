@@ -1,9 +1,9 @@
-# First Paper About EOLANG
+# Paper About φ-calculus
 
 [![arXiv](https://img.shields.io/badge/arXiv-2111.13384-green.svg)](https://arxiv.org/abs/2111.13384)
 [![make](https://github.com/objectionary/eolang-paper/actions/workflows/latexmk.yml/badge.svg)](https://github.com/objectionary/eolang-paper/actions/workflows/latexmk.yml)
 
-This is the first paper about [EOLANG](https://www.eolang.org) and φ-calculus.
+This is the first paper about φ-calculus.
 
 To build it, just run:
 

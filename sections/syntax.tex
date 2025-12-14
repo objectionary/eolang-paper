@@ -1,0 +1,46 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Syntax}\label{sec:syntax}
+
+The syntax of a program is defined by BNF in \cref{fig:ebnf} (the starting symbol is \EbnfNonTerminal{Program}).
+
+\begin{figure*}
+\begin{mdframed}
+\raggedright
+\begin{ebnf}[8em]
+<Program> := "\(\Phi\)" "\(\mapsto\)" <Expression> \\
+<Expression> := <Formation> | <Application> | <Dispatch> | "\(\dead\)" \\
+<Formation> := "\(\llbracket\)" <Binding> "\(\rrbracket\)" \\
+<Application> := <Expression> "\(\lparen\)" <A-Pair> "\(\rparen\)" \\
+<A-Pair> := <\(\tau\)-Pair> | <\(\alpha\)-Pair> \\
+<Dispatch> := <Subject> "." <Attribute> \\
+<Subject> := <Expression> | <Locator> \\
+<Locator> := "\(\Phi\)" | "\(\xi\)" \\
+<Binding> := <Pair> <Bindings> | \(\epsilon\) \\
+<Bindings> := "," <Pair> <Bindings> | \(\epsilon\) \\
+<Pair> := <\(\varnothing\)-Pair> | <\(\tau\)-Pair> | <\(\Delta\)-Pair> | <\(\lambda\)-Pair> \\
+<\(\varnothing\)-Pair> := <Attribute> "\(\mapsto\)" "\(\varnothing\)" \\
+<\(\tau\)-Pair> := <Attribute> "\(\mapsto\)" <Subject> \\
+<\(\alpha\)-Pair> := <Alpha> "\(\mapsto\)" <Subject> \\
+<\(\Delta\)-Pair> := "\(\Delta\)" "\(\phiDotted\)" <Data> \\
+<\(\lambda\)-Pair> := "\(\lambda\)" "\(\phiDotted\)" <Function> \\
+\end{ebnf}
+\end{mdframed}
+\capt{Syntax as a context-free grammar, in BNF.}
+\label{fig:ebnf}
+\end{figure*}
+
+Besides the literals mentioned in the grammar in blue color, the
+alphabet includes three non-terminals that rewrite to terminals as follows:
+\begin{itemize}
+  \item \EbnfNonTerminal{Attribute}: either \begin{inparaenum}[1)]
+      \item Greek letter \(\varphi\),
+      \item Greek letter \(\rho\),
+      or
+      \item a string of lowercase English letters possibly with dashes inside, e.g. ``\ff{price}'' or ``\ff{a-car}'';
+  \end{inparaenum}
+  \item \EbnfNonTerminal{Data}: a sequence of bytes in hexadecimal format, e.g. ``\ff{EF-41-5C}'' is a sequence of three bytes, ``\ff{42-}'' is a one-byte sequence (with a trailing dash in order to avoid confusion with integers), and ``\ff{-{}-}'' (double dash) is an empty sequence of bytes;
+  \item \EbnfNonTerminal{Function}: a string of English letters where the first letter is in uppercase, e.g. ``\ff{Sqrt}'';
+  \item \EbnfNonTerminal{Alpha}: a Greek letter \(\alpha\) with a non-negative whole-number index, e.g. \(\alpha_2\).
+\end{itemize}
