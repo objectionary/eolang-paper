@@ -152,36 +152,36 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 \newrule{Mprim} \
 \frac \
 {  } \
-{ \langle e, b, s \rangle \stepto \langle p, s \rangle }  \
+{ \langle e, u, s \rangle \stepto \langle p, s \rangle }  \
 \;\text{if}\; e \in \mathcal{P} \
 \quad\quad \
 \newrule{Mnmz} \
 \frac \
-{ \langle \nf, b, s_1 \rangle \stepto \langle p, s_2 \rangle } \
-{ \langle e, b, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+{ \langle \nf, u, s_1 \rangle \stepto \langle p, s_2 \rangle } \
+{ \langle e, u, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
 \;\text{if}\; e \strans \nf \;\text{and}\; e \not\equiv n
 
 \newrule[\lambda]{Mlambda} \
 \frac \
-{ \langle e \bullet t, b, s_2 \rangle \stepto \langle p, s_3 \rangle} \
-{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, b, s_1 \rangle \stepto \langle p, s_3 \rangle }  \
-\;\text{if}\; f( \stx{ [[ } B_1, B_2 \stx{ ]] }, s_1 ) \to \langle e, s_2 \rangle
+{ \langle e \bullet t, u, s_2 \rangle \stepto \langle p, s_3 \rangle} \
+{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, u, s_1 \rangle \stepto \langle p, s_3 \rangle }  \
+\;\text{if}\; f( \stx{ [[ } B_1, B_2 \stx{ ]] }, u, s_1 ) \to \langle e, s_2 \rangle
 
 \newrule[\Phi]{Mphi} \
 \frac \
-{ \langle e \bullet{} t, b, s_1 \rangle \stepto \langle p, s_2 \rangle} \
-{ \langle \stx{ \Phi } \stx{ . } \tau \bullet{} t, b, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
-\;\text{if}\; b = \stx{ \llbracket } B_1 , \tau \stx{ \mapsto } e, B_2 \rrbracket
+{ \langle e \bullet{} t, u, s_1 \rangle \stepto \langle p, s_2 \rangle} \
+{ \langle \stx{ \Phi } \stx{ . } \tau \bullet{} t, u, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; u = \stx{ \llbracket } B_1 , \tau \stx{ \mapsto } e, B_2 \rrbracket
 \end{phiquation*}
 \end{mdframed}
 \capt{Morphing rules.}
 \label{fig:morphing}
 \end{figure*}
 
-The notation \(\langle e, b, s_1 \rangle \stepto \langle p, s_2 \rangle\)
-  means that \(\mathbb{M}(e, b, s_1)\) evaluates to \(p\), thus \emph{morphing} \(e\)
+The notation \(\langle e, u, s_1 \rangle \stepto \langle p, s_2 \rangle\)
+  means that \(\mathbb{M}(e, u, s_1)\) evaluates to \(p\), thus \emph{morphing} \(e\)
   with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\),
-  in the context of \(b\).
+  in the universe \(u\).
 
 In \nameref{r:Mlambda}, the function \(f\) is called by value.
 
@@ -203,16 +203,16 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule[\Delta]{delta} \
 \frac \
 { } \
-{ \langle \stx{ [[ } B_1, \stx{ D> } \delta, B_2 \stx{ ]] }, b, s \rangle \stepto \langle \delta, s \rangle } \
+{ \langle \stx{ [[ } B_1, \stx{ D> } \delta, B_2 \stx{ ]] }, u, s \rangle \stepto \langle \delta, s \rangle } \
 \quad\quad \
 \newrule{norm} \
-\frac{ \langle p, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, b, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
-\;\text{if}\; \mathbb{M}(e, b, s_1) \to \langle p, s_2 \rangle
+\frac{ \langle p, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, u, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+\;\text{if}\; \mathbb{M}(e, u, s_1) \to \langle p, s_2 \rangle
 
 \newrule{box} \
 \frac \
-{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
-{ \langle \stx{ [[ } B_1, \stx{ @ } \stx{ -> } e, B_2 \stx{ ]] }, b, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
+{ \langle \stx{ [[ } B_1, \stx{ @ } \stx{ -> } e, B_2 \stx{ ]] }, u, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
 \;\text{if}\; [ \stx{ \Delta }, \stx{ \lambda } ] \cap ( B_1 \cup B_2 ) = \emptyset
 \end{phiquation*}
 \end{mdframed}
@@ -223,10 +223,10 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 The rules \nameref{r:box} and \nameref{r:phi} coexist because
 \(\Delta \notin \mathcal{T}\), thus making the expression $ [[ @ -> 42 ]].\Delta $ invalid.
 
-The notation \(\langle e, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
-  means that \(\mathbb{D}(e, b, s_1)\) evaluates to \(\delta\),
-  thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\), in the context \(b\).
-The notation \(\mathbb{D}(e, b)\) is a shortened form of \(\mathbb{D}(e, b, \varnothing)_{(1)}\),
+The notation \(\langle e, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
+  means that \(\mathbb{D}(e, u, s_1)\) evaluates to \(\delta\),
+  thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\), in the universe \(u\).
+The notation \(\mathbb{D}(e, u)\) is a shortened form of \(\mathbb{D}(e, u, \varnothing)_{(1)}\),
   which is a \emph{pure} dataization --- inputting an empty state of evaluation and ignoring
   the output state of evaluation.
 Here and later, the notation \(x_{(i)}\) denotes the \(i\)-th element of the tuple \(x\).
