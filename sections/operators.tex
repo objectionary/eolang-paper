@@ -1,0 +1,271 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Operators}
+
+In this section we introduce a family of semantic operators defined on \(\phi\)-expressions.
+These operators do not extend the syntax of the calculus.
+Instead, they describe systematic transformations of expressions that reveal, modify, or project their semantic content.
+Each operator is defined in terms of the reduction semantics introduced earlier
+  and preserves the core meaning of expressions while possibly changing their form or role.
+
+\subsection{Contextualization}\label{sec:contextualization}
+\label{r:contextualize}
+\newcommand\ctx[2]{\lceil #1 \;\textcolor{gray}{\shortmid}\; #2 \rfloor}
+
+\begin{definition}[Contextualization]
+A contextualization function \(\mathbb{C} : \mathcal{E} \times \mathcal{B} \to \mathcal{E}\) denoted as \( \ctx{e}{b} \), which replaces locators with objects, is defined by induction:
+\begin{enumerate}[label=\(\mathbb{C}_\arabic*:\),ref=\ensuremath{\mathbb{C}.\arabic*}]
+  \item\label{C:xi} $ \ctx{\xi}{b} \trans b $,
+  \item\label{C:forma} $ \ctx{[[ B ]]}{b} \trans [[ B ]] $,
+  \item\label{C:dead} $ \ctx{\dead}{b} \trans \dead $,
+  \item\label{C:dot} $ \ctx{e.\tau}{b} \trans \ctx{e}{b}.\tau $,
+  \item\label{C:app} $ \ctx{e_1( \tau -> e_2 )}{b} \trans \ctx{e_1}{b}( \tau -> \ctx{e_2}{b} ) $.
+\end{enumerate}
+\end{definition}
+
+\Cref{app:contextualization-examples} demonstrates how contextualization function works, by examples.
+
+\subsection{Normalization}\label{sec:normalization}
+
+An expression that may be rewritten by the \emph{rules} (or \emph{reductions})
+listed in \cref{fig:reduction} is a \emph{reducible} expression.
+The notation \(e_1 \trans e_2\), optionally followed by a condition,
+denotes a reduction of \(e_1\) to \(e_2\), if the condition holds.
+
+These rules may be applied in any order.
+
+A specific reduction may be denoted, for example, as \(\trans_{\nameref{r:dot}}\),
+or just \(\trans\) if a reduction is meant with no specificity.
+The notation \(e_1 \strans e_2\) denotes a reflexive transitive
+closure of all reductions, so that there is a possibly empty finite
+sequence of reductions between \(e_1\) and \(e_2\).
+
+An expression that has no more possible applications of reductions
+is \emph{irreducible} or a \emph{normal form}, denoted as \(\nf{}_i\)
+ranging over \(\mathcal{N} \in \mathcal{E}\). Thus, \(\nf\) is a normal
+form of \(e\) if \(e \strans \nf\) and there is no expression \(e_1\)
+such that \(\nf \trans e_1\).
+
+An expression may not have a normal form.
+
+\begin{figure*}
+\newcommand\trrule[5][]{%
+  \newrule[#1]{#2}:
+  &
+  { $ #3 $ }
+  \(\trans\)
+  { $ #4 $ }
+  \quad #5
+  \\%
+}
+\begin{mdframed}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rl}
+\trrule{copy}
+  { [[ B_1, \tau -> ?, B_2 ]] ( \tau -> e ) }
+  { [[ B_1, \tau -> n, B_2 ]] }
+  { if \( \ctx{e}{e\textsuperscript{\(\varsigma\)}} \strans n \) }
+\trrule[\alpha]{alpha}
+  { [[ B_1, \tau -> ?, B_2 ]] ( \alpha_i -> e ) }
+  { [[ B_1, \tau -> ?, B_2 ]] ( \tau -> e) }
+  { if $ \ordinal{\tau}{[[B]]} = i $ }
+\trrule{dot}
+  { [[ B_1, \tau -> \nf, B_2 ]].\tau }
+  { \ctx{\nf}{n\textsuperscript{\(\varsigma\)}} ( \rho -> n\textsuperscript{\(\varsigma\)} ) }
+  { }
+\trrule[\varphi]{phi}
+  { [[ B ]].\tau }
+  { [[ B ]].\varphi.\tau }
+  { if \( \tau \notin B\) and \( \varphi \in B\)  }
+\trrule{stay}
+  { [[ B_1, \rho -> e_1, B_2 ]]( \rho -> e_2 ) }
+  { [[ B_1, \rho -> e_1, B_2 ]] }
+  { }
+\trrule{over}
+  { [[ B_1, \tau -> e_1, B_2 ]]( \tau -> e_2) }
+  { \dead }
+  { if \( \tau \not= \rho \) }
+\trrule{stop}
+  { [[ B ]].\tau }
+  { \dead }
+  { if \( [ \tau, \varphi, \lambda ] \cap B = \emptyset \) }
+\trrule{null}
+  { [[ B_1, \tau -> ?, B_2 ]].\tau }
+  { \dead }
+  { }
+\trrule{miss}
+  { [[ B ]] ( \tau -> e ) }
+  { \dead }
+  { if \( \tau \notin B \) and \( \tau \notin [ \alpha_0, \alpha_1, \dots ] \) }
+\trrule{dd}
+  { \dead.\tau }
+  { \dead }
+  { }
+\trrule{dc}
+  { \dead ( \tau -> e ) }
+  { \dead }
+  { }
+\end{tabular}
+\end{mdframed}
+\capt{Reduction rules.}
+\label{fig:reduction}
+\end{figure*}
+
+\Cref{app:normalization-examples} demonstrates how normalization works, by examples.
+
+\subsection{Equivalence}\label{sec:equivalence}
+
+\begin{definition}[Equivalence]
+Two expressions are said to be syntactically equivalent or just
+\textbf{equivalent} (denoted by \(\equiv\)) if their normal forms are
+syntactically identical.
+\end{definition}
+
+\Cref{fig:equivalence} shows some equivalence properties that hold.
+
+\begin{figure*}
+\begin{mdframed}
+\begin{phiquation*}
+e \stx{(} \tau_1 \stx{->} e_1\stx{)} \stx{(} \tau_2 \stx{->} e_2 \stx{)} \equiv e \stx{(} \tau_2 \stx{->} e_2\stx{)} \stx{(}\tau_1 \stx{->} e_1\stx{)} \
+\quad\text{(by \nameref{r:copy})}
+  \text{Commutativity of Application}
+
+e\stx{.}\tau \stx{(} \stx{\rho} \stx{->} e_2 \stx{)} \equiv e\stx{.}\tau \
+\quad\text{(by \nameref{r:dot} and \nameref{r:stay})}
+  \text{Redundancy of Adoption}
+\end{phiquation*}
+\end{mdframed}
+\capt{Equivalence properties that hold.}
+\label{fig:equivalence}
+\end{figure*}
+
+\subsection{Morphing}\label{sec:morphing}
+
+The \emph{morphing} function \(\mathbb{M} : \langle \mathcal{E}, \mathcal{B}, \mathcal{S} \rangle \to \langle \mathcal{P}, \mathcal{S} \rangle\)
+  maps expressions to primitives, possibly modifying the \emph{state} of evaluation.
+The inference rules at \cref{fig:morphing} inductively describe the algorithm of morphing.
+
+\begin{figure*}
+\begin{mdframed}
+\begin{phiquation*}
+\newrule{Mprim} \
+\frac \
+{  } \
+{ \langle e, b, s \rangle \stepto \langle p, s \rangle }  \
+\;\text{if}\; e \in \mathcal{P} \
+\quad\quad \
+\newrule{Mnmz} \
+\frac \
+{ \langle \nf, b, s_1 \rangle \stepto \langle p, s_2 \rangle } \
+{ \langle e, b, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; e \strans \nf \;\text{and}\; e \not\equiv n
+
+\newrule[\lambda]{Mlambda} \
+\frac \
+{ \langle e \bullet t, b, s_2 \rangle \stepto \langle p, s_3 \rangle} \
+{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, b, s_1 \rangle \stepto \langle p, s_3 \rangle }  \
+\;\text{if}\; f( \stx{ [[ } B_1, B_2 \stx{ ]] }, s_1 ) \to \langle e, s_2 \rangle
+
+\newrule[\Phi]{Mphi} \
+\frac \
+{ \langle e \bullet{} t, b, s_1 \rangle \stepto \langle p, s_2 \rangle} \
+{ \langle \stx{ \Phi } \stx{ . } \tau \bullet{} t, b, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; b = \stx{ \llbracket } B_1 , \tau \stx{ \mapsto } e, B_2 \rrbracket
+\end{phiquation*}
+\end{mdframed}
+\capt{Morphing rules.}
+\label{fig:morphing}
+\end{figure*}
+
+The notation \(\langle e, b, s_1 \rangle \stepto \langle p, s_2 \rangle\)
+  means that \(\mathbb{M}(e, b, s_1)\) evaluates to \(p\), thus \emph{morphing} \(e\)
+  with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\),
+  in the context of \(b\).
+
+In \nameref{r:Mlambda}, the function \(f\) is called by value.
+
+\begin{lemma}
+The morphing function is not total because not every expression has a normal form
+  and not every normal form is a primitive.
+\end{lemma}
+
+\subsection{Dataization}\label{sec:dataization}
+
+The \emph{dataization} function
+\(\mathbb{D} : \langle \mathcal{E}, \mathcal{B}, \mathcal{S} \rangle \rightharpoonup \langle \mathcal{D}, \mathcal{S} \rangle\)
+maps expressions to data, possibly modifying the \emph{state} of evaluation, in a given context.
+The inference rules in \cref{fig:dataization} inductively describe the algorithm of dataization.
+
+\begin{figure*}
+\begin{mdframed}
+\begin{phiquation*}
+\newrule[\Delta]{delta} \
+\frac \
+{ } \
+{ \langle \stx{ [[ } B_1, \stx{ D> } \delta, B_2 \stx{ ]] }, b, s \rangle \stepto \langle \delta, s \rangle } \
+\quad\quad \
+\newrule{norm} \
+\frac{ \langle p, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, b, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+\;\text{if}\; \mathbb{M}(e, b, s_1) \to \langle p, s_2 \rangle
+
+\newrule{box} \
+\frac \
+{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
+{ \langle \stx{ [[ } B_1, \stx{ @ } \stx{ -> } e, B_2 \stx{ ]] }, b, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+\;\text{if}\; [ \stx{ \Delta }, \stx{ \lambda } ] \cap ( B_1 \cup B_2 ) = \emptyset
+\end{phiquation*}
+\end{mdframed}
+\capt{Dataization rules.}
+\label{fig:dataization}
+\end{figure*}
+
+The rules \nameref{r:box} and \nameref{r:phi} coexist because
+\(\Delta \notin \mathcal{T}\), thus making the expression $ [[ @ -> 42 ]].\Delta $ invalid.
+
+The notation \(\langle e, b, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
+  means that \(\mathbb{D}(e, b, s_1)\) evaluates to \(\delta\),
+  thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\), in the context \(b\).
+The notation \(\mathbb{D}(e, b)\) is a shortened form of \(\mathbb{D}(e, b, \varnothing)_{(1)}\),
+  which is a \emph{pure} dataization --- inputting an empty state of evaluation and ignoring
+  the output state of evaluation.
+Here and later, the notation \(x_{(i)}\) denotes the \(i\)-th element of the tuple \(x\).
+
+\begin{lemma}
+The dataization function is partial, because not every primitive contains \stx{\Delta}-asset.
+\end{lemma}
+
+\Cref{app:dataization-examples} demonstrates how dataization function works, by examples.
+
+\subsection{Congruence}
+
+\begin{definition}[Congruence]
+Two expressions \(e_1\) and \(e_2\) are said to be behaviorally equivalent
+  or \textbf{congruent} (denoted by \(\cong\)) if for any state \(s\) and any context \(b\):
+  \(\mathbb{D}(e_1, b, s) = \mathbb{D}(e_2, b, s)\).
+\end{definition}
+
+\begin{figure*}
+\begin{mdframed}
+\begin{phiquation*}
+\nf \cong \stx{ [[ } \stx{ @ } \stx{ -> } \nf \stx{ ]] } \quad \text{(by \nameref{r:phi})}
+  \text{Transparency of Decoration}
+
+\stx{ [[ } \tau_1 \stx{ -> } \stx{ ? }, B \stx{ ]] } \cong \stx{ [[ } B \stx{ ]] } \quad \text{(by \nameref{r:stop})}
+  \text{Redundancy of Void Attributes}
+
+\stx{ [[ } B \stx{ ]] } \cong \stx{ [[ } B \stx{ ]] .@ } \quad\text{if}\; \stx{ @ } \in B \;\text{and}\; \stx{ \Delta } \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
+  \text{Implicitness of Decoration}
+\end{phiquation*}
+\end{mdframed}
+\capt{Congruence properties that hold.}
+\label{fig:congruence}
+\end{figure*}
+
+\Cref{fig:congruence} shows some congruence properties that hold.
+
+Two congruent expressions may be non-equivalent, for example:
+\begin{phiquation*}
+\Big\{ \tau_1 -> [[ foo -> ?, D> 01-02 ]], \tau_2 -> [[ bar -> ?, D> 01-02 ]] \Big\}
+Q.\tau_1 \cong Q.\tau_2 \;\not\to\; Q.\tau_1 \equiv Q.\tau_2.
+\end{phiquation*}
