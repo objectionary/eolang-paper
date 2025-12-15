@@ -12,9 +12,9 @@ This is a \emph{formation} of an object with two attributes \ff{price} and \ff{c
 The object is \emph{abstract} because the \ff{price} attribute is \emph{void}, i.e. there is no object \emph{attached} to it.
 The \ff{color} attribute is attached to another object formation with one \stx{\Delta}-\emph{asset},
   which is attached to \emph{data} (three bytes).
-Objects do not have \emph{names}, while only the attributes, which objects are attached to, do.
+Objects do not have names; only attributes, to which objects are attached, do.
 
-A \emph{full application} of an abstract object to a pair of attribute and object \emph{results} in a new \emph{closed} object, for example:
+A \emph{full application} of an abstract object to a pair of an attribute and an object \emph{results} in a new \emph{closed} object, for example:
 \begin{phiquation}
 \label{eq:simple-application}
 [[ |x| -> ? ]]( |y| -> b_2 ) \trans [[ |x| -> b_2 ]].
@@ -36,7 +36,7 @@ The leftmost symbol \stx{\xi} denotes the \emph{scope} of the object, which is t
   finally, the \(\stx{.}\ff{y}\) part retrieves object \(b\).
 
 Each object has a \emph{parent} attribute \(\rho\), which is attached to the
-formation from where the object was dispatched.
+formation from which the object was dispatched.
 
 Attributes are \emph{immutable}, i.e. an application of a binding to an object,
   where the attribute is already attached,
@@ -53,7 +53,7 @@ An object may be textually reduced, for example:
 \end{phiquation*}
 The object on the left is reduced to the object on the right in two reduction steps.
 Every object has a \emph{normal form}, which is a form that
-has no more possible applicable reductions.
+has no further applicable reductions.
 
 An object is called a \emph{decorator} if it has the \stx{\varphi}-attribute
 with an object attached to it, known as a \emph{decoratee}. An attribute
