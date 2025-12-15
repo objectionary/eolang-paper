@@ -76,35 +76,35 @@ An expression may not have a normal form.
   { }
 \trrule[\varphi]{phi}
   { [[ B ]].\tau }
-  { [[ B ]].\varphi.\tau }
-  { if \( \tau \notin B\) and \( \varphi \in B\)  }
+  { [[ B ]].@.\tau }
+  { if \( \tau \notin B \) and $ @ \in B $  }
 \trrule{stay}
   { [[ B_1, \rho -> e_1, B_2 ]]( \rho -> e_2 ) }
   { [[ B_1, \rho -> e_1, B_2 ]] }
   { }
 \trrule{over}
   { [[ B_1, \tau -> e_1, B_2 ]]( \tau -> e_2) }
-  { \dead }
-  { if \( \tau \not= \rho \) }
+  { T }
+  { if $ \tau \not= ^ $ }
 \trrule{stop}
   { [[ B ]].\tau }
-  { \dead }
+  { T }
   { if \( [ \tau, \varphi, \lambda ] \cap B = \emptyset \) }
 \trrule{null}
   { [[ B_1, \tau -> ?, B_2 ]].\tau }
-  { \dead }
+  { T }
   { }
 \trrule{miss}
   { [[ B ]] ( \tau -> e ) }
-  { \dead }
+  { T }
   { if \( \tau \notin B \) and \( \tau \notin [ \alpha_0, \alpha_1, \dots ] \) }
 \trrule{dd}
-  { \dead.\tau }
-  { \dead }
+  { T.\tau }
+  { T }
   { }
 \trrule{dc}
-  { \dead ( \tau -> e ) }
-  { \dead }
+  { T ( \tau -> e ) }
+  { T }
   { }
 \end{tabular}
 \end{mdframed}
@@ -127,11 +127,11 @@ syntactically identical.
 \begin{figure*}
 \begin{mdframed}
 \begin{phiquation*}
-e \stx{(} \tau_1 \stx{->} e_1\stx{)} \stx{(} \tau_2 \stx{->} e_2 \stx{)} \equiv e \stx{(} \tau_2 \stx{->} e_2\stx{)} \stx{(}\tau_1 \stx{->} e_1\stx{)} \
+e ( \tau_1 -> e_1) ( \tau_2 -> e_2 ) \equiv e ( \tau_2 -> e_2) (\tau_1 -> e_1) \
 \quad\text{(by \nameref{r:copy})}
   \text{Commutativity of Application}
 
-e\stx{.}\tau \stx{(} \stx{\rho} \stx{->} e_2 \stx{)} \equiv e\stx{.}\tau \
+e.\tau ( \rho -> e_2 ) \equiv e.\tau \
 \quad\text{(by \nameref{r:dot} and \nameref{r:stay})}
   \text{Redundancy of Adoption}
 \end{phiquation*}
@@ -164,14 +164,14 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 \newrule[\lambda]{Mlambda} \
 \frac \
 { \langle e \bullet t, u, s_2 \rangle \stepto \langle p, s_3 \rangle} \
-{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, u, s_1 \rangle \stepto \langle p, s_3 \rangle }  \
-\;\text{if}\; f( \stx{ [[ } B_1, B_2 \stx{ ]] }, u, s_1 ) \to \langle e, s_2 \rangle
+{ \langle  [[  B_1 ,  L>  f , B_2  ]]  \bullet{} t, u, s_1 \rangle \stepto \langle p, s_3 \rangle }  \
+\;\text{if}\; f(  [[  B_1, B_2  ]] , u, s_1 ) \to \langle e, s_2 \rangle
 
 \newrule[\Phi]{Mphi} \
 \frac \
 { \langle e \bullet{} t, u, s_1 \rangle \stepto \langle p, s_2 \rangle} \
-{ \langle \stx{ \Phi } \stx{ . } \tau \bullet{} t, u, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
-\;\text{if}\; u = \stx{ \llbracket } B_1 , \tau \stx{ \mapsto } e, B_2 \rrbracket
+{ \langle  \Phi   .  \tau \bullet{} t, u, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+\;\text{if}\; u =  \llbracket  B_1 , \tau  \mapsto  e, B_2 \rrbracket
 \end{phiquation*}
 \end{mdframed}
 \capt{Morphing rules.}
@@ -203,7 +203,7 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule[\Delta]{delta} \
 \frac \
 { } \
-{ \langle \stx{ [[ } B_1, \stx{ D> } \delta, B_2 \stx{ ]] }, u, s \rangle \stepto \langle \delta, s \rangle } \
+{ \langle  [[  B_1,  D>  \delta, B_2  ]] , u, s \rangle \stepto \langle \delta, s \rangle } \
 \quad\quad \
 \newrule{norm} \
 \frac{ \langle p, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, u, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
@@ -212,8 +212,8 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule{box} \
 \frac \
 { \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
-{ \langle \stx{ [[ } B_1, \stx{ @ } \stx{ -> } e, B_2 \stx{ ]] }, u, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
-\;\text{if}\; [ \stx{ \Delta }, \stx{ \lambda } ] \cap ( B_1 \cup B_2 ) = \emptyset
+{ \langle  [[  B_1,  @   ->  e, B_2  ]] , u, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
+\;\text{if}\; [  \Delta ,  \lambda  ] \cap ( B_1 \cup B_2 ) = \emptyset
 \end{phiquation*}
 \end{mdframed}
 \capt{Dataization rules.}
@@ -226,13 +226,13 @@ The rules \nameref{r:box} and \nameref{r:phi} coexist because
 The notation \(\langle e, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
   means that \(\mathbb{D}(e, u, s_1)\) evaluates to \(\delta\),
   thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\), in the universe \(u\).
-The notation \(\mathbb{D}(e, u)\) is a shortened form of \(\mathbb{D}(e, u, \varnothing)_{(1)}\),
+The notation \(\mathbb{D}(e, u)\) is a shortened form of $\mathbb{D}(e, u, ?)_{(1)}$,
   which is a \emph{pure} dataization --- inputting an empty state of evaluation and ignoring
   the output state of evaluation.
 Here and later, the notation \(x_{(i)}\) denotes the \(i\)-th element of the tuple \(x\).
 
 \begin{lemma}
-The dataization function is partial, because not every primitive contains \stx{\Delta}-asset.
+The dataization function is partial, because not every primitive contains \phiTerminal{\(\Delta\)}-asset.
 \end{lemma}
 
 \Cref{app:dataization-examples} demonstrates how the dataization function works through examples.
@@ -248,13 +248,13 @@ Two expressions \(e_1\) and \(e_2\) are said to be behaviorally equivalent
 \begin{figure*}
 \begin{mdframed}
 \begin{phiquation*}
-\nf \cong \stx{ [[ } \stx{ @ } \stx{ -> } \nf \stx{ ]] } \quad \text{(by \nameref{r:phi})}
+\nf \cong  [[   @   ->  \nf  ]]  \quad \text{(by \nameref{r:phi})}
   \text{Transparency of Decoration}
 
-\stx{ [[ } \tau_1 \stx{ -> } \stx{ ? }, B \stx{ ]] } \cong \stx{ [[ } B \stx{ ]] } \quad \text{(by \nameref{r:stop})}
+ [[  \tau_1  ->   ? , B  ]]  \cong  [[  B  ]]  \quad \text{(by \nameref{r:stop})}
   \text{Redundancy of Void Attributes}
 
-\stx{ [[ } B \stx{ ]] } \cong \stx{ [[ } B \stx{ ]] .@ } \quad\text{if}\; \stx{ @ } \in B \;\text{and}\; \stx{ \Delta } \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
+ [[  B  ]]  \cong  [[  B  ]] .@  \quad\text{if}\;  @  \in B \;\text{and}\;  \Delta  \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
   \text{Implicitness of Decoration}
 \end{phiquation*}
 \end{mdframed}

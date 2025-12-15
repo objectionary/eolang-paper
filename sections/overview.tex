@@ -10,7 +10,7 @@ An \emph{object} is a collection of \emph{attributes}, which are uniquely named 
 \end{phiquation}
 This is a \emph{formation} of an object with two attributes \ff{price} and \ff{color}.
 The object is \emph{abstract} because the \ff{price} attribute is \emph{void}, i.e. there is no object \emph{attached} to it.
-The \ff{color} attribute is attached to another object formation with one \stx{\Delta}-\emph{asset},
+The \ff{color} attribute is attached to another object formation with one \phiTerminal{\(\Delta\)}-\emph{asset},
   which is attached to \emph{data} (three bytes).
 Objects do not have names; only attributes, to which objects are attached, do.
 
@@ -30,19 +30,19 @@ An object may be \emph{dispatched} from another object with the help of \emph{do
 \label{eq:dot-notation}
 [[ |x| -> \underline{\xi.|p|(|t| -> b)}.|y|, |p| -> [[ |t| -> ?, |y| -> \xi.|t| ]] ]].|x| \trans b.
 \end{phiquation}
-The leftmost symbol \stx{\xi} denotes the \emph{scope} of the object, which is the object formation itself;
-  the following \(\stx{.}\ff{p}\) part retrieves the object attached to the attribute \(\ff{p}\);
+The leftmost symbol \phiTerminal{\(\xi\)} denotes the \emph{scope} of the object, which is the object formation itself;
+  the following \(.\ff{p}\) part retrieves the object attached to the attribute \(\ff{p}\);
   then, the application $(|t|->b)$ makes a copy of the object;
-  finally, the \(\stx{.}\ff{y}\) part retrieves object \(b\).
+  finally, the \(.\ff{y}\) part retrieves object \(b\).
 
-Each object has a \emph{parent} attribute \(\rho\), which is attached to the
+Each object has a \emph{parent} attribute $^$, which is attached to the
 formation from which the object was dispatched.
 
 Attributes are \emph{immutable}, i.e. an application of a binding to an object,
   where the attribute is already attached,
-  results in a \emph{terminator} denoted as \stx{\dead} (runtime error), for example:
+  results in a \emph{terminator} denoted as $T$ (runtime error), for example:
 \begin{phiquation*}
-[[ |x| -> b_1 ]]( |x| -> b_2 ) \trans \dead{}.
+[[ |x| -> b_1 ]]( |x| -> b_2 ) \trans T.
 \end{phiquation*}
 
 An object may be textually reduced, for example:
@@ -55,7 +55,7 @@ The object on the left is reduced to the object on the right in two reduction st
 Every object has a \emph{normal form}, which is a form that
 has no further applicable reductions.
 
-An object is called a \emph{decorator} if it has the \stx{\varphi}-attribute
+An object is called a \emph{decorator} if it has the $@$-attribute
 with an object attached to it, known as a \emph{decoratee}. An attribute
 dispatched from a decorator reduces to the same attribute dispatched from the decoratee,
 if the attribute is not present in the decorator, for example:
@@ -63,12 +63,12 @@ if the attribute is not present in the decorator, for example:
 [[ @ -> [[ |x| -> b ]] ]].|x| \trans b.
 \end{phiquation*}
 
-An object may have data attached only to its \stx{\Delta}-asset, for example:
+An object may have data attached only to its \phiTerminal{\(\Delta\)}-asset, for example:
 \begin{phiquation*}
 [[ |x| -> [[ D> 00-2A ]] ]].
 \end{phiquation*}
 
-An object may have a \emph{function} attached to its \stx{\lambda}-asset.
+An object may have a \emph{function} attached to its \phiTerminal{\(\lambda\)}-asset.
 Such an object is referred to as an \emph{atom}.
 An atom may be \emph{morphed} to another object by evaluating
 its function with \begin{inparaenum}[1)]
@@ -84,15 +84,14 @@ as arguments, for example:
 \end{phiquation}
 There is also a \emph{dataization} function \(\mathbb{D}(b, u, s)\)
   that normalizes its first argument and then either returns the data
-  attached to the \stx{\Delta}-asset of the normal form or morphs the atom into an object and dataizes it (recursively),
+  attached to the \phiTerminal{\(\Delta\)}-asset of the normal form or morphs the atom into an object and dataizes it (recursively),
   for example:
 \begin{phiquation*}
 \mathbb{D}([[ |x| -> 42 ]].|x| \trans 42, u, s) \to 42.
 \end{phiquation*}
 
-A program is an object that is attached to the \stx{\Phi} attribute
-of the \emph{Universe}, for example:
+A program is an object that is attached to the $Q$ attribute of the \emph{Universe}, for example:
 \begin{phiquation*}
 Q -> [[ D> CA-FE ]].
 \end{phiquation*}
-The dataization of \stx{\Phi} is the evaluation of the program.
+The dataization of $Q$ is the evaluation of the program.

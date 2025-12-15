@@ -35,8 +35,8 @@ Besides the literals mentioned in the grammar in orange,
   the alphabet includes three non-terminals that rewrite to terminals as follows:
 \begin{itemize}
   \item \EbnfNonTerminal{Attribute}: either \begin{inparaenum}[1)]
-      \item Greek letter \(\varphi\),
-      \item Greek letter \(\rho\),
+      \item Greek letter $@$,
+      \item Greek letter $^$,
       or
       \item a string of lowercase English letters possibly with dashes inside, e.g. \enquote{\ff{price}} or \enquote{\ff{a-car}};
   \end{inparaenum}
@@ -52,44 +52,44 @@ Besides the literals mentioned in the grammar in orange,
 \label{tab:sugar}
 \newcommand\sugar[2]{$ #1 $ & $ #2 $ \\}
 \newcommand\subs[1]{& \textcolor{gray}{(#1)} \\}
-\newcommand\tto{\;\stx{\mapsto}\;}
+\newcommand\tto{\;\mapsto\;}
 \begin{tabular}{ll}
 \toprule
 Syntax sugar & Its more verbose equivalent \\
 \midrule
 \sugar
-  {\stx{ QQ }}
-  {\stx{ Q } \stx{.} |org| \stx{.} |eolang|}
+  { QQ }
+  { Q  . |org| . |eolang|}
 \sugar
-  {e \stx{(} \tau_1 \tto e_1 \stx{,}\; \tau_2 \tto e_2 \stx{,}\; \dots \stx{)}}
-  {e \stx{(} \tau_1 \tto e_1 \stx{)}\stx{(} \tau_2 \tto e_2 \stx{)} \dots}
+  {e ( \tau_1 \tto e_1 ,\; \tau_2 \tto e_2 ,\; \dots )}
+  {e ( \tau_1 \tto e_1 )( \tau_2 \tto e_2 ) \dots}
 \sugar
-  {e \stx{(} e_0 \stx{,}\; e_1 \stx{,} \dots \stx{)}}
-  {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,}\; \dots \stx{)}}
+  {e ( e_0 ,\; e_1 , \dots )}
+  {e ( \alpha_0 \tto e_0 ,\; \alpha_1 \tto e_1 ,\; \dots )}
 \sugar
-  {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,}\; \dots \stx{)} \tto \stx{[[} B \stx{]]}}
-  {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,}\; \dots \stx{,}\; B \stx{]]}}
+  {\tau_1 ( \tau_2 ,\; \tau_3 ,\; \dots ) \tto [[ B ]]}
+  {\tau_1 \tto [[ \tau_2 \tto ? ,\; \tau_3 \tto ? ,\; \dots ,\; B ]]}
 \sugar
   {\tau_1 \tto \tau_2}
-  {\tau_1 \tto \stx{\xi}\stx{.}\tau_2}
+  {\tau_1 \tto \xi.\tau_2}
 \sugar
-  {\stx{[[} B \stx{]]}}
-  {\stx{[[} B \stx{,}\; \stx{\rho} \tto \stx{?} \stx{]]} \quad\text{if}\; \stx{\rho} \notin B}
+  {[[ B ]]}
+  {[[ B ,\; \rho \tto ? ]] \quad\text{if}\; \rho \notin B}
 \sugar
   {\texttt{\begin{CJK}{UTF8}{gbsn}"你好"\end{CJK}}}
-  {\stx{ QQ } \stx{.} |string| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |E4-BD-A0-E5-A5-BD| \stx{]]} \stx{)} \stx{)}}
+  { QQ  . |string| (  QQ  . |bytes| ( [[  D> \; |E4-BD-A0-E5-A5-BD| ]] ) )}
   \subs{UTF-8 string}
 \sugar
   {42}
-  {\stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-45-00-00-00-00-00-00| \stx{]]} \stx{)} \stx{)}}
+  { QQ  . |number| (  QQ  . |bytes| ( [[  D> \; |40-45-00-00-00-00-00-00| ]] ) )}
   \subs{eight bytes per integer}
 \sugar
   {3.14}
-  {\stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-09-1E-B8-51-EB-85-1F| \stx{]]} \stx{)} \stx{)}}
+  { QQ  . |number| (  QQ  . |bytes| ( [[  D> \; |40-09-1E-B8-51-EB-85-1F| ]] ) )}
   \subs{eight bytes per number with a floating point}
 \sugar
-  {\stx{\Big\{} e \stx{\Big\}}}
-  {\stx{ Q } \tto e }
+  {\Big\{ e \Big\}}
+  { Q  \tto e }
 \bottomrule
 \end{tabular}
 \end{table*}

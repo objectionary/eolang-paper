@@ -21,12 +21,12 @@ certain transformations.
 
 \begin{definition}[Attribute]
 An \textbf{attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\),
-  is an identifier to which either \stx{\varnothing} or an expression
+  is an identifier to which either $?$ or an expression
   may be attached.
 \end{definition}
 
 \begin{definition}[Void vs. Attached]
-An attribute is \textbf{void} if \stx{\varnothing} is attached to it,
+An attribute is \textbf{void} if $?$ is attached to it,
   otherwise it is an \textbf{attached} attribute.
 \end{definition}
 
@@ -59,8 +59,8 @@ A \textbf{function} is a total mapping
 
 \begin{definition}[Asset]
 An \textbf{asset} is an identifier to which either data
-  (denoted as \stx{\Delta}-asset) or function
-  (denoted as \stx{\lambda}-asset) is attached.
+  (denoted as \phiTerminal{\(\Delta\)}-asset) or function
+  (denoted as \phiTerminal{\(\lambda\)}-asset) is attached.
 \end{definition}
 
 \subsection{Object}\label{sec:object}
@@ -68,7 +68,7 @@ An \textbf{asset} is an identifier to which either data
 \begin{definition}[Object]
 An \textbf{object}, ranged over \(\mathcal{B}\) by \(b_i\), is a binding
   where keys are either attributes or assets and values are either
-  \stx{\varnothing}, expressions, data, or functions.
+  $?$, expressions, data, or functions.
 \end{definition}
 
 \subsection{Domain}\label{sec:domain}
@@ -79,13 +79,12 @@ that includes all attributes of \(b\).
 \end{definition}
 
 The domain of the object in \cref{eq:object-example} is \(\{ \ff{a}, \ff{b}, \ff{foo} \}\).
-Assets \stx{\Delta} and \stx{\lambda} do not belong to object domain.
+Assets \phiTerminal{\(\Delta\)} and \phiTerminal{\(\lambda\)} do not belong to object domain.
 
 \subsection{Formation}\label{sec:formation}
 
 \begin{definition}[Formation]
-Object \textbf{formation}, denoted as \(\stx{\llbracket} B \stx{\rrbracket}\),
-  is a construction of a new object.
+Object \textbf{formation}, denoted as $[[ B ]]$, is a construction of a new object.
 \end{definition}
 
 We introduce the term ``object formation'' rather than using the more traditional
@@ -99,20 +98,20 @@ The following is an example of an object formation with four pairs, where the fi
   expressions:
 \begin{phiquation}
 \label{eq:object-example}
-[[ D> 00-2A, |a| -> b_2(0-> b_3).bar, |b| -> [[ L> |Sqrt| ]], foo -> \dead ]].
+ [[ D> 00-2A, |a| -> b_2(0-> b_3).bar, |b| -> [[ L> |Sqrt| ]], foo -> T ]].
 \end{phiquation}
 
-The arrow \stx{\mapsto} denotes an attachment of an expression (right-hand side)
-  to an attribute (left-hand side). The arrow \stx{\phiDotted} denotes
+The arrow $ -> $ denotes an attachment of an expression (right-hand side)
+  to an attribute (left-hand side). The arrow $ ..> $ denotes
   an attachment of data or function to an asset.
 
 \subsection{Program}\label{sec:program}
 
 \begin{definition}[Program]
-A \textbf{program} is a pair $ Q \stx{ -> } \stx{ [[ } B \stx{ ]] } $ that exists outside of any objects.
+A \textbf{program} is a pair $ Q -> [[ B ]] $ that exists outside of any objects.
 \end{definition}
 
-The object attached to \(\Phi\) is called \emph{Universe}.
+The object attached to $Q$ is called \emph{Universe}.
 
 \subsection{Abstract Object}\label{sec:abstract}
 
@@ -145,13 +144,13 @@ in \(\mathbb{F}(b)\), starting from zero, not counting assets.
 \toprule
 \(b\) & \(\ordinal{|x|}{b}\) \\
 \midrule
-$[[ |x| -> \xi.|k| ]]$
+$[[ |x| -> \phiTerminal{\xi}.|k| ]]$
   & 0 \\
-$[[ |foo| -> \xi.|k|, |x| -> \Phi.|t| ]]$
+$[[ |foo| -> \phiTerminal{\xi}.|k|, |x| -> Q.|t| ]]$
   & 1 \\
-$[[ L> |Fn|, |x| -> \xi.|k| ]]$
+$[[ L> |Fn|, |x| -> \phiTerminal{\xi}.|k| ]]$
   & 0 \\
-$[[ D> CA-FE, |foo| -> \xi, |x| -> \xi.|foo| ]]$
+$[[ D> CA-FE, |foo| -> \phiTerminal{\xi}, |x| -> \phiTerminal{\xi}.|foo| ]]$
   & 2 \\
 \bottomrule
 \end{tabular}
@@ -161,7 +160,8 @@ $[[ D> CA-FE, |foo| -> \xi, |x| -> \xi.|foo| ]]$
 \subsection{Application}\label{sec:application}
 
 \begin{definition}[Application]
-Object \textbf{application}, denoted as \( b \stx{(} \tau \;\stx{\mapsto}\; e \stx{)} \), is a copy of an existing abstract object \(b\) (the ``subject''), with \(e\) attached to its \(\tau\) attribute.
+Object \textbf{application}, denoted as $ b ( \tau -> e ) $,
+  is a copy of an existing abstract object \(b\) (the ``subject''), with \(e\) attached to its \(\tau\) attribute.
 \end{definition}
 
 \Cref{eq:simple-application} demonstrates object application, where $ |a| -> b_2 $ is
@@ -171,14 +171,15 @@ a new object $[[ |a| -> b_2 ]]$, while the existing abstract object remains inta
 The object in \cref{eq:price-color} is abstract, because its attribute \ff{price} is void.
 The object in \cref{eq:simple-application} was abstract before the application, but the object created by the application is closed since its attribute \ff{a} is not void (attached to \(b_2\)).
 
-Even though \stx{\varnothing} may be attached to an attribute of an object,
-it is not an object by itself. Instead, \(\varnothing\) is a ``placeholder''
+Even though $?$ may be attached to an attribute of an object,
+it is not an object by itself. Instead, $?$ is a ``placeholder''
 for an object, which remains attached to an attribute until an object is attached to it.
 Even though this mechanism resembles NULL references, there is a significant
 difference: in \phic{}, void attributes may be attached to objects only once,
 while any further reattachments are prohibited.
 
-In $b(\alpha_i -> e)$ application, \(e\) must be attached to the attribute \(\tau\) of \(b\) for which \(\ordinal{\tau}{\mathbb{F}(b)}\) equals \(i\).
+In $b(\phiTerminal{\alpha_i} -> e)$ application, \(e\) must be attached to the attribute \(\tau\) of \(b\)
+  for which \(\ordinal{\tau}{\mathbb{F}(b)}\) equals \(i\).
 
 \subsection{Forma}\label{sec:forma}
 
@@ -189,14 +190,14 @@ A forma of a formation is the formation itself.
 \end{definition}
 
 In \cref{eq:simple-application}, the forma of $[[ |a| -> b_2 ]]$ is the abstract
-object $[[ |a| -> ? ]]$, while the forma of $[[ |a| -> ? ]]$ is itself.
+  object $[[ |a| -> ? ]]$, while the forma of $[[ |a| -> ? ]]$ is itself.
 
 \subsection{Dispatch}\label{sec:dispatch}
 
 \begin{definition}[Dispatch]
 Object \textbf{dispatch} (also known as ``dot notation''), denoted as
-\( b \stx{.} \tau \) where \(b\) is the ``subject'', means retrieval of the object
-attached to the \(\tau\) attribute of \(b\).
+  $ b . \tau $ where \(b\) is the ``subject'', means retrieval of the object
+  attached to the \(\tau\) attribute of \(b\).
 \end{definition}
 
 \subsection{Scope}\label{sec:scope}
@@ -236,14 +237,14 @@ In~\cref{eq:simple-scope}, the scope of \ff{author} is the formation where the \
 
 \subsection{Locators}\label{sec:locators}
 
-In an expression, the locator \stx{\Phi} means the program,
-while the locator \stx{\xi} means the scope of the expression.
+In an expression, the locator $Q$ means the program,
+while the locator \phiTerminal{\(\xi\)} means the scope of the expression.
 
 \subsection{Head and Tail}
 
 \begin{definition}
 Since any expression may recursively be defined as either \begin{inparaenum}[1)]
-    \item \(\stx{\dead}\),
+    \item $T$,
     \item formation,
     \item application,
     or
@@ -266,12 +267,12 @@ Expression & Head & Tail \\
 $b_1( foo -> b_2 )$
   & $b_1( foo -> b_2 )$
   & --- \\
-$b_1.\alpha_1.\alpha_2( 0-> b_2 )$
+$b_1.|aa|.|bb|( 0-> b_2 )$
   & $b_1$
-  & $\alpha_1.\alpha_2( 0-> b_2 )$ \\
-$[[ |a| -> b_2 ]].|a|.|test|.|b|$
+  & $aa.bb( 0-> b_2 )$ \\
+$[[ |a| -> b_2 ]].|aa|.|test|.|bb|$
   & $[[ |a| -> b_2 ]]$
-  & $\alpha_0.|test|.\alpha_2$ \\
+  & $aa.test.bb$ \\
 $b_1( |foo| -> b_2)( 0-> 42 ).|print|( 1-> 7 )$
   & $b_1( |foo| -> b_2)( 0-> 42 )$
   & $|print|( 1-> 7 )$ \\
@@ -283,10 +284,10 @@ $b_1( |foo| -> b_2)( 0-> 42 ).|print|( 1-> 7 )$
 \subsection{Terminator}\label{sec:terminator}
 
 \begin{definition}[Terminator]
-The \textbf{terminator}, denoted as \stx{\dead}, is an object that equals itself when it is
+The \textbf{terminator}, denoted as $T$, is an object that equals itself when it is
 the subject of a dispatch or an application:
 \begin{equation*}
-\forall \tau : \dead.\tau \trans \dead \qquad \forall \tau, e : \dead( \tau \mapsto e) \trans \dead.
+\forall \tau : T.\tau \trans T \qquad \forall \tau, e : T ( \tau -> e) \trans T.
 \end{equation*}
 \end{definition}
 
@@ -294,51 +295,50 @@ the subject of a dispatch or an application:
 
 \begin{definition}[Immutability]
 Every object is \textbf{immutable}, meaning that an application of
-its already attached attribute equals to \(\stx{\dead}\):
+its already attached attribute equals to $T$:
 \begin{equation*}
-\forall \tau, e_1, e_2 : \stx{\llbracket} \tau \stx{\mapsto} e_1 \stx{\rrbracket} \stx{(} \tau \stx{\mapsto} e_2 \stx{)} \trans \stx{\dead}
+\forall \tau, e_1, e_2 : [[ \tau -> e_1 ]] ( \tau -> e_2 ) \trans T
 \end{equation*}
 \end{definition}
 
 \subsection{Atoms}\label{sec:atoms}
 
 \begin{definition}[Atom]
-An \textbf{atom} is an object with a function attached to its \stx{\lambda}-asset.
+An \textbf{atom} is an object with a function attached to its \phiTerminal{\(\lambda\)}-asset.
 \end{definition}
 
-\Cref{eq:Sqrt} demonstrates an atom with a function that calculates
-the square root of a number, which it retrieves from the \stx{\Delta}-asset
-of \(b\stx{.}\alpha_0\) with the help of the morphing function (\cref{sec:morphing}).
+\Cref{eq:Sqrt} demonstrates an atom with a function that calculates the square root of a number,
+  which it retrieves from the \phiTerminal{\(\Delta\)}-asset
+  of $b.~0$ with the help of the morphing function (\cref{sec:morphing}).
 The implementation of functions is outside the scope of \phic{}: they may be implemented,
-for example, in \(\lambda\)-calculus or a programming language
-such as Java or C++.
+  for example, in \(\lambda\)-calculus or a programming language such as Java or C++.
 
 \subsection{Decoration}\label{sec:decoration}
 
 \begin{definition}[Decoration]
 Object \textbf{decoration} is a mechanism of extending an object (``decoratee'')
-by attaching it to the \stx{\varphi}-attribute of another object (``decorator''),
-which makes attributes of the decoratee retrievable from the decorator,
-unless the decorator has its own attributes with the same names.
+  by attaching it to the $@$-attribute of another object (``decorator''),
+  which makes attributes of the decoratee retrievable from the decorator,
+  unless the decorator has its own attributes with the same names.
 \end{definition}
 
 \subsection{Parent}
 
 \begin{definition}[Parent]
-Attaching expression \(e\) to the \stx{\rho} attribute of object \(b\)
+Attaching expression \(e\) to the $^$ attribute of object \(b\)
   means setting the \textbf{parent} of \(b\) to \(e\).
 \end{definition}
 
 The presence of ``parent'' in each object is essential for the coordination of inner objects after dynamic dispatch.
 Consider the following formation of an abstract object with an inner object:
 \begin{phiquation*}
-\Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> \xi.^.\alpha_0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> \xi.|x|( |42| ) \Big\}.
+\Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> $.^.~0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> $.|x|( |42| ) \Big\}.
 \end{phiquation*}
-Here, if the parent of \(\stx{\Phi}\stx{.}\ff{x}\stx{.}\ff{next}\) were attached in the formation,
-  the result of \(\mathbb{D}(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next})\)
+Here, if the parent of $Q.|x|.|next$ were attached in the formation,
+  the result of $\mathbb{D}( Q.|k|.|next| )$
   would not be equal to \ff{43}.
-Instead, it would be equal to \(\stx{\dead}\), because \(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next}\stx{.}\stx{\rho}\)
-  would still be attached to \(\stx{\Phi}\stx{.}\ff{x}\) after the dispatch of \(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next}\).
+Instead, it would be equal to $T$, because $ Q.|k|.|next|.^ $
+  would still be attached to $ Q.|x| $ after the dispatch of $ Q.|k|.next $.
 The parent attribute may be compared with the \ff{this} pointer in Java or C++, which
   does not point anywhere until a method of a class is called.
 Then, when the method is called, the \ff{this} pointer refers to the object that owns the method.
@@ -347,5 +347,5 @@ Then, when the method is called, the \ff{this} pointer refers to the object that
 
 \begin{definition}[Primitive]
 A \textbf{primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
-is either \(\stx{\dead}\) or object formation without \stx{\lambda}-asset.
+  is either $T$ or object formation without \phiTerminal{\(\lambda\)}-asset.
 \end{definition}
