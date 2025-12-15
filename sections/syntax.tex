@@ -44,3 +44,53 @@ Besides the literals mentioned in the grammar in orange color,
   \item \EbnfNonTerminal{Function}: a string of English letters and numbers where the first symbol is in uppercase letter, e.g. \enquote{\ff{Sqrt}} or \enquote{\ff{F1}};
   \item \EbnfNonTerminal{Alpha}: a Greek letter \(\alpha\) with a non-negative whole-number index, e.g. \(\alpha_2\).
 \end{itemize}
+
+\Cref{tab:sugar} shows all possible syntax sugar.
+
+\begin{table*}
+\capt{Syntax sugar.}
+\label{tab:sugar}
+\newcommand\sugar[2]{$ #1 $ & $ #2 $ \\}
+\newcommand\subs[1]{& \textcolor{gray}{(#1)} \\}
+\newcommand\tto{\;\stx{\mapsto}\;}
+\begin{tabular}{ll}
+\toprule
+Syntax sugar & Its more verbose equivalent \\
+\midrule
+\sugar
+  {\stx{ QQ }}
+  {\stx{ Q } \stx{.} |org| \stx{.} |eolang|}
+\sugar
+  {e \stx{(} \tau_1 \tto e_1 \stx{,}\; \tau_2 \tto e_2 \stx{,}\; \dots \stx{)}}
+  {e \stx{(} \tau_1 \tto e_1 \stx{)}\stx{(} \tau_2 \tto e_2 \stx{)} \dots}
+\sugar
+  {e \stx{(} e_0 \stx{,}\; e_1 \stx{,} \dots \stx{)}}
+  {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,}\; \dots \stx{)}}
+\sugar
+  {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,}\; \dots \stx{)} \tto \stx{[[} B \stx{]]}}
+  {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,}\; \dots \stx{,}\; B \stx{]]}}
+\sugar
+  {\tau_1 \tto \tau_2}
+  {\tau_1 \tto \stx{\xi}\stx{.}\tau_2}
+\sugar
+  {\stx{[[} B \stx{]]}}
+  {\stx{[[} B \stx{,}\; \stx{\rho} \tto \stx{?} \stx{]]} \quad\text{if}\; \stx{\rho} \notin B}
+\sugar
+  {\texttt{\begin{CJK}{UTF8}{gbsn}"你好"\end{CJK}}}
+  {\stx{ QQ } \stx{.} |string| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |E4-BD-A0-E5-A5-BD| \stx{]]} \stx{)} \stx{)}}
+  \subs{UTF-8 string}
+\sugar
+  {42}
+  {\stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-45-00-00-00-00-00-00| \stx{]]} \stx{)} \stx{)}}
+  \subs{eight bytes per integer}
+\sugar
+  {3.14}
+  {\stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-09-1E-B8-51-EB-85-1F| \stx{]]} \stx{)} \stx{)}}
+  \subs{eight bytes per number with a floating point}
+\sugar
+  {\stx{\Big\{} e \stx{\Big\}}}
+  {\stx{ Q } \tto e }
+\bottomrule
+\end{tabular}
+\end{table*}
+

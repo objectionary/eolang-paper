@@ -318,58 +318,34 @@ which makes attributes of the decoratee retrievable from the decorator,
 unless the decorator has its own attributes with the same names.
 \end{definition}
 
-\subsection{Syntactic Sugar}
+\subsection{Parent}
 
-\Cref{tab:sugar} shows all possible syntax sugar.
+\begin{definition}[Parent]
+Attaching expression \(e\) to the \stx{\rho} attribute of object \(b\)
+  means setting the \textbf{parent} of \(b\) to \(e\).
+\end{definition}
 
-\begin{table*}
-\capt{Syntax sugar.}
-\label{tab:sugar}
-\newcommand\sugar[2]{$ #1 $ & $ #2 $ \\}
-\newcommand\subs[1]{& \textcolor{gray}{(#1)} \\}
-\newcommand\tto{\;\stx{\mapsto}\;}
-\begin{tabular}{ll}
-\toprule
-Syntax sugar & Its more verbose equivalent \\
-\midrule
-\sugar
-  {\stx{ QQ }}
-  {\stx{ Q } \stx{.} |org| \stx{.} |eolang|}
-\sugar
-  {e \stx{(} \tau_1 \tto e_1 \stx{,}\; \tau_2 \tto e_2 \stx{,}\; \dots \stx{)}}
-  {e \stx{(} \tau_1 \tto e_1 \stx{)}\stx{(} \tau_2 \tto e_2 \stx{)} \dots}
-\sugar
-  {e \stx{(} e_0 \stx{,}\; e_1 \stx{,} \dots \stx{)}}
-  {e \stx{(} \alpha_0 \tto e_0 \stx{,}\; \alpha_1 \tto e_1 \stx{,}\; \dots \stx{)}}
-\sugar
-  {\tau_1 \stx{(} \tau_2 \stx{,}\; \tau_3 \stx{,}\; \dots \stx{)} \tto \stx{[[} B \stx{]]}}
-  {\tau_1 \tto \stx{[[} \tau_2 \tto \stx{?} \stx{,}\; \tau_3 \tto \stx{?} \stx{,}\; \dots \stx{,}\; B \stx{]]}}
-\sugar
-  {\tau_1 \tto \tau_2}
-  {\tau_1 \tto \stx{\xi}\stx{.}\tau_2}
-\sugar
-  {\stx{[[} B \stx{]]}}
-  {\stx{[[} B \stx{,}\; \stx{\rho} \tto \stx{?} \stx{]]} \quad\text{if}\; \stx{\rho} \notin B}
-\sugar
-  {\texttt{\begin{CJK}{UTF8}{gbsn}"你好"\end{CJK}}}
-  {\stx{ QQ } \stx{.} |string| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |E4-BD-A0-E5-A5-BD| \stx{]]} \stx{)} \stx{)}}
-  \subs{UTF-8 string}
-\sugar
-  {42}
-  {\stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-45-00-00-00-00-00-00| \stx{]]} \stx{)} \stx{)}}
-  \subs{eight bytes per integer}
-\sugar
-  {3.14}
-  {\stx{ QQ } \stx{.} |number| \stx{(} \stx{ QQ } \stx{.} |bytes| \stx{(} \stx{[[} \stx{ D> }\; |40-09-1E-B8-51-EB-85-1F| \stx{]]} \stx{)} \stx{)}}
-  \subs{eight bytes per number with a floating point}
-\sugar
-  {\stx{\Big\{} e \stx{\Big\}}}
-  {\stx{ Q } \tto e }
-\bottomrule
-\end{tabular}
-\end{table*}
+The presence of ``parent'' in each object is essential for the coordination of inner objects after dynamic dispatch.
+Consider the following formation of an abstract object with an inner object:
+\begin{phiquation*}
+\Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> \xi.^.\alpha_0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> \xi.|x|( |42| ) \Big\}.
+\end{phiquation*}
+Here, if the parent of \(\stx{\Phi}\stx{.}\ff{x}\stx{.}\ff{next}\) were attached in the formation,
+  the result of \(\mathbb{D}(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next})\)
+  would not be equal to \ff{43}.
+Instead, it would be equal to \(\stx{\dead}\), because \(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next}\stx{.}\stx{\rho}\)
+  would still be attached to \(\stx{\Phi}\stx{.}\ff{x}\) after the dispatch of \(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next}\).
+The parent attribute may be compared with the \ff{this} pointer in Java or C++, which
+  does not point anywhere until a method of a class is called.
+Then, when the method is called, the \ff{this} pointer refers to the object that owns the method.
 
-\newpage
+\subsection{Primitives}\label{sec:primitives}
+
+\begin{definition}[Primitive]
+A \textbf{primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
+is either \(\stx{\dead}\) or object formation without \stx{\lambda}-asset.
+\end{definition}
+
 \subsection{Contextualization}\label{sec:contextualization}
 \label{r:contextualize}
 \newcommand\ctx[2]{\lceil #1 \;\textcolor{gray}{\shortmid}\; #2 \rfloor}
@@ -474,29 +450,6 @@ An expression may not have a normal form.
 \end{figure*}
 
 \Cref{app:normalization-examples} demonstrates how normalization works, by examples.
-
-\subsection{Primitives}\label{sec:primitives}
-
-\begin{definition}[Primitive]
-A \textbf{primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
-is either \(\stx{\dead}\) or object formation without \stx{\lambda}-asset.
-\end{definition}
-
-\subsection{Confluence}\label{sec:confluence}
-
-The reduction strategy in \cref{fig:reduction} is \emph{confluent},
-i.e., possesses the Church–Rosser property~\citep{church1936some}. This means
-that if there are reduction sequences from any expression to two different expressions,
-then there exist reduction sequences from those two expressions to some common expression.
-Moreover, the reduction strategy possesses the unique normal form property:
-
-\begin{theorem}[Confluence]
-Any expression may have only one normal form.
-\end{theorem}
-
-\begin{proof}
-\tbd{The proof is going to be written soon.}
-\end{proof}
 
 \subsection{Equivalence}\label{sec:equivalence}
 
@@ -620,27 +573,6 @@ The dataization function is partial, because not every primitive contains \stx{\
 \end{lemma}
 
 \Cref{app:dataization-examples} demonstrates how dataization function works, by examples.
-
-\subsection{Parent}
-
-\begin{definition}[Parent]
-Attaching expression \(e\) to the \stx{\rho} attribute of object \(b\)
-  means setting the \textbf{parent} of \(b\) to \(e\).
-\end{definition}
-
-The presence of ``parent'' in each object is essential for the coordination of inner objects after dynamic dispatch.
-Consider the following formation of an abstract object with an inner object:
-\begin{phiquation*}
-\Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> \xi.^.\alpha_0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> \xi.|x|( |42| ) \Big\}.
-\end{phiquation*}
-Here, if the parent of \(\stx{\Phi}\stx{.}\ff{x}\stx{.}\ff{next}\) were attached in the formation,
-  the result of \(\mathbb{D}(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next})\)
-  would not be equal to \ff{43}.
-Instead, it would be equal to \(\stx{\dead}\), because \(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next}\stx{.}\stx{\rho}\)
-  would still be attached to \(\stx{\Phi}\stx{.}\ff{x}\) after the dispatch of \(\stx{\Phi}\stx{.}\ff{k}\stx{.}\ff{next}\).
-The parent attribute may be compared with the \ff{this} pointer in Java or C++, which
-  does not point anywhere until a method of a class is called.
-Then, when the method is called, the \ff{this} pointer refers to the object that owns the method.
 
 \subsection{Congruence}
 
