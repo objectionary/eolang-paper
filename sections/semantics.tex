@@ -482,14 +482,6 @@ A \textbf{primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathca
 is either \(\stx{\dead}\) or object formation without \stx{\lambda}-asset.
 \end{definition}
 
-\begin{theorem}\label{th:norm-head}
-A normal form is either a primitive or a dispatch where the subject is an atom.
-\end{theorem}
-
-\begin{proof}
-\tbd{The proof is yet to be written.}
-\end{proof}
-
 \subsection{Confluence}\label{sec:confluence}
 
 The reduction strategy in \cref{fig:reduction} is \emph{confluent},
@@ -555,8 +547,8 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 
 \newrule[\lambda]{Mlambda} \
 \frac \
-{ \langle e \bullet t, b, s_1 \rangle \stepto \langle p, s_2 \rangle} \
-{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, b, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+{ \langle e \bullet t, b, s_2 \rangle \stepto \langle p, s_3 \rangle} \
+{ \langle \stx{ [[ } B_1 , \stx{ L> } f , B_2 \stx{ ]] } \bullet{} t, b, s_1 \rangle \stepto \langle p, s_3 \rangle }  \
 \;\text{if}\; f( \stx{ [[ } B_1, B_2 \stx{ ]] }, s_1 ) \to \langle e, s_2 \rangle
 
 \newrule[\Phi]{Mphi} \
@@ -578,7 +570,8 @@ The notation \(\langle e, b, s_1 \rangle \stepto \langle p, s_2 \rangle\)
 In \nameref{r:Mlambda}, the function \(f\) is called by value.
 
 \begin{lemma}
-The morphing function is not total because not every expression has a normal form.
+The morphing function is not total because not every expression has a normal form
+  and not every normal form is a primitive.
 \end{lemma}
 
 \subsection{Dataization}\label{sec:dataization}
