@@ -1,6 +1,8 @@
 {[[
-  @ -> $.c.times( 1.8 ).plus( 32.0 ),
-  c -> 25.0,
+  ex -> [[
+    @ -> $.c.times( 1.8 ).plus( 32.0 ),
+    c -> 25.0
+  ]],
   org -> [[
     eolang -> [[
       bytes(data) -> [[
