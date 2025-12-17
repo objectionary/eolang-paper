@@ -38,7 +38,8 @@ An attribute is \textbf{void} if $?$ is attached to it,
 \subsection{State}\label{sec:state}
 
 \begin{definition}[State]
-A \textbf{state} of evaluation \(s_i\) that ranges over \(\mathcal{S}\) is \tbd{...}
+A \textbf{state} of evaluation \(s_i\) ranges over \(\mathcal{S}\),
+  where \(\varnothing_s\) is an empty state.
 \end{definition}
 
 \subsection{Function}\label{sec:function}
@@ -57,14 +58,20 @@ An \textbf{asset} is an identifier to which either data
   (denoted as $L$-asset) is attached.
 \end{definition}
 
-\subsection{Formation}\label{sec:formation}
+\subsection{Binding}\label{sec:binding}
 
-\begin{definition}[Formation]
-A \textbf{formation}, denoted as $[[ B ]]$, ranged over \(\mathcal{B}\) by \(b_i\),
+\begin{definition}[Binding]
+A \textbf{binding}, ranged over \(\mathcal{G}\) by \(B_i\),
 is a possibly empty ordered set of key-value pairs, where all keys are unique.
 \end{definition}
 
-The predicate \(k \in B\) holds if \(k\) is present in any pair in \(B\).
+\subsection{Formation}\label{sec:formation}
+
+\begin{definition}[Formation]
+A \textbf{formation}, denoted as $[[ B ]]$, ranged over \(\mathcal{B}\) by \(b_i\), is a binding.
+\end{definition}
+
+If $ b = [[ B ]] $, then the predicate \(k \in b\) holds if the key \(k\) is present \(B\).
 
 We introduce the term \enquote{formation} rather than using the more traditional term \enquote{construction}
   because the latter generally implies the presence of a
