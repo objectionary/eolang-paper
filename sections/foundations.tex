@@ -89,7 +89,7 @@ The arrow $ ..> $ denotes an attachment of data or function to an asset.
 \subsection{Domain}\label{sec:domain}
 
 \begin{definition}[Domain]
-A \textbf{domain} of formation \(b\), denoted as \(\bar{b}\), is a set that includes all attributes of \(b\).
+A \textbf{domain} of formation \(b\), denoted as \(\bar{b}\), is an ordered set of all attributes of \(b\).
 \end{definition}
 
 The domain of the formation in \cref{eq:object-example} is \(\{ \ff{a}, \ff{b}, \ff{foo} \}\).
@@ -107,17 +107,16 @@ A \textbf{program}, also known as \emph{Universe}, is a formation attached to $Q
 The \textbf{terminator}, denoted as $T$, is an expression that signals an error.
 \end{definition}
 
-\subsection{Abstract Formation}\label{sec:abstract}
+\subsection{Abstract}\label{sec:abstract}
 
 \begin{definition}[Abstract]
-An formation is \textbf{abstract} if at least one of its attributes is void;
-otherwise the formation is \textbf{closed}.
+An \textbf{abstract} is a formation with at least one void attribute.
 \end{definition}
 
-\Cref{eq:price-color} is an example of a formation,
-  where the binding of the formation being formed consists of two pairs:
-  $price -> ?$ and $color -> [[ D> FF-C0-CB ]]$.
-The expression attached to the |color| attribute is a closed formation.
+\Cref{eq:price-color} is an example of a formation that is not an abstract,
+  while the expression attached to its |color| attribute is an abstract.
+
+A formation that is not an abstract may be called a \emph{closed} formation.
 
 \subsection{Ordinal}\label{sec:ordinal}
 
@@ -125,7 +124,7 @@ The expression attached to the |color| attribute is a closed formation.
 \begin{definition}[Ordinal]
 An attribute's \textbf{ordinal}, denoted as \(\ordinal{\tau}{b}\),
   is a non-negative whole number that is equal to the position of \(\tau\)
-  in \(\mathbb{F}(b)\), starting from zero, not counting assets.
+  in \(\bar{b}\), starting from zero, not counting assets.
 \end{definition}
 
 \begin{example}
@@ -160,12 +159,12 @@ An \textbf{application}, denoted as $ e_1 ( \tau -> e_2 ) $,
 \end{definition}
 
 \Cref{eq:simple-application} demonstrates application,
-  where $ |a| -> b_2 $ is applied to the abstract formation $[[ |a| -> ? ]]$.
+  where $ |a| -> b_2 $ is applied to an abstract $[[ |a| -> ? ]]$.
 The application creates a new formation $[[ |a| -> b_2 ]]$,
   while the existing formation remains intact.
 
-The formation in \cref{eq:price-color} is abstract, because its attribute \ff{price} is void.
-The formation in \cref{eq:simple-application} was abstract before the application,
+The formation in \cref{eq:price-color} is an abstract, because its attribute \ff{price} is void.
+The formation in \cref{eq:simple-application} was an abstract before the application,
   but the formation created by the application is closed since its attribute \ff{a} is not void (attached to \(b_2\)).
 
 Even though $?$ being attached to an attribute of a formation resembles NULL references, there is a significant difference:
@@ -173,17 +172,7 @@ Even though $?$ being attached to an attribute of a formation resembles NULL ref
   while any further reattachments are prohibited.
 
 In $b(\phiTerminal{\alpha_i} -> e)$ application, \(e\) must be attached to the attribute \(\tau\) of \(b\)
-  for which \(\ordinal{\tau}{\mathbb{F}(b)}\) equals \(i\).
-
-\subsection{Forma}\label{sec:forma}
-
-\begin{definition}[Forma]
-A \textbf{forma} of a formation \(b\), denoted as \(\mathbb{F}(b)\), is an abstract formation
-  that was copied in order to create \(b\).
-\end{definition}
-
-In \cref{eq:simple-application}, the forma of $[[ |a| -> b_2 ]]$ is the abstract
-  formation $[[ |a| -> ? ]]$, while the forma of $[[ |a| -> ? ]]$ is itself.
+  for which \(\ordinal{\tau}{\bar{b}}\) equals \(i\).
 
 \subsection{Dispatch}\label{sec:dispatch}
 
@@ -224,8 +213,8 @@ In~\cref{eq:simple-scope}, the scope of \ff{author} is the formation where the \
 [[ |k| -> \phiOver{ [[ |f| -> [[ |x| -> ? ]] ( |x| -> b_2 ) ( |x| -> b_3 ) ( |x| -> e ) ]] } ]]
 \end{phiquation*}
 \end{mdframed}
-\label{fig:scopes}
 \capt{Illustrative examples of scopes: the bars over the terms highlight \(e^\varsigma\), the scope of \(e\).}
+\label{fig:scopes}
 \end{figure*}
 
 \subsection{Locators}\label{sec:locators}
@@ -301,7 +290,7 @@ Attaching expression \(e\) to the $^$ attribute of formation \(b\)
 \end{definition}
 
 The presence of \enquote{parent} in each formation is essential for the coordination of inner formations after dispatch.
-Consider the following formation of an abstract formation with an inner formations:
+Consider the following abstract with an inner formations:
 \begin{phiquation*}
 \Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> $.^.~0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> $.|x|( |42| ) \Big\} {.}
 \end{phiquation*}

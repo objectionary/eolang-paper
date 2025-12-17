@@ -9,18 +9,18 @@ An \emph{formation} is a collection of \emph{attributes}, which are uniquely nam
 [[ price -> ?, color -> [[ D> FF-C0-CB ]] ]] {.}
 \end{phiquation}
 This formation has two attributes \ff{price} and \ff{color}.
-The formation is \emph{abstract} because the \ff{price} attribute is \emph{void}, i.e. there is nothing \emph{attached} to it.
+The formation is an \emph{abstract} because the \ff{price} attribute is \emph{void}, i.e. there is nothing \emph{attached} to it.
 The \ff{color} attribute is attached to another formation with one $D$-\emph{asset},
   which is attached to \emph{data} (three bytes).
 Formations do not have names; only attributes do.
 
-A \emph{full application} of an abstract formation to a pair of an attribute and an \emph{expression}
+A \emph{full application} of a pair---an attribute and an \emph{expression}---to an abstract
   \emph{results} in a new \emph{closed} formation, for example:
 \begin{phiquation}
 \label{eq:simple-application}
 [[ |x| -> ? ]]( |y| -> b_2 ) \trans [[ |x| -> b_2 ]] {.}
 \end{phiquation}
-A \emph{partial} application results in a new abstract formation, for example:
+A \emph{partial} application results in a new abstract, for example:
 \begin{phiquation*}
 [[ |x| -> ?, |y| -> ? ]]( |x| -> b ) \trans [[ |x| -> b, |y| -> ? ]] {.}
 \end{phiquation*}
