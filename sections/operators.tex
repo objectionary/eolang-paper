@@ -207,8 +207,8 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule[\Delta]{delta} \
 \frac \
 { } \
-{ \langle [[ B_1, D> \delta, B_2 ]] {,}\; u {,}\; s \rangle \stepto \langle \delta {,}\; s \rangle }
-
+{ \langle [[ B_1, D> \delta, B_2 ]] {,}\; u {,}\; s \rangle \stepto \langle \delta {,}\; s \rangle } \
+\quad \
 \newrule{norm} \
 \frac{ \langle p {,}\; u {,}\; s_1 \rangle \stepto \langle \delta {,}\; s_2 \rangle }{ \langle e {,}\; u {,}\; s_1 \rangle  \stepto \langle \delta {,}\; s_2 \rangle } \
 \;\text{if}\; \mathbb{M} {(} e {,}\; u {,}\; s_1 {)} \to \langle p {,}\; s_2 \rangle
