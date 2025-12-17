@@ -71,7 +71,7 @@ The following is an example of a formation with four pairs, where the first one
   expressions:
 \begin{phiquation}
 \label{eq:object-example}
- [[ D> 00-2A, |a| -> b_2(~0 -> b_3).bar, |b| -> [[ L> |Sqrt| ]], foo -> T ]].
+ [[ D> 00-2A, |b| -> b_2(~0 -> b_3).bar, |a| -> [[ L> |Sqrt| ]], foo -> T ]].
 \end{phiquation}
 
 The arrow $ -> $ denotes an attachment of an expression (right-hand side)
@@ -81,10 +81,10 @@ The arrow $ ..> $ denotes an attachment of data or function to an asset.
 \subsection{Domain}\label{sec:domain}
 
 \begin{definition}[Domain]
-A \textbf{domain} of formation \(b\), denoted as \(\bar{b}\), is an ordered set of all attributes of \(b\), excluding assets.
+A \textbf{domain} of formation \(b\), denoted as \(\bar{b}\), is a sequence of all attributes of \(b\), excluding assets.
 \end{definition}
 
-The domain of the formation in \cref{eq:object-example} is \(\{ \ff{a}, \ff{b}, \ff{foo} \}\).
+The domain of the formation in \cref{eq:object-example} is \(\langle \ff{b}, \ff{a}, \ff{foo} \rangle\).
 Assets $D$ and $L$ do not belong to the domain.
 
 \subsection{Program}\label{sec:program}

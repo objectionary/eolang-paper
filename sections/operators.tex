@@ -69,21 +69,21 @@ such that \(\nf \trans e_1\).
   { [[ B_1, \tau -> n, B_2 ]] }
   { if \( \ctx{e}{e\textsuperscript{\(\varsigma\)}} \strans n \) }
 \trrule[\alpha]{alpha}
-  { [[ B_1, \tau -> ?, B_2 ]] ( \alpha_i -> e ) }
-  { [[ B_1, \tau -> ?, B_2 ]] ( \tau -> e) }
-  { if $ \ordinal{\tau}{[[B]]} = i $ }
+  { b ( \alpha_i -> e ) }
+  { b ( \tau -> e) }
+  { if $ \ordinal{\tau}{\bar{b}} = i $ }
 \trrule{dot}
   { [[ B_1, \tau -> \nf, B_2 ]].\tau }
   { \ctx{\nf}{n\textsuperscript{\(\varsigma\)}} ( \rho -> n\textsuperscript{\(\varsigma\)} ) }
   { }
 \trrule[\varphi]{phi}
-  { [[ B ]].\tau }
-  { [[ B ]].@.\tau }
-  { if \( \tau \notin B \) and $ @ \in B $  }
+  { b.\tau }
+  { b.@.\tau }
+  { if \( \tau \notin b \) and $ @ \in b $ }
 \trrule{stay}
-  { [[ B_1, \rho -> e_1, B_2 ]]( \rho -> e_2 ) }
-  { [[ B_1, \rho -> e_1, B_2 ]] }
-  { }
+  { b( \rho -> e_2 ) }
+  { b }
+  { if $ ^ \in b $ }
 \trrule{over}
   { [[ B_1, \tau -> e_1, B_2 ]]( \tau -> e_2) }
   { T }
