@@ -59,8 +59,8 @@ A \textbf{function} is a total mapping
 
 \begin{definition}[Asset]
 An \textbf{asset} is an identifier to which either data
-  (denoted as \phiTerminal{\(\Delta\)}-asset) or function
-  (denoted as \phiTerminal{\(\lambda\)}-asset) is attached.
+  (denoted as $D$-asset) or function
+  (denoted as $L$-asset) is attached.
 \end{definition}
 
 \subsection{Object}\label{sec:object}
@@ -79,7 +79,7 @@ that includes all attributes of \(b\).
 \end{definition}
 
 The domain of the object in \cref{eq:object-example} is \(\{ \ff{a}, \ff{b}, \ff{foo} \}\).
-Assets \phiTerminal{\(\Delta\)} and \phiTerminal{\(\lambda\)} do not belong to object domain.
+Assets $D$ and $L$ do not belong to object domain.
 
 \subsection{Formation}\label{sec:formation}
 
@@ -98,7 +98,7 @@ The following is an example of an object formation with four pairs, where the fi
   expressions:
 \begin{phiquation}
 \label{eq:object-example}
- [[ D> 00-2A, |a| -> b_2(0-> b_3).bar, |b| -> [[ L> |Sqrt| ]], foo -> T ]].
+ [[ D> 00-2A, |a| -> b_2(~0 -> b_3).bar, |b| -> [[ L> |Sqrt| ]], foo -> T ]].
 \end{phiquation}
 
 The arrow $ -> $ denotes an attachment of an expression (right-hand side)
@@ -142,7 +142,7 @@ in \(\mathbb{F}(b)\), starting from zero, not counting assets.
 \label{tab:ordinals}
 \begin{tabular}{lr}
 \toprule
-\(b\) & \(\ordinal{|x|}{b}\) \\
+\(b\) & \(\ordinal{\ff{x}}{b}\) \\
 \midrule
 $[[ |x| -> \phiTerminal{\xi}.|k| ]]$
   & 0 \\
@@ -267,15 +267,15 @@ Expression & Head & Tail \\
 $b_1( foo -> b_2 )$
   & $b_1( foo -> b_2 )$
   & --- \\
-$b_1.|aa|.|bb|( 0-> b_2 )$
+$b_1.|aa|.|bb|( ~0 -> b_2 )$
   & $b_1$
-  & $aa.bb( 0-> b_2 )$ \\
+  & $aa.bb( ~0 -> b_2 )$ \\
 $[[ |a| -> b_2 ]].|aa|.|test|.|bb|$
   & $[[ |a| -> b_2 ]]$
   & $aa.test.bb$ \\
-$b_1( |foo| -> b_2)( 0-> 42 ).|print|( 1-> 7 )$
-  & $b_1( |foo| -> b_2)( 0-> 42 )$
-  & $|print|( 1-> 7 )$ \\
+$b_1( |foo| -> b_2)( ~0 -> 42 ).|print|( ~1 -> 7 )$
+  & $b_1( |foo| -> b_2)( ~0 -> 42 )$
+  & $|print|( ~1 -> 7 )$ \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -286,9 +286,9 @@ $b_1( |foo| -> b_2)( 0-> 42 ).|print|( 1-> 7 )$
 \begin{definition}[Terminator]
 The \textbf{terminator}, denoted as $T$, is an object that equals itself when it is
 the subject of a dispatch or an application:
-\begin{equation*}
-\forall \tau : T.\tau \trans T \qquad \forall \tau, e : T ( \tau -> e) \trans T.
-\end{equation*}
+\begin{phiquation*}
+\forall \tau : T.\tau \trans T \qquad \forall \tau {,}\; e : T ( \tau -> e ) \trans T.
+\end{phiquation*}
 \end{definition}
 
 \subsection{Immutability}\label{sec:immutability}
@@ -297,18 +297,18 @@ the subject of a dispatch or an application:
 Every object is \textbf{immutable}, meaning that an application of
 its already attached attribute equals to $T$:
 \begin{phiquation*}
-\forall \tau, e_1, e_2 : [[ \tau -> e_1 ]] ( \tau -> e_2 ) \trans T
+\forall \tau {,}\; e_1 {,}\; e_2 : [[ \tau -> e_1 ]] ( \tau -> e_2 ) \trans T
 \end{phiquation*}
 \end{definition}
 
 \subsection{Atoms}\label{sec:atoms}
 
 \begin{definition}[Atom]
-An \textbf{atom} is an object with a function attached to its \phiTerminal{\(\lambda\)}-asset.
+An \textbf{atom} is an object with a function attached to its $L$-asset.
 \end{definition}
 
 \Cref{eq:Sqrt} demonstrates an atom with a function that calculates the square root of a number,
-  which it retrieves from the \phiTerminal{\(\Delta\)}-asset
+  which it retrieves from the $D$-asset
   of $b.~0$ with the help of the morphing function (\cref{sec:morphing}).
 The implementation of functions is outside the scope of \phic{}: they may be implemented,
   for example, in \(\lambda\)-calculus or a programming language such as Java or C++.
@@ -332,7 +332,7 @@ Attaching expression \(e\) to the $^$ attribute of object \(b\)
 The presence of ``parent'' in each object is essential for the coordination of inner objects after dynamic dispatch.
 Consider the following formation of an abstract object with an inner object:
 \begin{phiquation*}
-\Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> $.^.~0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> $.|x|( |42| ) \Big\}.
+\Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> $.^.~0.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> $.|x|( |42| ) \Big\} {.}
 \end{phiquation*}
 Here, if the parent of $Q.|x|.|next|$ were attached in the formation,
   the result of $\mathbb{D}( Q.|k|.|next| )$
@@ -347,5 +347,5 @@ Then, when the method is called, the \ff{this} pointer refers to the object that
 
 \begin{definition}[Primitive]
 A \textbf{primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
-  is either $T$ or object formation without \phiTerminal{\(\lambda\)}-asset.
+  is either $T$ or object formation without $L$-asset.
 \end{definition}

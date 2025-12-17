@@ -16,11 +16,11 @@ Each operator is defined in terms of the reduction semantics introduced earlier
 \begin{definition}[Contextualization]
 A contextualization function \(\mathbb{C} : \mathcal{E} \times \mathcal{B} \to \mathcal{E}\) denoted as \( \ctx{e}{b} \), which replaces locators with objects, is defined by induction:
 \begin{enumerate}[label=\(\mathbb{C}_\arabic*:\),ref=\ensuremath{\mathbb{C}.\arabic*}]
-  \item\label{C:xi} $ \ctx{\xi}{b} \trans b $,
-  \item\label{C:forma} $ \ctx{[[ B ]]}{b} \trans [[ B ]] $,
-  \item\label{C:dead} $ \ctx{\dead}{b} \trans \dead $,
-  \item\label{C:dot} $ \ctx{e.\tau}{b} \trans \ctx{e}{b}.\tau $,
-  \item\label{C:app} $ \ctx{e_1( \tau -> e_2 )}{b} \trans \ctx{e_1}{b}( \tau -> \ctx{e_2}{b} ) $.
+  \item\label{C:xi} $ \ctx{ \phiTerminal{\xi} }{b} \trans b $,
+  \item\label{C:forma} $ \ctx{ [[ B ]] }{b} \trans [[ B ]] $,
+  \item\label{C:dead} $ \ctx{ T }{b} \trans T $,
+  \item\label{C:dot} $ \ctx{ e.\tau }{b} \trans \ctx{e}{b}.\tau $,
+  \item\label{C:app} $ \ctx{ e_1( \tau -> e_2 ) }{b} \trans \ctx{e_1}{b}( \tau -> \ctx{e_2}{b} ) $.
 \end{enumerate}
 \end{definition}
 
@@ -89,7 +89,7 @@ An expression may not have a normal form.
 \trrule{stop}
   { [[ B ]].\tau }
   { T }
-  { if \( [ \tau, \varphi, \lambda ] \cap B = \emptyset \) }
+  { if $ [ \tau, @, L ] \cap B = \emptyset $ }
 \trrule{null}
   { [[ B_1, \tau -> ?, B_2 ]].\tau }
   { T }
@@ -97,7 +97,7 @@ An expression may not have a normal form.
 \trrule{miss}
   { [[ B ]] ( \tau -> e ) }
   { T }
-  { if \( \tau \notin B \) and \( \tau \notin [ \alpha_0, \alpha_1, \dots ] \) }
+  { if \( \tau \notin B \) and \( \tau \notin [ \phiTerminal{\alpha_0}, \phiTerminal{\alpha_1}, \dots ] \) }
 \trrule{dd}
   { T.\tau }
   { T }
@@ -152,26 +152,26 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 \newrule{Mprim} \
 \frac \
 {  } \
-{ \langle e, u, s \rangle \stepto \langle p, s \rangle }  \
+{ \langle e{,}\; u{,}\; s \rangle \stepto \langle p{,}\; s \rangle }  \
 \;\text{if}\; e \in \mathcal{P} \
 \quad\quad \
 \newrule{Mnmz} \
 \frac \
-{ \langle \nf, u, s_1 \rangle \stepto \langle p, s_2 \rangle } \
-{ \langle e, u, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
+{ \langle \nf{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle } \
+{ \langle e{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle }  \
 \;\text{if}\; e \strans \nf \;\text{and}\; e \not\equiv n
 
 \newrule[\lambda]{Mlambda} \
 \frac \
-{ \langle e \bullet t, u, s_2 \rangle \stepto \langle p, s_3 \rangle} \
-{ \langle  [[  B_1 ,  L>  f , B_2  ]]  \bullet{} t, u, s_1 \rangle \stepto \langle p, s_3 \rangle }  \
-\;\text{if}\; f(  [[  B_1, B_2  ]] , u, s_1 ) \to \langle e, s_2 \rangle
+{ \langle e \bullet t{,}\; u{,}\; s_2 \rangle \stepto \langle p{,}\; s_3 \rangle} \
+{ \langle  [[  B_1 ,  L>  f , B_2  ]]  \bullet{} t{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_3 \rangle }  \
+\;\text{if}\; f {(} [[ B_1, B_2 ]] {,}\; u{,}\; s_1 {)} \to \langle e{,}\; s_2 \rangle
 
 \newrule[\Phi]{Mphi} \
 \frac \
-{ \langle e \bullet{} t, u, s_1 \rangle \stepto \langle p, s_2 \rangle} \
-{ \langle  \Phi   .  \tau \bullet{} t, u, s_1 \rangle \stepto \langle p, s_2 \rangle }  \
-\;\text{if}\; u =  \llbracket  B_1 , \tau  \mapsto  e, B_2 \rrbracket
+{ \langle e \bullet{} t{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle} \
+{ \langle Q.\tau \bullet{} t{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle }  \
+\;\text{if}\; u = [[  B_1 , \tau -> e, B_2 ]]
 \end{phiquation*}
 \end{mdframed}
 \capt{Morphing rules.}
@@ -203,17 +203,17 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule[\Delta]{delta} \
 \frac \
 { } \
-{ \langle  [[  B_1,  D>  \delta, B_2  ]] , u, s \rangle \stepto \langle \delta, s \rangle } \
-\quad\quad \
+{ \langle [[ B_1, D> \delta, B_2 ]] {,}\; u {,}\; s \rangle \stepto \langle \delta {,}\; s \rangle }
+
 \newrule{norm} \
-\frac{ \langle p, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e, u, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
-\;\text{if}\; \mathbb{M}(e, u, s_1) \to \langle p, s_2 \rangle
+\frac{ \langle p {,}\; u {,}\; s_1 \rangle \stepto \langle \delta, s_2 \rangle }{ \langle e {,}\; u {,}\; s_1 \rangle  \stepto \langle \delta {,}\; s_2 \rangle } \
+\;\text{if}\; \mathbb{M} {(} e {,}\; u {,}\; s_1 {)} \to \langle p {,}\; s_2 \rangle
 
 \newrule{box} \
 \frac \
-{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}}, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle } \
-{ \langle  [[  B_1,  @   ->  e, B_2  ]] , u, s_1 \rangle  \stepto \langle \delta, s_2 \rangle } \
-\;\text{if}\; [  \Delta ,  \lambda  ] \cap ( B_1 \cup B_2 ) = \emptyset
+{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}} {,}\; u {,}\; s_1 \rangle \stepto \langle \delta {,}\; s_2 \rangle } \
+{ \langle [[ B_1, @ -> e, B_2 ]] {,}\; u {,}\; s_1 \rangle  \stepto \langle \delta {,}\; s_2 \rangle } \
+\;\text{if}\; [ D , L ] \cap {(} B_1 \cup B_2 {)} = \emptyset
 \end{phiquation*}
 \end{mdframed}
 \capt{Dataization rules.}
@@ -221,18 +221,18 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \end{figure*}
 
 The rules \nameref{r:box} and \nameref{r:phi} coexist because
-\(\Delta \notin \mathcal{T}\), thus making the expression $ [[ @ -> 42 ]].\Delta $ invalid.
+$D \notin \mathcal{T}$, thus making the expression $ [[ @ -> 42 ]].D $ invalid.
 
 The notation \(\langle e, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
   means that \(\mathbb{D}(e, u, s_1)\) evaluates to \(\delta\),
   thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\), in the universe \(u\).
-The notation \(\mathbb{D}(e, u)\) is a shortened form of $\mathbb{D}(e, u, ?)_{(1)}$,
+The notation \(\mathbb{D}(e, u)\) is a shortened form of \(\mathbb{D}(e, u, \varnothing)_{(1)}\),
   which is a \emph{pure} dataization --- inputting an empty state of evaluation and ignoring
   the output state of evaluation.
 Here and later, the notation \(x_{(i)}\) denotes the \(i\)-th element of the tuple \(x\).
 
 \begin{lemma}
-The dataization function is partial, because not every primitive contains \phiTerminal{\(\Delta\)}-asset.
+The dataization function is partial, because not every primitive contains $D$-asset.
 \end{lemma}
 
 \Cref{app:dataization-examples} demonstrates how the dataization function works through examples.
@@ -248,13 +248,13 @@ Two expressions \(e_1\) and \(e_2\) are said to be behaviorally equivalent
 \begin{figure*}
 \begin{mdframed}
 \begin{phiquation*}
-\nf \cong  [[   @   ->  \nf  ]]  \quad \text{(by \nameref{r:phi})}
+\nf \cong [[ @ -> \nf ]] \quad \text{(by \nameref{r:phi})}
   \text{Transparency of Decoration}
 
- [[  \tau_1  ->   ? , B  ]]  \cong  [[  B  ]]  \quad \text{(by \nameref{r:stop})}
+ [[ \tau_1 -> ? , B ]] \cong [[ B ]] \quad \text{(by \nameref{r:stop})}
   \text{Redundancy of Void Attributes}
 
- [[  B  ]]  \cong  [[  B  ]] .@  \quad\text{if}\;  @  \in B \;\text{and}\;  \Delta  \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
+ [[ B ]] \cong [[ B ]].@ \quad\text{if}\; @ \in B \;\text{and}\; D \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
   \text{Implicitness of Decoration}
 \end{phiquation*}
 \end{mdframed}
@@ -267,5 +267,5 @@ Two expressions \(e_1\) and \(e_2\) are said to be behaviorally equivalent
 Two congruent expressions may be non-equivalent, for example:
 \begin{phiquation*}
 \Big\{ \tau_1 -> [[ foo -> ?, D> 01-02 ]], \tau_2 -> [[ bar -> ?, D> 01-02 ]] \Big\}
-Q.\tau_1 \cong Q.\tau_2 \;\not\to\; Q.\tau_1 \equiv Q.\tau_2.
+Q.\tau_1 \cong Q.\tau_2 \;\not\to\; Q.\tau_1 \equiv Q.\tau_2 {.}
 \end{phiquation*}
