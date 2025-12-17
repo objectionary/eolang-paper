@@ -148,9 +148,9 @@ $[[ D> CA-FE, |foo| -> \phiTerminal{\xi}, |x| -> \phiTerminal{\xi}.|foo| ]]$
 \subsection{Application}\label{sec:application}
 
 \begin{definition}[Application]
-An \textbf{application}, denoted as $ b ( \tau -> e ) $,
-  is a copy of an abstract formation \(b\) (the ``subject''),
-  with \(e\) attached to its \(\tau\) attribute.
+An \textbf{application}, denoted as $ e_1 ( \tau -> e_2 ) $,
+  means attaching \(e_2\) to the \(\tau\) attribute of \(e_1\)
+  (the ``subject'').
 \end{definition}
 
 \Cref{eq:simple-application} demonstrates application,
@@ -182,8 +182,8 @@ In \cref{eq:simple-application}, the forma of $[[ |a| -> b_2 ]]$ is the abstract
 \subsection{Dispatch}\label{sec:dispatch}
 
 \begin{definition}[Dispatch]
-A \textbf{dispatch}, denoted as $ b . \tau $, where \(b\) is the \enquote{subject,}
-  means retrieval of expression attached to the attribute \(\tau\) of \(b\).
+A \textbf{dispatch}, denoted as $ e . \tau $, where \(e\) is the \enquote{subject,}
+  means retrieval of what is attached to \(\tau\).
 \end{definition}
 
 \subsection{Scope}\label{sec:scope}
@@ -269,10 +269,7 @@ $b_1( |foo| -> b_2)( ~0 -> 42 ).|print|( ~1 -> 7 )$
 \subsection{Terminator}\label{sec:terminator}
 
 \begin{definition}[Terminator]
-The \textbf{terminator}, denoted as $T$, is an formation that equals itself when it is the subject of a dispatch or an application:
-\begin{phiquation*}
-\forall \tau : T.\tau \trans T \qquad \forall \tau {,}\; e : T ( \tau -> e ) \trans T.
-\end{phiquation*}
+The \textbf{terminator}, denoted as $T$, is an expression that signals an error.
 \end{definition}
 
 \subsection{Immutability}\label{sec:immutability}
