@@ -71,7 +71,7 @@ such that \(\nf \trans e_1\).
 \trrule[\alpha]{alpha}
   { b ( \alpha_i -> e ) }
   { b ( \tau -> e) }
-  { if $ \tau \in b \;\text{and}\; \ordinal{\tau}{\bar{b}} = i $ }
+  { if $ \tau \in b $ and \( \ordinal{\tau}{\bar{b}} = i \) }
 \trrule{dot}
   { [[ B_1, \tau -> \nf, B_2 ]].\tau }
   { \ctx{\nf}{n\textsuperscript{\(\varsigma\)}} ( \rho -> n\textsuperscript{\(\varsigma\)} ) }
@@ -81,25 +81,25 @@ such that \(\nf \trans e_1\).
   { b.@.\tau }
   { if \( \tau \notin b \) and $ @ \in b $ }
 \trrule{stay}
-  { b( \rho -> e_2 ) }
+  { b( \rho -> e ) }
   { b }
   { if $ ^ \in b $ }
 \trrule{over}
-  { [[ B_1, \tau -> e_1, B_2 ]]( \tau -> e_2) }
+  { b( \tau -> e) }
   { T }
-  { if $ \tau \not= ^ $ }
+  { if $\tau \in b $ and $ \tau \not= ^ $ }
 \trrule{stop}
-  { [[ B ]].\tau }
+  { b.\tau }
   { T }
-  { if $ [ \tau {,}\; @ {,}\; L ] \cap B = \emptyset $ }
+  { if $ [ \tau {,}\; @ {,}\; L ] \cap b = \emptyset $ }
 \trrule{null}
   { [[ B_1, \tau -> ?, B_2 ]].\tau }
   { T }
   { }
 \trrule{miss}
-  { [[ B ]] ( \tau -> e ) }
+  { b ( \tau -> e ) }
   { T }
-  { if \( \tau \notin B \) and \( \tau \notin [ \phiTerminal{\alpha_0}, \phiTerminal{\alpha_1}, \dots ] \) }
+  { if \( \tau \notin b \) and \( \tau \notin [ \phiTerminal{\alpha_0}, \phiTerminal{\alpha_1}, \dots ] \) }
 \trrule{dd}
   { T.\tau }
   { T }
