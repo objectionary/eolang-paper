@@ -14,7 +14,7 @@ Each operator is defined in terms of the reduction semantics introduced earlier
 \newcommand\ctx[2]{\lceil #1 \;\textcolor{gray}{\shortmid}\; #2 \rfloor}
 
 \begin{definition}[Contextualization]
-A contextualization function \(\mathbb{C} : \mathcal{E} \times \mathcal{B} \to \mathcal{E}\)
+A \emph{contextualization} total function \(\mathbb{C} : \mathcal{E} \times \mathcal{B} \to \mathcal{E}\)
   denoted as \( \ctx{e}{b} \), which removes \(\phiTerminal{\xi}\) from expression,
   is defined by induction:
 \begin{enumerate}[label=\(\mathbb{C}_\arabic*:\),ref=\ensuremath{\mathbb{C}.\arabic*}]
@@ -41,16 +41,16 @@ denotes a reduction of \(e_1\) to \(e_2\), if the condition holds.
 These rules may be applied in any order.
 
 A specific reduction may be denoted, for example, as \(\trans_{\nameref{r:dot}}\),
-or just \(\trans\) when no specific reduction is meant.
+  or just \(\trans\) when no specific reduction is meant.
 The notation \(e_1 \strans e_2\) denotes a reflexive transitive
-closure of all reductions, so that there is a possibly empty finite
-sequence of reductions between \(e_1\) and \(e_2\).
+  closure of all reductions, so that there is a possibly empty finite
+  sequence of reductions between \(e_1\) and \(e_2\).
 
 An expression that has no more possible applications of reductions
-is \emph{irreducible} or a \emph{normal form}, denoted as \(\nf{}_i\)
-ranging over \(\mathcal{N} \in \mathcal{E}\). Thus, \(\nf\) is a normal
-form of \(e\) if \(e \strans \nf\) and there is no expression \(e_1\)
-such that \(\nf \trans e_1\).
+  is \emph{irreducible} or a \emph{normal form}, denoted as \(\nf{}_i\)
+  ranging over \(\mathcal{N} \in \mathcal{E}\).
+Thus, \(\nf\) is a normal form of \(e\) if \(e \strans \nf\) and
+  there is no expression \(e_1\) such that \(\nf \trans e_1\).
 
 \begin{figure*}
 \newcommand\trrule[5][]{%
@@ -145,7 +145,8 @@ e.\tau ( \rho -> e_2 ) \equiv e.\tau
 
 \subsection{Morphing}\label{sec:morphing}
 
-The \emph{morphing} function \(\mathbb{M} : \mathcal{E} \times \mathcal{B} \times \mathcal{S} \rightharpoonup \mathcal{P} \times \mathcal{S} \)
+The \emph{morphing} partial function
+  \(\mathbb{M} : \mathcal{E} \times \mathcal{B} \times \mathcal{S} \rightharpoonup \mathcal{P} \times \mathcal{S} \)
   maps expressions to primitives, possibly modifying the \emph{state} of evaluation.
 The inference rules at \cref{fig:morphing} inductively describe the algorithm of morphing.
 
@@ -188,14 +189,9 @@ The notation \(\langle e, u, s_1 \rangle \stepto \langle p, s_2 \rangle\)
 
 In \nameref{r:Mlambda}, the function \(f\) is called by value.
 
-\begin{lemma}
-The morphing function is not total because not every expression has a normal form
-  and not every normal form is a primitive.
-\end{lemma}
-
 \subsection{Dataization}\label{sec:dataization}
 
-The \emph{dataization} function
+The \emph{dataization} partial function
 \(\mathbb{D} : \mathcal{E} \times \mathcal{B} \times \mathcal{S} \rightharpoonup \mathcal{D} \times \mathcal{S}\)
 maps expressions to data, possibly modifying the \emph{state} of evaluation, in a given context.
 The inference rules in \cref{fig:dataization} inductively describe the algorithm of dataization.
