@@ -56,9 +56,8 @@ An \textbf{asset} is an identifier to which either data
 
 \begin{definition}[Formation]
 A \textbf{formation}, denoted as $[[ B ]]$, ranged over \(\mathcal{B}\) by \(b_i\),
-is a possibly empty ordered set of key-value pairs, where all keys are unique
-  and are either attributes or assets
-  and values are either $?$, expressions, data, or functions.
+is a non-empty ordered set of key-value pairs, where all keys are unique;
+every formation has a mandatory attribute $^$.
 \end{definition}
 
 The predicate \(k \in B\) holds if \(k\) is present in any pair in \(B\).
@@ -148,7 +147,7 @@ $[[ D> CA-FE, |foo| -> \phiTerminal{\xi}, |x| -> \phiTerminal{\xi}.|foo| ]]$
 
 \begin{definition}[Application]
 An \textbf{application}, denoted as $ e_1 ( \tau -> e_2 ) $,
-  means attaching \(e_2\) to the \(\tau\) attribute of \(e_1\)
+  means an attempt to attach \(e_2\) to the \(\tau\) attribute of \(e_1\)
   (the ``subject'').
 \end{definition}
 
