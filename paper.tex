@@ -21,6 +21,9 @@
 \usepackage{href-ul} % for nicely underscored links
 \usepackage[shortlabels]{enumitem} % for changing labes in "enumerate"
 \usepackage[capitalize,nameinlink]{cleveref} % must stay last!
+  \newtheorem{lemma}{Lemma}[section]
+  \crefname{lemma}{Lemma}{Lemmas}
+  \Crefname{lemma}{Lemma}{Lemmas}
 
 \renewcommand\emph[1]{\textit{#1}} % to prevent a weird bug coming from some of the packages above
 \newcommand\capt[1]{\caption{#1}\Description{#1}}
