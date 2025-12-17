@@ -79,7 +79,7 @@ as arguments, for example:
 \begin{phiquation}
 \label{eq:Sqrt}
 \frac \
-  { \vdash |Sqrt| (b {,}\; s) \to \langle [[ D> \sqrt{\mathbb{D}(b.|x| {,}\; u)} ]], s \rangle } \
+  { \vdash |Sqrt| {(} b {,}\; s {)} \to \langle [[ D> \sqrt{\mathbb{D} {(} b.|x| {,}\; u {)} } ]], s \rangle } \
   {[[ L> |Sqrt|, |x| -> 256 ]] \to 16} {.}
 \end{phiquation}
 There is also a \emph{dataization} function \(\mathbb{D}(b, u, s)\)
@@ -87,11 +87,11 @@ There is also a \emph{dataization} function \(\mathbb{D}(b, u, s)\)
   attached to the $D$-asset of the normal form or morphs the atom into an object and dataizes it (recursively),
   for example:
 \begin{phiquation*}
-\mathbb{D}([[ |x| -> 42 ]].|x| \trans 42 {,}\; u {,}\; s) \to 42.
+\mathbb{D} {(} [[ |x| -> 42 ]].|x| \trans 42 {,}\; u {,}\; s {)} \to 42.
 \end{phiquation*}
 
-A program is an object that is attached to the $Q$ attribute of the \emph{Universe}, for example:
+A program is an object, called \emph{Universe}, that is attached to the $Q$ attribute of nowhere:
 \begin{phiquation*}
 Q -> [[ D> CA-FE ]].
 \end{phiquation*}
-The dataization of $Q$ is the evaluation of the program.
+The dataization of universe is the evaluation of the program.
