@@ -257,11 +257,8 @@ Two expressions \(e_1\) and \(e_2\) are said to be behaviorally equivalent
 \nf \cong [[ @ -> \nf ]] \quad \text{(by \nameref{r:phi})}
   \text{Transparency of Decoration}
 
- [[ \tau_1 -> ? , B ]] \cong [[ B ]] \quad \text{(by \nameref{r:stop})}
+[[ \tau -> ? , B ]] \cong [[ B ]] \quad \text{if}\; \tau \not\in B \quad \text{(by \nameref{r:stop})}
   \text{Redundancy of Void Attributes}
-
- [[ B ]] \cong [[ B ]].@ \quad\text{if}\; @ \in B \;\text{and}\; D \not\in B \quad \text{(by \nameref{r:phi} and \nameref{r:dot})}
-  \text{Implicitness of Decoration}
 \end{phiquation*}
 \end{mdframed}
 \capt{Congruence properties that hold.}
