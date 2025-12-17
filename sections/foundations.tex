@@ -101,6 +101,12 @@ Assets $D$ and $L$ do not belong to the domain.
 A \textbf{program}, also known as \emph{Universe}, is a formation attached to $Q$.
 \end{definition}
 
+\subsection{Terminator}\label{sec:terminator}
+
+\begin{definition}[Terminator]
+The \textbf{terminator}, denoted as $T$, is an expression that signals an error.
+\end{definition}
+
 \subsection{Abstract Formation}\label{sec:abstract}
 
 \begin{definition}[Abstract]
@@ -265,21 +271,6 @@ $b_1( |foo| -> b_2)( ~0 -> 42 ).|print|( ~1 -> 7 )$
 \end{tabular}
 \end{table*}
 \end{example}
-
-\subsection{Terminator}\label{sec:terminator}
-
-\begin{definition}[Terminator]
-The \textbf{terminator}, denoted as $T$, is an expression that signals an error.
-\end{definition}
-
-\subsection{Immutability}\label{sec:immutability}
-
-\begin{definition}[Immutability]
-Every formation is \textbf{immutable}, meaning that an application of its already attached attribute equals $T$:
-\begin{phiquation*}
-\forall \tau {,}\; e_1 {,}\; e_2 : [[ \tau -> e_1 ]] ( \tau -> e_2 ) \trans T
-\end{phiquation*}
-\end{definition}
 
 \subsection{Atoms}\label{sec:atoms}
 
