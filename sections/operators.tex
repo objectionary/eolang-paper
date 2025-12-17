@@ -146,7 +146,7 @@ e.\tau ( \rho -> e_2 ) \equiv e.\tau \
 
 \subsection{Morphing}\label{sec:morphing}
 
-The \emph{morphing} function \(\mathbb{M} : \langle \mathcal{E}, \mathcal{B}, \mathcal{S} \rangle \to \langle \mathcal{P}, \mathcal{S} \rangle\)
+The \emph{morphing} function \(\mathbb{M} : \mathcal{E} \times \mathcal{B} \times \mathcal{S} \to \mathcal{P} \times \mathcal{S} \)
   maps expressions to primitives, possibly modifying the \emph{state} of evaluation.
 The inference rules at \cref{fig:morphing} inductively describe the algorithm of morphing.
 
@@ -197,7 +197,7 @@ The morphing function is not total because not every expression has a normal for
 \subsection{Dataization}\label{sec:dataization}
 
 The \emph{dataization} function
-\(\mathbb{D} : \langle \mathcal{E}, \mathcal{B}, \mathcal{S} \rangle \rightharpoonup \langle \mathcal{D}, \mathcal{S} \rangle\)
+\(\mathbb{D} : \mathcal{E} \times \mathcal{B} \times \mathcal{S} \to \mathcal{D} \times \mathcal{S}\)
 maps expressions to data, possibly modifying the \emph{state} of evaluation, in a given context.
 The inference rules in \cref{fig:dataization} inductively describe the algorithm of dataization.
 
