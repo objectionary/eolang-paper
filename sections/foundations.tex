@@ -147,8 +147,8 @@ $[[ D> CA-FE, |foo| -> \phiTerminal{\xi}, |x| -> \phiTerminal{\xi}.|foo| ]]$
 
 \begin{definition}[Application]
 An \textbf{application}, denoted as $ e_1 ( \tau -> e_2 ) $,
-  means an attempt to attach \(e_2\) to the \(\tau\) attribute of \(e_1\)
-  (the ``subject'').
+  means an attempt to attach \(e_2\) (the \enquote{argument}) to the \(\tau\) attribute of \(e_1\)
+  (the \enquote{subject}).
 \end{definition}
 
 \Cref{eq:simple-application} demonstrates application,
@@ -180,7 +180,7 @@ A \textbf{dispatch}, denoted as $ e . \tau $, where \(e\) is the \enquote{subjec
 The \textbf{scope} of expression \(e\), denoted as \(e^\varsigma\), is either
   \begin{inparaenum}[a)]
   \item the formation where the expression is attached to an attribute,
-  \item or the scope of the expression where \(e\) is used.
+  \item or the scope of the subject of the application where \(e\) is the argument.
   \end{inparaenum}
 \end{definition}
 
