@@ -35,13 +35,18 @@ An attribute is \textbf{void} if $?$ is attached to it,
 \textbf{Data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly empty sequence of 8-bit bytes.
 \end{definition}
 
+\subsection{State}\label{sec:state}
+
+\begin{definition}[State]
+A \textbf{state} of evaluation \(s_i\) that ranges over \(\mathcal{S}\) is \tbd{...}
+\end{definition}
+
 \subsection{Function}\label{sec:function}
 
 \begin{definition}[Function]
 A \textbf{function} is a total mapping
-\(\langle \mathcal{B}, \mathcal{B}, \mathcal{S} \rangle \to \langle \mathcal{B}, \mathcal{S} \rangle\)
-  that maps formation to formation, possibly modifying the \emph{state} of evaluation \(s_i\),
-  which itself ranges over \(\mathcal{S}\).
+\(\langle \mathcal{B}, \mathcal{B}, \mathcal{S} \rangle \to \langle \mathcal{E}, \mathcal{S} \rangle\)
+  that maps formation, universe, and state to an expression and a new state.
 \end{definition}
 
 \subsection{Asset}\label{sec:asset}
