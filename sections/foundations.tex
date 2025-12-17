@@ -3,7 +3,7 @@
 
 \section{Foundations}
 
-In this section we introduce the core concepts of the calculus.
+In this section, we introduce the core concepts of the calculus.
 The purpose of this section is to define the entities that constitute the calculus---such as
   expressions, objects, attributes, bindings, and scope---together with their structural relationships.
 The definitions given here are descriptive rather than operational.
@@ -13,8 +13,7 @@ They explain what expressions and objects are, not how they are evaluated or tra
 
 \begin{definition}[Expression]
 An \textbf{expression}, ranged over \(\mathcal{E}\) by \(e_i\),
-is a grammatical construct that may result in an object after
-certain transformations.
+  is a grammatical construct obeying the syntax of \cref{fig:ebnf}.
 \end{definition}
 
 \subsection{Attribute}\label{sec:attribute}
@@ -33,7 +32,7 @@ An attribute is \textbf{void} if $?$ is attached to it,
 \subsection{Data}\label{sec:data}
 
 \begin{definition}[Data]
-A \textbf{data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly empty sequence of 8-bit bytes.
+\textbf{Data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly empty sequence of 8-bit bytes.
 \end{definition}
 
 \subsection{Binding}\label{sec:binding}
@@ -44,7 +43,7 @@ A \textbf{binding}, ranged over \(\mathcal{G}\) by \(B\), is a possibly empty
   \( k_1 \to v_1, k_2 \to v_2, \dots, k_n \to v_n \), where all keys are unique.
 \end{definition}
 
-The predicate \(k \in B\) holds if \(k\) is present in any pair of \(B\).
+The predicate \(k \in B\) holds if \(k\) is present in any pair in \(B\).
 
 \subsection{Function}\label{sec:function}
 
@@ -79,7 +78,7 @@ that includes all attributes of \(b\).
 \end{definition}
 
 The domain of the object in \cref{eq:object-example} is \(\{ \ff{a}, \ff{b}, \ff{foo} \}\).
-Assets $D$ and $L$ do not belong to object domain.
+Assets $D$ and $L$ do not belong to the object domain.
 
 \subsection{Formation}\label{sec:formation}
 
@@ -116,7 +115,7 @@ The object attached to $Q$ is called \emph{Universe}.
 \subsection{Abstract Object}\label{sec:abstract}
 
 \begin{definition}[Abstract Object]
-An object is \textbf{abstract} if at least one of its attributes is void,
+An object is \textbf{abstract} if at least one of its attributes is void;
 otherwise the object is \textbf{closed}.
 \end{definition}
 
@@ -195,15 +194,14 @@ In \cref{eq:simple-application}, the forma of $[[ |a| -> b_2 ]]$ is the abstract
 \subsection{Dispatch}\label{sec:dispatch}
 
 \begin{definition}[Dispatch]
-Object \textbf{dispatch} (also known as ``dot notation''), denoted as
-  $ b . \tau $ where \(b\) is the ``subject'', means retrieval of the object
-  attached to the \(\tau\) attribute of \(b\).
+A \textbf{dispatch}, denoted as $ e . \tau $, where \(e\) is the ``subject'',
+  means retrieval of expression from \(e\) by the attribute \(\tau\).
 \end{definition}
 
 \subsection{Scope}\label{sec:scope}
 
 \begin{definition}[Scope]
-The \textbf{scope} of expression \(e\), denoted as \(e^\varsigma\) is either
+The \textbf{scope} of expression \(e\), denoted as \(e^\varsigma\), is either
 \begin{inparaenum}[a)]
 \item the formation where the expression is attached to an attribute,
 \item or the scope of the expression where \(e\) is used.
@@ -243,7 +241,7 @@ while the locator \phiTerminal{\(\xi\)} means the scope of the expression.
 \subsection{Head and Tail}
 
 \begin{definition}
-Since any expression may recursively be defined as either \begin{inparaenum}[1)]
+Since any expression may recursively be defined as \begin{inparaenum}[1)]
     \item $T$,
     \item formation,
     \item application,
@@ -295,7 +293,7 @@ the subject of a dispatch or an application:
 
 \begin{definition}[Immutability]
 Every object is \textbf{immutable}, meaning that an application of
-its already attached attribute equals to $T$:
+its already attached attribute equals $T$:
 \begin{phiquation*}
 \forall \tau {,}\; e_1 {,}\; e_2 : [[ \tau -> e_1 ]] ( \tau -> e_2 ) \trans T
 \end{phiquation*}
@@ -346,6 +344,6 @@ Then, when the method is called, the \ff{this} pointer refers to the object that
 \subsection{Primitives}\label{sec:primitives}
 
 \begin{definition}[Primitive]
-A \textbf{primitive} denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\)
+A \textbf{primitive}, denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{N}\),
   is either $T$ or object formation without $L$-asset.
 \end{definition}

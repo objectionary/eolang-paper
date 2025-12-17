@@ -24,7 +24,9 @@ A contextualization function \(\mathbb{C} : \mathcal{E} \times \mathcal{B} \to \
 \end{enumerate}
 \end{definition}
 
+\ifdefined\examples
 \Cref{app:contextualization-examples} demonstrates how the contextualization function works through examples.
+\fi
 
 \subsection{Normalization}\label{sec:normalization}
 
@@ -46,8 +48,6 @@ is \emph{irreducible} or a \emph{normal form}, denoted as \(\nf{}_i\)
 ranging over \(\mathcal{N} \in \mathcal{E}\). Thus, \(\nf\) is a normal
 form of \(e\) if \(e \strans \nf\) and there is no expression \(e_1\)
 such that \(\nf \trans e_1\).
-
-An expression may not have a normal form.
 
 \begin{figure*}
 \newcommand\trrule[5][]{%
@@ -89,7 +89,7 @@ An expression may not have a normal form.
 \trrule{stop}
   { [[ B ]].\tau }
   { T }
-  { if $ [ \tau, @, L ] \cap B = \emptyset $ }
+  { if $ [ \tau {,}\; @ {,}\; L ] \cap B = \emptyset $ }
 \trrule{null}
   { [[ B_1, \tau -> ?, B_2 ]].\tau }
   { T }
@@ -112,7 +112,9 @@ An expression may not have a normal form.
 \label{fig:reduction}
 \end{figure*}
 
+\ifdefined\examples
 \Cref{app:normalization-examples} demonstrates how normalization works through examples.
+\fi
 
 \subsection{Equivalence}\label{sec:equivalence}
 
@@ -235,7 +237,9 @@ Here and later, the notation \(x_{(i)}\) denotes the \(i\)-th element of the tup
 The dataization function is partial, because not every primitive contains $D$-asset.
 \end{lemma}
 
+\ifdefined\examples
 \Cref{app:dataization-examples} demonstrates how the dataization function works through examples.
+\fi
 
 \subsection{Congruence}
 
