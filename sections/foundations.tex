@@ -5,7 +5,7 @@
 
 In this section, we introduce the core concepts of the calculus.
 The purpose of this section is to define the entities that constitute the calculus---such as
-  expressions, formations, attributes, bindings, and scope---together with their structural relationships.
+  expressions, formations, attributes, and scope---together with their structural relationships.
 The definitions given here are descriptive rather than operational.
 They explain what expressions are, not how they are evaluated or transformed.
 
@@ -35,22 +35,12 @@ An attribute is \textbf{void} if $?$ is attached to it,
 \textbf{Data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly empty sequence of 8-bit bytes.
 \end{definition}
 
-\subsection{Binding}\label{sec:binding}
-
-\begin{definition}[Binding]
-A \textbf{binding}, ranged over \(\mathcal{G}\) by \(B\), is a possibly empty
-  ordered set of key-value pairs, denoted as
-  \( k_1 \to v_1, k_2 \to v_2, \dots, k_n \to v_n \), where all keys are unique.
-\end{definition}
-
-The predicate \(k \in B\) holds if \(k\) is present in any pair in \(B\).
-
 \subsection{Function}\label{sec:function}
 
 \begin{definition}[Function]
 A \textbf{function} is a total mapping
-\(\langle \mathcal{G}, \mathcal{S} \rangle \to \langle \mathcal{G}, \mathcal{S} \rangle\)
-  that maps binding to binding, possibly modifying the \emph{state} of evaluation \(s_i\),
+\(\langle \mathcal{B}, \mathcal{B}, \mathcal{S} \rangle \to \langle \mathcal{B}, \mathcal{S} \rangle\)
+  that maps formation to formation, possibly modifying the \emph{state} of evaluation \(s_i\),
   which itself ranges over \(\mathcal{S}\).
 \end{definition}
 
@@ -66,8 +56,12 @@ An \textbf{asset} is an identifier to which either data
 
 \begin{definition}[Formation]
 A \textbf{formation}, denoted as $[[ B ]]$, ranged over \(\mathcal{B}\) by \(b_i\),
-is a binding where keys are either attributes or assets and values are either $?$, expressions, data, or functions.
+is a possibly empty ordered set of key-value pairs, where all keys are unique
+  and are either attributes or assets
+  and values are either $?$, expressions, data, or functions.
 \end{definition}
+
+The predicate \(k \in B\) holds if \(k\) is present in any pair in \(B\).
 
 We introduce the term \enquote{formation} rather than using the more traditional term \enquote{construction}
   because the latter generally implies the presence of a
@@ -113,8 +107,8 @@ The \textbf{terminator}, denoted as $T$, is an expression that signals an error.
 An \textbf{abstract} is a formation with at least one void attribute.
 \end{definition}
 
-\Cref{eq:price-color} is an example of a formation that is not an abstract,
-  while the expression attached to its |color| attribute is an abstract.
+\Cref{eq:price-color} is an example of a formation that is an abstract,
+  while the expression attached to its \ff{color} attribute is not an abstract.
 
 A formation that is not an abstract may be called a \emph{closed} formation.
 
