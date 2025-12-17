@@ -8,18 +8,18 @@
 The following examples demonstrate how the contextualization function (\cref{sec:contextualization}) works:
 
 \begin{phiquation*}
-\ctx{\xi.|x|.|k|}{b} \trans_{\ref{C:dot}}
-  \trans \ctx{\xi.|x|}{b}.|k| \trans_{\ref{C:dot}}
-  \trans \ctx{\xi}{b}.|x|.|k| \trans_{\ref{C:xi}}
+\ctx{\phiTerminal{\xi}.|x|.|k|}{b} \trans_{\ref{C:dot}}
+  \trans \ctx{$.|x|}{b}.|k| \trans_{\ref{C:dot}}
+  \trans \ctx{$}{b}.|x|.|k| \trans_{\ref{C:xi}}
   \trans b.|x|.|k|.
 \end{phiquation*}
 
 \begin{phiquation*}
-\ctx{\xi.|t| ( |x| -> \xi, |k| -> \xi.|f| )}{b} \trans_{\ref{C:app}}
-   \trans \ctx{\xi.|t|}{b} ( |x| -> \ctx{\xi}{b}, |k| -> \ctx{\xi.|f|}{b} ) \trans_{\ref{C:dot}}
-   \trans \ctx{\xi.|t|}{b} ( |x| -> \ctx{\xi}{b}, |k| -> \ctx{\xi}{b}.|f| ) \trans_{\ref{C:xi}}
-   \trans \ctx{\xi.|t|}{b} ( |x| -> \ctx{\xi}{b}, |k| -> b.|f| ) \trans_{\ref{C:xi}}
-   \trans \ctx{\xi.|t|}{b} ( |x| -> b, |k| -> b.|f| ) \trans_{\ref{C:dot}}
-   \trans \ctx{\xi}{b}.|t| ( |x| -> b, |k| -> b.|f| ) \trans_{\ref{C:xi}}
+\ctx{\xi.|t| ( |x| -> $, |k| -> $.|f| )}{b} \trans_{\ref{C:app}}
+   \trans \ctx{$.|t|}{b} ( |x| -> \ctx{$}{b}, |k| -> \ctx{$.|f|}{b} ) \trans_{\ref{C:dot}}
+   \trans \ctx{$.|t|}{b} ( |x| -> \ctx{$}{b}, |k| -> \ctx{$}{b}.|f| ) \trans_{\ref{C:xi}}
+   \trans \ctx{$.|t|}{b} ( |x| -> \ctx{$}{b}, |k| -> b.|f| ) \trans_{\ref{C:xi}}
+   \trans \ctx{$.|t|}{b} ( |x| -> b, |k| -> b.|f| ) \trans_{\ref{C:dot}}
+   \trans \ctx{$}{b}.|t| ( |x| -> b, |k| -> b.|f| ) \trans_{\ref{C:xi}}
    \trans b.|t| ( |x| -> b, |k| -> b.|f| ).
 \end{phiquation*}
