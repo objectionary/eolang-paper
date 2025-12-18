@@ -10,7 +10,7 @@ The syntax of a program is defined by BNF in \cref{fig:ebnf}, where the starting
 \raggedright
 \begin{ebnf}[8em]
 <Program> := "\(\Phi\)" "\(\mapsto\)" <Expression> \\
-<Expression> := <Formation> | <Application> | <Dispatch> | "\(\dead\)" \\
+<Expression> := <Formation> | <Application> | <Dispatch> | <Locator> | "\(\dead\)" \\
 <Formation> := "\(\llbracket\)" <Binding> "\(\rrbracket\)" \\
 <Application> := <Expression> "\(\lparen\)" <A-Pair> "\(\rparen\)" \\
 <A-Pair> := <\(\tau\)-Pair> | <\(\alpha\)-Pair> \\
