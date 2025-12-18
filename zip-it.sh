@@ -40,8 +40,10 @@ pdflatex -shell-escape -halt-on-error paper.tex
 bibtex paper
 pdflatex -halt-on-error paper.tex
 pdflatex -halt-on-error paper.tex
-rm -rf ./*.aux ./*.bcf ./*.blg ./*.fdb_latexmk ./*.fls ./*.log ./*.run.xml ./*.out ./*.exc ./*.ret
+rm -rf ./*.aux ./*.bcf ./*.blg ./*.fdb_latexmk ./*.fls ./*.log ./*.run.xml ./*.out ./*.exc ./*.ret ./*.sh
 rm -rf bibliography
+rm -rf examples
+rm -rf _eolang/*.pl
 zip="paper-${version}.zip"
 zip -x paper.pdf -r "${zip}" ./*
 echo "🍒 ZIP is ready for arXiv at ${zip} ($(du -sh "${zip}" | cut -f1))"
