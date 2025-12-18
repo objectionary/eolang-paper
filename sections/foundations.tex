@@ -268,7 +268,7 @@ $b_1( |foo| -> b_2)( ~0 -> 42 ).|print|( ~1 -> 7 )$
 \subsection{Atoms}\label{sec:atoms}
 
 \begin{definition}[Atom]
-An \textbf{atom} is an formation with a function attached to its $L$-asset.
+An \textbf{atom} is a formation with a function attached to its $L$-asset.
 \end{definition}
 
 \Cref{eq:Sqrt} demonstrates an atom with a function that calculates the square root of a number,
@@ -294,7 +294,7 @@ Attaching expression \(e\) to the $^$ attribute of formation \(b\)
 \end{definition}
 
 The presence of \enquote{parent} in each formation is essential for the coordination of inner formations after dispatch.
-Consider the following abstract with an inner formations:
+Consider the following abstract with an inner formation:
 \begin{phiquation*}
 \Big\{ |x| -> [[ |a| -> ?, next -> [[ @ -> $.^.|a|.plus( 1 ), ^ -> Q.|x| ]] ]], |k| -> $.|x|( |42| ) \Big\} {.}
 \end{phiquation*}

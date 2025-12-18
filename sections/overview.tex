@@ -3,7 +3,7 @@
 
 \section{Informal Overview}
 
-An \emph{formation} is a collection of \emph{attributes}, which are uniquely named pairs, for example:
+A \emph{formation} is a collection of \emph{attributes}, which are uniquely named pairs, for example:
 \begin{phiquation}
 \label{eq:price-color}
 [[ price -> ?, color -> [[ D> FF-C0-CB ]] ]] {.}
@@ -25,7 +25,7 @@ A \emph{partial} application results in a new abstract, for example:
 [[ |x| -> ?, |y| -> ? ]]( |x| -> b ) \trans [[ |x| -> b, |y| -> ? ]] {.}
 \end{phiquation*}
 
-An formation may be \emph{dispatched} from another formation with the help of \emph{dot notation}
+A formation may be \emph{dispatched} from another formation with the help of \emph{dot notation}
   where the right side \emph{accesses} the left side, for example:
 \begin{phiquation}
 \label{eq:dot-notation}
@@ -53,7 +53,7 @@ An expression may be textually reduced, for example:
 The formation on the left is reduced to the formation on the right in two reduction steps.
 Some expressions may be in \emph{normal form}, which means no further applicable reductions.
 
-An formation is called a \emph{decorator} if it has the $@$-attribute with an formation attached to it,
+A formation is called a \emph{decorator} if it has the $@$-attribute with a formation attached to it,
   known as a \emph{decoratee}.
 An attribute dispatched from a decorator reduces to the same attribute dispatched from the decoratee,
   if the attribute is not present in the decorator, for example:
@@ -61,13 +61,13 @@ An attribute dispatched from a decorator reduces to the same attribute dispatche
 [[ @ -> [[ |x| -> b ]] ]].|x| \trans b {.}
 \end{phiquation*}
 
-An formation may have data attached only to its $D$-asset, for example:
+A formation may have data attached only to its $D$-asset, for example:
 \begin{phiquation*}
 [[ |x| -> [[ D> 00-2A ]] ]] {.}
 \end{phiquation*}
 
-An formation may have a \emph{function} attached to its $L$-asset.
-Such an formation is referred to as an \emph{atom}.
+A formation may have a \emph{function} attached to its $L$-asset.
+Such a formation is referred to as an \emph{atom}.
 An atom may be \emph{morphed} to another formation by evaluating its function with
 \begin{inparaenum}[1)]
   \item the formation and
