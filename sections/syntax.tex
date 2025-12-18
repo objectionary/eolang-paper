@@ -9,7 +9,7 @@ The syntax of a program is defined by BNF in \cref{fig:ebnf}, where the starting
 \begin{mdframed}
 \raggedright
 \begin{ebnf}[8em]
-<Program> := "\(\Phi\)" "\(\mapsto\)" <Expression> \\
+<Program> := "\(\Phi\)" "\(\mapsto\)" <Formation> \\
 <Expression> := <Formation> | <Application> | <Dispatch> | <Locator> | "\(\dead\)" \\
 <Formation> := "\(\llbracket\)" <Binding> "\(\rrbracket\)" \\
 <Application> := <Expression> "\(\lparen\)" <A-Pair> "\(\rparen\)" \\
