@@ -24,15 +24,12 @@ The calculus is built around a single primitive---the object formation---which
   encapsulates attributes, data, and functions.
 Objects interact through application, which attaches expressions to attributes,
   and dispatch, which retrieves attached expressions.
-The semantics is defined by a set of reduction rules that are proven to be confluent,
-  ensuring that evaluation order does not affect the final result.
 
 The contributions of this paper are as follows:
 \begin{itemize}
   \item A formal syntax for \phic{} defined by a context-free grammar (\cref{sec:syntax}).
   \item Rigorous definitions of the core constructs (\cref{sec:foundations}).
   \item A family of semantic operators (\cref{sec:operators}).
-  \item A proof that the reduction strategy is confluent (\cref{sec:confluence}).
 \end{itemize}
 
 The remainder of this paper is organized as follows.
@@ -40,5 +37,4 @@ The remainder of this paper is organized as follows.
 \Cref{sec:syntax} presents the syntax as a context-free grammar.
 \Cref{sec:foundations} defines the foundational concepts.
 \Cref{sec:operators} introduces the semantic operators.
-\Cref{sec:confluence} proves the confluence of the reduction rules.
 Finally, \cref{sec:related} discusses related work.
