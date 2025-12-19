@@ -9,14 +9,10 @@ The purpose of this section is to define the entities that constitute the calcul
 The definitions given here are descriptive rather than operational.
 They explain what expressions are, not how they are evaluated or transformed.
 
-\subsection{Expression}\label{sec:expression}
-
 \begin{definition}[Expression]
 An \textbf{expression}, ranged over \(\mathcal{E}\) by \(e_i\),
   is a grammatical construct obeying the syntax of \cref{fig:ebnf}.
 \end{definition}
-
-\subsection{Attribute}\label{sec:attribute}
 
 \begin{definition}[Attribute]
 An \textbf{attribute}, ranged over \(\mathcal{T}\) by \(\tau_i\),
@@ -29,20 +25,14 @@ An attribute is \textbf{void} if $?$ is attached to it,
   otherwise it is an \textbf{attached} attribute.
 \end{definition}
 
-\subsection{Data}\label{sec:data}
-
 \begin{definition}[Data]
 \textbf{Data}, ranged over \(\mathcal{D}\) by \(\delta_i\), is a possibly empty sequence of 8-bit bytes.
 \end{definition}
-
-\subsection{State}\label{sec:state}
 
 \begin{definition}[State]
 A \textbf{state} of evaluation \(s_i\) ranges over \(\mathcal{S}\),
   where \(\varnothing_s\) is an empty state.
 \end{definition}
-
-\subsection{Function}\label{sec:function}
 
 \begin{definition}[Function]
 A \textbf{function} is a total mapping
@@ -50,22 +40,16 @@ A \textbf{function} is a total mapping
   that deterministically maps formation, universe, and state to an expression and a new state.
 \end{definition}
 
-\subsection{Asset}\label{sec:asset}
-
 \begin{definition}[Asset]
 An \textbf{asset} is an identifier to which either data
   (denoted as $D$-asset) or function
   (denoted as $L$-asset) is attached.
 \end{definition}
 
-\subsection{Binding}\label{sec:binding}
-
 \begin{definition}[Binding]
 A \textbf{binding}, ranged over \(\mathcal{G}\) by \(B_i\),
 is a possibly empty sequence of key-value pairs, where all keys are unique.
 \end{definition}
-
-\subsection{Formation}\label{sec:formation}
 
 \begin{definition}[Formation]
 An object \textbf{formation}, denoted as $[[ B ]]$, ranged over \(\mathcal{B}\) by \(b_i\), is a binding.
@@ -90,8 +74,6 @@ The arrow $ -> $ denotes an attachment of an expression (right-hand side)
   to an attribute (left-hand side).
 The arrow $ ..> $ denotes an attachment of data or function to an asset.
 
-\subsection{Domain}\label{sec:domain}
-
 \begin{definition}[Domain]
 A \textbf{domain} of formation \(b\), denoted as \(\bar{b}\), is a sequence of all attributes of \(b\), excluding assets.
 \end{definition}
@@ -99,19 +81,13 @@ A \textbf{domain} of formation \(b\), denoted as \(\bar{b}\), is a sequence of a
 The domain of the formation in \cref{eq:object-example} is \(\langle \ff{b}, \ff{a}, \ff{foo} \rangle\).
 Assets $D$ and $L$ do not belong to the domain.
 
-\subsection{Program}\label{sec:program}
-
 \begin{definition}[Program]
 A \textbf{program}, also known as \emph{Universe}, is a formation attached to $Q$.
 \end{definition}
 
-\subsection{Terminator}\label{sec:terminator}
-
 \begin{definition}[Terminator]
 The \textbf{terminator}, denoted as $T$, is an expression that signals an error.
 \end{definition}
-
-\subsection{Abstract}\label{sec:abstract}
 
 \begin{definition}[Abstract]
 An \textbf{abstract} is a formation with at least one void attribute.
@@ -121,8 +97,6 @@ An \textbf{abstract} is a formation with at least one void attribute.
   while the expression attached to its \ff{color} attribute is not an abstract.
 
 A formation that is not an abstract may be called a \emph{closed} formation.
-
-\subsection{Ordinal}\label{sec:ordinal}
 
 \newcommand\ordinal[2]{#1 \circ #2}
 \begin{definition}[Ordinal]
@@ -154,8 +128,6 @@ $[[ D> CA-FE, |foo| -> \phiTerminal{\xi}, |x| -> \phiTerminal{\xi}.|foo| ]]$
 \end{table*}
 \end{example}
 
-\subsection{Application}\label{sec:application}
-
 \begin{definition}[Application]
 An \textbf{application}, denoted as $ e_1 ( \tau -> e_2 ) $,
   means an attempt to attach \(e_2\) (the \enquote{argument}) to the \(\tau\) attribute of \(e_1\)
@@ -178,14 +150,10 @@ Even though $?$ being attached to an attribute of a formation resembles NULL ref
 In $b(\phiTerminal{\alpha_i} -> e)$ application, \(e\) must be attached to the attribute \(\tau\) of \(b\)
   for which \(\ordinal{\tau}{\bar{b}}\) equals \(i\).
 
-\subsection{Dispatch}\label{sec:dispatch}
-
 \begin{definition}[Dispatch]
 A \textbf{dispatch}, denoted as $ e . \tau $, where \(e\) is the \enquote{subject,}
   means an attempt to retrieve what is attached to \(\tau\) in the formation to which \(e\) may be transformed.
 \end{definition}
-
-\subsection{Scope}\label{sec:scope}
 
 \begin{definition}[Scope]
 The \textbf{scope} of expression \(e\), denoted as \(e^\varsigma\), is either
@@ -221,11 +189,7 @@ In~\cref{eq:simple-scope}, the scope of \ff{author} is the formation where the \
 \label{fig:scopes}
 \end{figure*}
 
-\subsection{Locators}\label{sec:locators}
-
 In an expression, the locator $Q$ means the program, while the locator \phiTerminal{\(\xi\)} means the scope of the expression.
-
-\subsection{Head and Tail}
 
 \begin{definition}
 Since any expression may recursively be defined as \begin{inparaenum}[1)]
@@ -265,8 +229,6 @@ $b_1( |foo| -> b_2)( ~0 -> 42 ).|print|( ~1 -> 7 )$
 \end{table*}
 \end{example}
 
-\subsection{Atoms}\label{sec:atoms}
-
 \begin{definition}[Atom]
 An \textbf{atom} is a formation with a function attached to its $L$-asset.
 \end{definition}
@@ -277,16 +239,12 @@ An \textbf{atom} is a formation with a function attached to its $L$-asset.
 The implementation of functions is outside the scope of \phic{}: they may be implemented,
   for example, in \(\lambda\)-calculus or a programming language such as Java or C++.
 
-\subsection{Decoration}\label{sec:decoration}
-
 \begin{definition}[Decoration]
 \textbf{decoration} is a mechanism of extending a formation (``decoratee'')
   by attaching it to the $@$-attribute of a formation (``decorator''),
   which makes attributes of the decoratee retrievable from the decorator,
   unless the decorator has its own attributes with the same names.
 \end{definition}
-
-\subsection{Parent}\label{sec:parent}
 
 \begin{definition}[Parent]
 Attaching expression \(e\) to the $^$ attribute of formation \(b\)
@@ -306,8 +264,6 @@ Instead, it would be equal to $T$, because $ Q.|k|.|next|.^ $
 The parent attribute may be compared with the \ff{this} pointer in Java or C++, which
   does not point anywhere until a method of a class is called.
 Then, when the method is called, the \ff{this} pointer refers to the formation that owns the method.
-
-\subsection{Primitives}\label{sec:primitives}
 
 \begin{definition}[Primitive]
 A \textbf{primitive}, denoted by \(p\) and ranging over \(\mathcal{P} \in \mathcal{E}\),
