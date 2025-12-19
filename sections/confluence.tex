@@ -16,7 +16,7 @@ For any expression \(e\), at most one reduction rule applies at the root of \(e\
 \begin{proof}
 Inspection of the rules in \cref{fig:reduction} shows that their left-hand sides are
   distinguished by mutually exclusive syntactic and semantic conditions: for example,
-    rules \nameref{r:dot} and \nameref{r:null} require the same attribute to be attached to a normal form or to \(\varnothing\), respectively;
+    rules \nameref{r:dot} and \nameref{r:null} require the same attribute to be attached to a normal form or to $?$, respectively;
     rules \nameref{r:phi} and \nameref{r:stop} differ by the presence of $@$;
     rules \nameref{r:stay} and \nameref{r:over} differ by the applied attribute;
     and
@@ -36,17 +36,17 @@ Otherwise, one redex is nested within the other.
 By \cref{lemma:root}, the outer redex is uniquely determined.
 The only rules whose contracta depend on evaluating a subexpression are \nameref{r:copy} and \nameref{r:dot}.
 
-In rule \nameref{r:copy}, the replaced expression is the normal form of a strictly smaller expression \(\ctx{e}{e\textsuperscript{\(\varsigma\)}}\).
-Any alternative reduction path that first reduces inside this subexpression must converge to the same normal form,
-  since normal forms of smaller expressions are unique by induction on expression size.
-
 In rule \nameref{r:dot}, the attribute value on the left-hand side is already a normal form,
   so no inner reduction can interfere with the rule application.
 
-All remaining rules either erase subexpressions or reroute dispatch and application without depending on the evaluation of nested redexes;
-in such cases the inner and outer reductions are either disjoint or one excludes the other.
-
-Thus, in all cases, the two one-step reductions are joinable.
+In rule \nameref{r:copy}, the replaced expression is the normal form of a strictly smaller expression \(\ctx{a}{\scopeof{a}}\).
+Because of that, the joinability of the two normalization paths
+\begin{equation*}
+\ctx{a}{\scopeof{a}} \strans n \qquad\text{and}\qquad \ctx{a}{\scopeof{a}} \trans \ctx{a'}{\scopeof{a}} \strans n'
+\end{equation*}
+reduces to the induction hypothesis on smaller expressions.
+Consequently, \(n\) and \(n'\) have a common successor, but being normal forms they must coincide.
+This closes the peak.
 \end{proof}
 
 \begin{theorem}[Confluence]
@@ -58,9 +58,4 @@ By \cref{lemma:local}, \(\trans\) is locally confluent.
 Since reductions are closed under contexts, any finite reduction peak can be decomposed into one-step peaks, each of which is joinable.
 By repeated joining, any two reduction sequences from a common source can be joined to a common successor.
 Hence \(\trans\) is confluent.
-
-Suppose \(e \strans n_1\) and \(e \strans n_2\).
-By confluence, there exists \(u\) such that \(n_1 \strans u\) and \(n_2 \strans u\).
-Since \(n_1\) and \(n_2\) are irreducible, we have \(n_1 = u = n_2\).
-Therefore, normal forms are unique.
 \end{proof}

@@ -21,15 +21,15 @@ The \emph{contextualization} total function \(\mathbb{C} : \mathcal{E} \times \m
 \begin{mdframed}
 \begin{phiquation*}
 \ctx{ \phiTerminal{\xi} } {b} \to b \
-\quad\quad \
+\qquad \
 \ctx{ Q } {b} \to Q \
-\quad\quad \
+\qquad \
 \ctx{ [[ B ]] } {b} \to [[ B ]] \
-\quad\quad \
+\qquad \
 \ctx{ T } {b} \to T
 
 \ctx{ e.\tau } {b} \to \ctx{e}{b} . \tau \
-\quad\quad \
+\qquad \
 \ctx{ e_1( \tau -> e_2 ) } {b} \to \ctx{e_1}{b} ( \tau -> \ctx{e_2}{b} )
 \end{phiquation*}
 \end{mdframed}
@@ -74,15 +74,15 @@ Thus, \(\nf\) is a normal form of \(e\) if \(e \strans \nf\) and
 \trrule{copy}
   { [[ B_1, \tau -> ?, B_2 ]] ( \tau -> e ) }
   { [[ B_1, \tau -> n, B_2 ]] }
-  { if \( \ctx{e}{e\textsuperscript{\(\varsigma\)}} \strans n \) }
+  { if \( \ctx{e}{\scopeof{e}} \strans n \) }
+\trrule{dot}
+  { [[ B_1, \tau -> \nf, B_2 ]].\tau }
+  { \ctx{\nf}{\scopeof{n}} ( \rho -> \scopeof{n} ) }
+  { }
 \trrule[\alpha]{alpha}
   { b ( \phiTerminal{\alpha_i} -> e ) }
   { b ( \tau -> e) }
   { if $ \tau \in b $ and \( \ordinal{\tau}{\bar{b}} = i \) }
-\trrule{dot}
-  { [[ B_1, \tau -> \nf, B_2 ]].\tau }
-  { \ctx{\nf}{n\textsuperscript{\(\varsigma\)}} ( \rho -> n\textsuperscript{\(\varsigma\)} ) }
-  { }
 \trrule[\varphi]{phi}
   { b.\tau }
   { b.@.\tau }
@@ -148,7 +148,7 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 {  } \
 { \langle e{,}\; u{,}\; s \rangle \stepto \langle p{,}\; s \rangle }  \
 \;\text{if}\; e \in \mathcal{P} \
-\quad\quad \
+\qquad \
 \newrule{Mnmz} \
 \frac \
 { \langle \nf{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle } \
@@ -201,7 +201,7 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 
 \newrule{box} \
 \frac \
-{ \langle \ctx{e}{e\textsuperscript{\(\varsigma\)}} {,}\; u {,}\; s_1 \rangle \stepto \langle \delta {,}\; s_2 \rangle } \
+{ \langle \ctx{e}{\scopeof{e}} {,}\; u {,}\; s_1 \rangle \stepto \langle \delta {,}\; s_2 \rangle } \
 { \langle [[ B_1, @ -> e, B_2 ]] {,}\; u {,}\; s_1 \rangle  \stepto \langle \delta {,}\; s_2 \rangle } \
 \;\text{if}\; [ D {,}\; L ] \cap {(} B_1 \cup B_2 {)} = \emptyset
 \end{phiquation*}
