@@ -6,4 +6,15 @@
 This paper intentionally focuses on defining \phic{} (syntax, foundations, and semantic operators) and does not yet demonstrate practical use.
 At the same time, it motivates the calculus as a step toward more rigorous reasoning,
   verified compilers and static analyzers, and better language design.
-Below are promising research paths that may naturally build on this foundation.
+Future work may build on \phic{} by creating the following artifacts:
+
+\begin{itemize}
+  \item A meta-theory of reductions and semantic operators (key laws; confluence/termination where applicable).
+  \item Proof principles and tool support for \(\equiv\) (normal-form equivalence) and observational congruence.
+  \item A type discipline for formations and attributes (well-formedness, attachment safety).
+  \item An effect system for morphing/dataization (pure vs. effectful expressions).
+  \item A refinement rulebook: meaning-preserving program transformations justified by congruence.
+  \item A verified translation/compilation path from an OO subset (e.g., Java/C++) into \(\varphi\)-expressions.
+  \item A mechanized formalization in a proof assistant (definitions + checked theorems + reusable libraries).
+\end{itemize}
+
