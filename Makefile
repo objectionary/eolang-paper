@@ -6,7 +6,7 @@
 .PHONY: clean zip all test
 SHELL=bash
 
-REPO=objectionary/eo
+REPO=objectionary/calculus-paper
 
 zip: *.tex sections/*.tex
 	./zip-it.sh "$(REPO)"

@@ -9,12 +9,18 @@ At the same time, it motivates the calculus as a step toward more rigorous reaso
 Future work may build on \phic{} by creating the following artifacts:
 
 \begin{itemize}
-  \item A meta-theory of reductions and semantic operators (key laws; confluence/termination where applicable).
-  \item Proof principles and tool support for \(\equiv\) (normal-form equivalence) and observational congruence.
-  \item A type discipline for formations and attributes (well-formedness, attachment safety).
-  \item An effect system for morphing/dataization (pure vs. effectful expressions).
-  \item A refinement rulebook: meaning-preserving program transformations justified by congruence.
-  \item A verified translation/compilation path from an OO subset (e.g., Java/C++) into \(\varphi\)-expressions.
-  \item A mechanized formalization in a proof assistant (definitions + checked theorems + reusable libraries).
+  \item A short list of core laws about reductions (what always works, what may fail).
+  \item A clear way to prove that two expressions behave the same in any context.
+  \item A type system that catches mistakes early (missing attributes, wrong attachments, etc.).
+  \item A way to mark which expressions are pure and which may have side effects.
+  \item A catalog of safe rewrites (how to change code without changing meaning).
+  \item A translation from a small subset of an OO language (e.g., Java/C++) into \(\varphi\)-expressions.
+  \item A machine-checked version of the calculus in a proof assistant.
+  \item Basic tools on top of phino: find unreachable parts, simplify expressions, suggest safe refactorings.
+  \item A standard library of built-in atoms (numbers, strings, collections) with precise rules.
+  \item Larger language features built as add-ons (overriding, interfaces, constructors).
+  \item Add-ons for mutation, concurrency, and distribution, with simple safety guarantees.
 \end{itemize}
 
+We invite readers to extend, formalize, and apply \phic{} to real object-oriented patterns and languages,
+  and to help turn these foundations into a shared body of results and artifacts.
