@@ -33,6 +33,7 @@ if ! sed --version; then
     exit 1
 fi
 
+sed -i "s|0\.0\.0|${version}|g" paper.tex
 sed -i "s|0\.0\.0|${version}|g" sections/abstract.tex
 sed -i "s|REPOSITORY|${REPO}|g" sections/abstract.tex
 pdflatex -shell-escape -halt-on-error paper.tex
