@@ -3,16 +3,12 @@
     @ -> $.c.times( 1.8 ).plus( 32.0 ),
     c -> 25.0
   ]],
-  org -> [[
-    eolang -> [[
-      bytes(data) -> [[
-        @ -> $.data
-      ]],
-      number(as-bytes) -> [[
-        @ -> $.as-bytes,
-        times -> [[ x -> ?, L> L_org_eolang_number_times ]],
-        plus -> [[ x -> ?, L> L_org_eolang_number_plus ]]
-      ]]
-    ]]
+  bytes(data) -> [[
+    @ -> $.data
+  ]],
+  number(as-bytes) -> [[
+    @ -> $.as-bytes,
+    times -> [[ x -> ?, L> L_number_times ]],
+    plus -> [[ x -> ?, L> L_number_plus ]]
   ]]
 ]]}

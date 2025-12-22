@@ -1,12 +1,8 @@
 {[[
-    org -> [[
-        eolang -> [[
-            bytes -> [[
-                data -> ?
-            ]],
-            number -> [[
-                bytes -> ?
-            ]]
-        ]]
+    bytes -> [[
+        data -> ?
+    ]],
+    number -> [[
+        bytes -> ?
     ]]
 ]]}
