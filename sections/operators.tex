@@ -146,25 +146,25 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 \newrule{Mprim} \
 \frac \
 {  } \
-{ \langle e{,}\; u{,}\; s \rangle \stepto \langle p{,}\; s \rangle }  \
+{ << e{,}\; u{,}\; s >> \stepto << p{,}\; s >> }  \
 \;\text{if}\; e \in \mathcal{P} \
 \qquad \
 \newrule{Mnmz} \
 \frac \
-{ \langle \nf{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle } \
-{ \langle e{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle }  \
+{ << \nf{,}\; u{,}\; s_1 >> \stepto << p{,}\; s_2 >> } \
+{ << e{,}\; u{,}\; s_1 >> \stepto << p{,}\; s_2 >> }  \
 \;\text{if}\; e \strans \nf \;\text{and}\; e \not\equiv n
 
 \newrule[\lambda]{Mlambda} \
 \frac \
-{ \langle e \bullet t{,}\; u{,}\; s_2 \rangle \stepto \langle p{,}\; s_3 \rangle} \
-{ \langle  [[  B_1 ,  L>  f , B_2  ]]  \bullet{} t{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_3 \rangle }  \
-\;\text{if}\; f {(} [[ B_1, B_2 ]] {,}\; u{,}\; s_1 {)} \to \langle e{,}\; s_2 \rangle
+{ << e \bullet t{,}\; u{,}\; s_2 >> \stepto << p{,}\; s_3 >>} \
+{ <<  [[  B_1 ,  L>  f , B_2  ]]  \bullet{} t{,}\; u{,}\; s_1 >> \stepto << p{,}\; s_3 >> }  \
+\;\text{if}\; f {(} [[ B_1, B_2 ]] {,}\; u{,}\; s_1 {)} \to << e{,}\; s_2 >>
 
 \newrule[\Phi]{Mphi} \
 \frac \
-{ \langle e \bullet{} t{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle} \
-{ \langle Q.\tau \bullet{} t{,}\; u{,}\; s_1 \rangle \stepto \langle p{,}\; s_2 \rangle }  \
+{ << e \bullet{} t{,}\; u{,}\; s_1 >> \stepto << p{,}\; s_2 >>} \
+{ << Q.\tau \bullet{} t{,}\; u{,}\; s_1 >> \stepto << p{,}\; s_2 >> }  \
 \;\text{if}\; u = [[  B_1 , \tau -> e, B_2 ]]
 \end{phiquation*}
 \end{mdframed}
@@ -172,7 +172,7 @@ The inference rules at \cref{fig:morphing} inductively describe the algorithm of
 \label{fig:morphing}
 \end{figure*}
 
-The notation \(\langle e, u, s_1 \rangle \stepto \langle p, s_2 \rangle\)
+The notation \(<< e, u, s_1 >> \stepto << p, s_2 >>\)
   means that \(\mathbb{M}(e, u, s_1)\) evaluates to \(p\), thus \emph{morphing} \(e\)
   with a side-effect of changing \(s_1\) to \(s_2\),
   in the universe \(u\).
@@ -192,17 +192,17 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 \newrule[\Delta]{delta} \
 \frac \
 { } \
-{ \langle [[ B_1, D> \delta, B_2 ]] {,}\; u {,}\; s \rangle \stepto \langle \delta {,}\; s \rangle } \
+{ << [[ B_1, D> \delta, B_2 ]] {,}\; u {,}\; s >> \stepto << \delta {,}\; s >> } \
 \quad \
 \newrule{norm} \
-\frac{ \langle p {,}\; u {,}\; s_2 \rangle \stepto \langle \delta {,}\; s_3 \rangle } \
-{ \langle e {,}\; u {,}\; s_1 \rangle  \stepto \langle \delta {,}\; s_3 \rangle } \
-\;\text{if}\; \mathbb{M} {(} e {,}\; u {,}\; s_1 {)} \to \langle p {,}\; s_2 \rangle
+\frac{ << p {,}\; u {,}\; s_2 >> \stepto << \delta {,}\; s_3 >> } \
+{ << e {,}\; u {,}\; s_1 >>  \stepto << \delta {,}\; s_3 >> } \
+\;\text{if}\; \mathbb{M} {(} e {,}\; u {,}\; s_1 {)} \to << p {,}\; s_2 >>
 
 \newrule{box} \
 \frac \
-{ \langle e {,}\; u {,}\; s_1 \rangle \stepto \langle \delta {,}\; s_2 \rangle } \
-{ \langle [[ B_1, @ -> e, B_2 ]] {,}\; u {,}\; s_1 \rangle  \stepto \langle \delta {,}\; s_2 \rangle } \
+{ << e {,}\; u {,}\; s_1 >> \stepto << \delta {,}\; s_2 >> } \
+{ << [[ B_1, @ -> e, B_2 ]] {,}\; u {,}\; s_1 >>  \stepto << \delta {,}\; s_2 >> } \
 \;\text{if}\; [ D {,}\; L ] \cap {(} B_1 \cup B_2 {)} = \emptyset
 \end{phiquation*}
 \end{mdframed}
@@ -213,7 +213,7 @@ The inference rules in \cref{fig:dataization} inductively describe the algorithm
 The rules \nameref{r:box} and \nameref{r:phi} coexist because
 $D \notin \mathcal{T}$, thus making the expression $ [[ @ -> 42 ]].D $ invalid.
 
-The notation \(\langle e, u, s_1 \rangle \stepto \langle \delta, s_2 \rangle\)
+The notation \(<< e, u, s_1 >> \stepto << \delta, s_2 >>\)
   means that \(\mathbb{D}(e, u, s_1)\) evaluates to \(\delta\),
   thus \emph{dataizing} \(e\) with a side-effect of changing the state of evaluation \(s_1\) to \(s_2\), in the universe \(u\).
 The notation \(\mathbb{D}(e, u)\) is a shortened form of \(\mathbb{D}(e, u, s_0)_{(1)}\),
