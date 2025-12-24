@@ -7,11 +7,8 @@
 
 \newcounter{exmp}
 \newcommand\phiExpression[1]{%
-    \stepcounter{exmp}%
-    e_\text{%
-        \scshape #1%
-    } =
-}
+  \stepcounter{exmp}
+  e_{\theexmp} = }
 
 The following examples demonstrate how the reduction rules of \cref{fig:reduction} may normalize
 some expressions, involving the contextualization function (\cref{sec:contextualization}):

@@ -22,7 +22,7 @@ The functions are defined as follows:
 
 The following sequence of transformations constitutes the evaluation of the program:
 
-\iexec[maybe]{phino dataize --output=latex --sweet --nonumber --compress --canonize --meet-prefix=dataization --sequence --flat --quiet --hide=Q.bytes --hide=Q.number --locator=Q.ex ./examples/celsius.phi > _tex/celsius-dataization.tex}
-% \begin{landscape}
-\scalebox{.3}{\parbox{\linewidth}{\input{_tex/celsius-dataization.tex}}}
-% \end{landscape}
+\iexec[maybe]{phino dataize --output=latex --sweet --nonumber --compress --canonize --meet-prefix=dataization --sequence --flat --quiet --hide=Q.bytes --hide=Q.number --locator=Q.@ --focus=Q.@ --meet-length=5 --meet-popularity=1 ./examples/celsius.phi > _tex/celsius-dataization.tex}
+\newsavebox{\celsiusbox}
+\sbox{\celsiusbox}{\begin{minipage}{2.2\linewidth}\input{_tex/celsius-dataization.tex}\end{minipage}}
+\noindent\adjustbox{angle=-90}{\adjustbox{max width=.95\textheight,max height=\linewidth}{\usebox{\celsiusbox}}}
