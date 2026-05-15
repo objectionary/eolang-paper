@@ -1,0 +1,25 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\begin{abstract}
+EO\footnote{%
+  \LaTeX{} sources of this paper are maintained in the
+  \href{https://github.com/REPOSITORY}{REPOSITORY} public GitHub repository,
+  the rendered version is \href{https://github.com/REPOSITORY/releases/tag/0.0.0}{\ff{0.0.0}}.}
+  is a pure object-oriented programming language
+  grounded in the \(\varphi\)-calculus.
+The language has no classes, no implementation inheritance,
+  no static methods, no \nospell{NULL}, no operators,
+  no flow-control statements, and no mutable state;
+  every entity in a program is an object,
+  and the only mechanism for reusing behaviour is decoration.
+This paper specifies the surface of EO ---
+  its lexical layer, the per-line and multi-line syntactic shapes,
+  and the cross-line well-formedness rules that constrain how those shapes
+  compose ---
+  and gives the translation of every construct into a
+  \(\varphi\)-calculus expression.
+The specification is precise enough that two independent implementations
+  agree on which programs are well-formed and on the meaning of each
+  well-formed program.
+\end{abstract}

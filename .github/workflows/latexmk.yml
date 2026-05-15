@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: latexmk
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+concurrency:
+  group: latexmk-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: sh
+jobs:
+  latexmk:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: yegor256/latexmk-action@0.18.2
+        with:
+          cmd: latexmk
+          opts: -pdf
+          depends: DEPENDS.txt

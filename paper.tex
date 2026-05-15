@@ -1,0 +1,102 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\documentclass[acmsmall,nonacm,11pt]{acmart}
+\settopmatter{printfolios=false,printccs=false,printacmref=false}
+\makeatletter\let\@authorsaddresses\@empty\makeatother
+\usepackage[utf8]{inputenc}
+\usepackage[T2A,T1]{fontenc}
+\usepackage{natbib} % for \citep and \citet
+\usepackage{csquotes}
+\usepackage{adjustbox}
+\usepackage{mdframed} % for drawing frames around figures
+\usepackage[novert,noframes,nonumbers]{ffcode} % for fixed-fonts
+\usepackage{multicol} % for multicolumn printing
+\usepackage{paralist} % for inlined lists
+\usepackage{anyfontsize} % To get rid of font not found warnings
+\usepackage{eolang} % for EO sources and \(\varphi\)-formulas
+\usepackage{tabularx} % for special tables
+\usepackage{naive-ebnf} % for EBNF
+\usepackage{to-be-determined} % for \tbd command
+\usepackage{href-ul} % for nicely underscored links
+\usepackage[shortlabels]{enumitem} % for changing labels in "enumerate"
+\usepackage[capitalize,nameinlink]{cleveref} % must stay last!
+
+\renewcommand\emph[1]{\textit{#1}} % to prevent a weird bug coming from some of the packages above
+\newcommand\capt[1]{\caption{#1}\Description{#1}}
+
+\usepackage{silence}
+  \WarningFilter{acmart}{\vspace should only be used to provide space above/below}
+
+\tolerance=1500
+\exhyphenpenalty=10000% to avoid line breaks before and after mdash
+\widowpenalty=5000% to have less widows
+\clubpenalty=5000% to have less orphans
+\interfootnotelinepenalty=10000% to format footnotes better
+\raggedbottom
+\setlength\footskip{13.0pt}
+\setlength\headheight{21pt}
+
+\newcommand\nospell[1]{#1}
+
+% Mapping arrow used in EO -> \(\varphi\)-calculus translation tables.
+\def\trans{\mathrel{\leadsto}}
+
+\definecolor{rgbTerminals}{HTML}{ff8c00}
+\renewcommand\EbnfTerminal[1]{\textcolor{rgbTerminals}{#1}}
+
+\acmBooktitle{untitled}
+\title{EO: An Object-Oriented Programming Language}
+\subtitle{%
+  Ver:
+  \texorpdfstring{
+    \href{https://github.com/REPOSITORY/releases/tag/0.0.0}
+      {\ff{0.0.0}}
+  }{0.0.0}
+}
+\author{Yegor Bugayenko}
+  \orcid{0000-0001-6370-0678}
+  \email{yegor256@gmail.com}
+  \affiliation{\institution{Huawei}\city{Moscow}\country{Russia}}
+\author{Maxim Trunnikov}
+  \orcid{0000-0001-8545-4797}
+  \email{mtrunnikov@gmail.com}
+  \affiliation{\institution{Huawei}\city{Moscow}\country{Russia}}
+
+\ccsdesc[300]{Software and its engineering~General programming languages~Language types~Object-oriented languages}
+\keywords{Object-Oriented Programming, Programming Language, EO, EOLANG}
+
+\begin{document}
+
+\input{sections/abstract}
+
+\maketitle
+
+\input{sections/introduction}
+
+\input{sections/overview}
+
+\input{sections/lexical}
+
+\input{sections/syntax}
+
+\input{sections/wellformedness}
+
+\input{sections/semantics}
+
+\input{sections/related}
+
+\input{sections/future}
+
+\input{sections/acks}
+
+{\raggedright
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{bibliography/main}}
+\vfill\eject
+
+\appendix
+\input{sections/app-outer-kinds}
+\input{sections/app-examples}
+
+\end{document}

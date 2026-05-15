@@ -1,0 +1,224 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Worked Examples}\label{app:examples}
+
+This appendix collects end-to-end walk-throughs of EO programs.
+Each example exercises a different combination of the constructs introduced
+  in \cref{sec:syntax,sec:wellformedness}, with reference to the
+  \(\varphi\)-translation rules of \cref{sec:semantics}.
+
+\subsection{Hello, world}\label{app:ex:hello}
+
+The minimal greeting program decorates a copy of \ff{Q.io.stdout}.
+
+\begin{ffcode}
++package org.eolang.examples
+
+# Greets the world.
+[] > app
+  Q.io.stdout > @
+    "Hello, world!\n"
+\end{ffcode}
+
+Construct usage, line by line:
+
+\begin{itemize}
+  \item Line 1 is a meta directive (\cref{sec:syntax:meta}) declaring the
+    package. The file's top-level objects are children of
+    \(\Phi.\mathtt{org}.\mathtt{eolang}.\mathtt{examples}\).
+  \item Line 3 is a comment line (\cref{sec:syntax:comment}); it attaches
+    to the named object below at the same indent.
+  \item Line 4 is a top-level formation \ff{[] > app}: a master child with
+    no voids. The blank line on line 2 is the required separator between
+    the meta header and the program (\cref{sec:wf:blanks}).
+  \item Line 5 is a vertical method chain \ff{Q.io.stdout} that becomes a
+    vertical application as soon as its deeper-indent child appears.
+    The suffix \ff{> @} names the expression as the decoratee of \ff{app}.
+  \item Line 6 is a string literal argument of \ff{stdout}.
+\end{itemize}
+
+The \(\varphi\)-translation is
+\begin{equation*}
+  \Phi.\mathtt{org}.\mathtt{eolang}.\mathtt{examples}.\mathtt{app}\,\mapsto\,
+    \llbracket\,
+      \varphi \mapsto \Phi.\mathtt{io}.\mathtt{stdout}\,(\alpha_0 \mapsto \text{\ff{"Hello, world!\textbackslash n"}})
+    \,\rrbracket.
+\end{equation*}
+Dataizing the program (\cref{sec:sem:atoms}) reduces the dispatch chain,
+  invokes the \(\lambda\)-asset of \ff{stdout}, and writes the greeting
+  bytes to the host's standard output.
+
+\subsection{Mixed-construct Walkthrough}\label{app:ex:mixed}
+
+The following program exercises eight different constructs in a single
+  tree: meta header, comment block, formation, vertical method chain,
+  star-tuple head, horizontal application, inline-phi formation, and
+  bare head.
+
+\begin{ffcode}
++architect someone@example.com
++version 1.0
+
+# A program demonstrating most constructs.
+# Comment block of two lines.
+[args] > main
+  mem.alloc > @
+    0
+    [x] >>
+      run > @
+        *
+          x.put 2
+          loop
+            x.lt 6 > [i] >>
+            [i] >>
+              true
+\end{ffcode}
+
+Line-by-line classification (each line is annotated with the outer kind of
+  the expression it introduces):
+
+\begin{itemize}
+  \item \ff{[args] > main} --- \ff{bare-formation},
+    top-level master child of the package root.
+    The comment block above attaches to this formation.
+  \item \ff{mem.alloc > @} --- \ff{hmethod} chain with 0 horizontal
+    arguments and the name suffix \ff{> @}. As soon as the deeper-indent
+    children appear, the outer kind transitions to \ff{vapplication}
+    (\cref{sec:syntax:vapp}). The expression names the decoratee
+    \(\varphi\) of \ff{main}.
+  \item \ff{0} --- bare \ff{head}, supplying the first positional
+    argument of \ff{mem.alloc}. No name suffix is required because the
+    parent kind is \ff{hmethod}/\ff{vapplication}, not a formation.
+  \item \ff{[x] >>} --- nested \ff{bare-formation} with an auto-generated
+    name. The single void \(x\) is supplied by the caller.
+  \item \ff{run > @} --- a \ff{head} with the name suffix \ff{> @};
+    once the deeper block opens, it becomes a \ff{vapplication}.
+  \item \ff{*} --- a star tuple as the head of an application
+    (\cref{sec:syntax:app}); with deeper children it becomes a
+    \(\Phi.\mathtt{tuple}\) constructor over those children.
+  \item \ff{x.put 2} --- \ff{happlication}, a horizontal application
+    whose head is the hmethod \ff{x.put}. Horizontally-completed
+    (\cref{sec:wf:notation}): no deeper children, no \ff{.method} wrap.
+  \item \ff{loop} --- a bare \ff{head}; opens a child block as a
+    \ff{vapplication}.
+  \item \ff{x.lt 6 > [i] >>} --- an \ff{inline-phi-formation}.
+    The left-hand expression \ff{x.lt 6} becomes the \(\varphi\)-bound
+    body of a fresh formation with one void \(i\); the formation receives
+    an auto-generated name.
+  \item \ff{[i] >>} --- another \ff{bare-formation} with one void and an
+    auto-name.
+  \item \ff{true} --- a bare \ff{head}, the body of the inner formation.
+\end{itemize}
+
+The example illustrates how name requirements vary by parent kind:
+  the child \ff{0} carries no suffix because its parent is a vertical
+  application (which positional-indexes its arguments), while the child
+  \ff{x.lt 6 > [i] >>} must be named because the inline-phi composite
+  always introduces a named object (\cref{sec:wf:naming}).
+
+\subsection{Leap-year predicate}\label{app:ex:leap}
+
+This example exercises reversed dispatch in both horizontal and vertical
+  form, paren groups as receivers, the const-marker, and the inline
+  binding \ff{:y}.
+
+\begin{ffcode}
+[args] > main
+  [y] > leap
+    or. > @
+      and.
+        eq. (mod. y 4) 0
+        not. (eq. (mod. y 100) 0)
+      eq. (mod. y 400) 0
+  out. > @
+    format
+      "%d is %sa leap year!"
+      (args.at 0).as-int > year!
+      if (leap year:y) "" "not "
+\end{ffcode}
+
+Construct highlights:
+
+\begin{itemize}
+  \item \ff{[y] > leap} --- a nested formation with one void; the body
+    computes the leap-year condition.
+  \item \ff{or. > @} --- a vertical \ff{bare-reversed} dispatch.
+    The first deeper child is the receiver of \ff{.or}; subsequent
+    children are method arguments.
+  \item \ff{and.} --- another vertical \ff{bare-reversed}, used as the
+    receiver of \ff{or.}.
+  \item \ff{eq. (mod. y 4) 0} --- a horizontal \ff{reversed-with-hargs}.
+    The receiver is the paren group \ff{(mod. y 4)}; the method argument
+    is \ff{0}. The line is horizontally-completed
+    (\cref{sec:wf:notation}).
+  \item \ff{not. (eq. (mod. y 100) 0)} --- a horizontal reversed dispatch
+    with a single argument (the receiver); the receiver is itself a
+    horizontal reversed dispatch.
+  \item \ff{out. > @} --- another vertical reversed dispatch on the
+    top-level formation, naming the decoratee of \ff{main}.
+  \item \ff{(args.at 0).as-int > year!} --- an \ff{hmethod} chain whose
+    head is a paren group, with the const-marked name \ff{year!}.
+    The intermediate vapp argument is named, demonstrating that vapp
+    arguments may each carry their own optional names.
+  \item \ff{if (leap year:y) "" "not "} --- an \ff{happlication} with
+    three horizontal arguments. The first argument is the paren group
+    \ff{(leap year:y)}, an application of \ff{leap} to \ff{year} with
+    the inline binding \ff{:y}; the remaining arguments are string
+    literals.
+\end{itemize}
+
+The receivers of reversed dispatches are exempt from the all-or-nothing
+  binding rule (\cref{sec:wf:bindings}); only the method arguments form
+  the binding group.
+
+\subsection{Multi-line Bytes Literal}\label{app:ex:bytes}
+
+A \ff{BYTES} literal of four bytes spread across two source lines:
+
+\begin{ffcode}
+size.
+  CA-FE-
+  BE-BE
+\end{ffcode}
+
+The trailing dash on the first chunk continues the literal onto the next
+  line.
+The two indented lines under \ff{size.} form a single bytes token
+  \ff{CA-FE-BE-BE} occupying one argument slot of the reversed dispatch
+  \ff{size.}.
+The continuation is a lexical concern (\cref{sec:lexical:bytes}); the
+  indent stack sees one expression at one indent.
+
+\subsection{Compact Tuple}\label{app:ex:tuple}
+
+The compact-tuple line \ff{seq * > @} folds its three vertical children
+  into a single \(\Phi.\mathtt{tuple}\) argument of \ff{seq}:
+
+\begin{ffcode}
+seq * > @
+  step-1
+  step-2
+  step-3
+\end{ffcode}
+
+translates to
+\begin{equation*}
+  \varphi\,\mapsto\,
+    \mathtt{seq}\,(
+      \alpha_0 \mapsto \Phi.\mathtt{tuple}(\mathtt{step\text{-}1},\ \mathtt{step\text{-}2},\ \mathtt{step\text{-}3})
+    ).
+\end{equation*}
+
+A non-zero \(N\) splits the children between direct positional arguments
+  and the tuple wrapper:
+
+\begin{ffcode}
+sprintf *1 > greeting
+  "Hello, %s!"
+  "Jeff"
+  "extra"
+\end{ffcode}
+
+binds \ff{"Hello, \%s!"} as \(\alpha_0\) and folds the remaining two
+  strings into \(\alpha_1 \mapsto \Phi.\mathtt{tuple}(\mathtt{"Jeff"},\,\mathtt{"extra"})\).

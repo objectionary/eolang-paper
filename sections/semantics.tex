@@ -1,0 +1,317 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Semantics via \texorpdfstring{\(\varphi\)-Calculus}{phi-Calculus}}\label{sec:semantics}
+
+The meaning of an EO program is given by translating it to a
+  \(\varphi\)-calculus expression.
+The \(\varphi\)-calculus is defined elsewhere~\citep{bugayenko2021eolang};
+  the present section assumes its syntax and reduction rules
+  (formation, application, dispatch, locator, data, function, dataization)
+  and specifies the translation function
+\begin{equation*}
+  \llbracket \cdot \rrbracket\,:\,
+    \text{well-formed EO expressions}\,\longrightarrow\,
+    \varphi\text{-expressions}.
+\end{equation*}
+The translation is defined construct-by-construct over the outer kinds of
+  \cref{app:outer-kinds}, using \cref{sec:lexical,sec:syntax} as the
+  domain and the \(\varphi\)-calculus as the codomain.
+
+\subsection{Translation Schema}\label{sec:sem:schema}
+
+\Cref{tab:translation} summarises the translation per outer kind;
+  the subsections that follow expand each row in turn.
+A program in source is a top-level object whose translation
+  \(\llbracket P \rrbracket\) is attached to \(\Phi\), the global root:
+\begin{equation*}
+  \Phi\,\mapsto\,\llbracket P \rrbracket.
+\end{equation*}
+
+\begin{table*}
+\capt{Translation \(\llbracket \cdot \rrbracket\) per outer kind.}
+\label{tab:translation}
+\small
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+Outer kind & \(\varphi\)-translation \\
+\midrule
+\ff{head} (identifier or literal) &
+  Locator dispatch (\cref{sec:sem:dispatch}) or data (\cref{sec:sem:atoms}). \\
+\ff{hmethod}, \ff{vmethod} (no hargs) &
+  Repeated dispatch: \(\llbracket h.\mathtt{m_1}.\mathtt{m_2}\ldots\rrbracket = \llbracket h \rrbracket.\mathtt{m_1}.\mathtt{m_2}\ldots\). \\
+\ff{happlication}, \ff{vapplication}, \ff{vmethod-with-hargs} &
+  Application of the head to its arguments: \(\llbracket h\,e_1\,e_2\,\ldots\rrbracket = \llbracket h \rrbracket\,(\alpha_0 \mapsto \llbracket e_1 \rrbracket, \alpha_1 \mapsto \llbracket e_2 \rrbracket, \ldots)\), with binding labels in place of \(\alpha_i\) when explicit. \\
+\ff{bare-formation} &
+  Formation \(\llbracket B \rrbracket\) collecting each child as a pair (\cref{sec:sem:formation}). \\
+\ff{bare-reversed}, \ff{reversed-with-hargs} &
+  Dispatch on the receiver: \(\llbracket \mathtt{m.}\,r\,e_1\,\ldots \rrbracket = \llbracket r \rrbracket.\mathtt{m}\,(\alpha_0 \mapsto \llbracket e_1 \rrbracket, \ldots)\). \\
+\ff{compact-tuple} &
+  Application with the trailing children wrapped in \(\Phi.\mathtt{tuple}\) (\cref{sec:sem:tuple}). \\
+\ff{inline-phi-formation} &
+  A fresh formation whose \(\varphi\) attribute is the LHS body (\cref{sec:sem:inline-phi}). \\
+\ff{text-block} &
+  A string literal whose \(\Delta\)-asset is the UTF-8 bytes of the block body. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Formations and Voids}\label{sec:sem:formation}
+
+A formation \ff{[a b] > foo} translates to a binding
+\begin{equation*}
+  \mathtt{foo}\;\mapsto\;
+    \llbracket\,
+      a \mapsto \varnothing,\ b \mapsto \varnothing
+    \,\rrbracket
+\end{equation*}
+in the enclosing scope.
+Each name in the parameter list contributes a void pair.
+The \ff{@} parameter is admitted and translates to the special name
+  \(\varphi\); \ff{\textasciicircum} is forbidden as a parameter name
+  (\cref{sec:syntax:formation}).
+
+A formation with a body block contributes each child as an additional
+  pair.
+A child whose name suffix is \ff{> name} contributes the pair
+  \(\mathtt{name} \mapsto \llbracket e \rrbracket\) where \(e\) is the
+  child expression.
+A child whose suffix is \ff{>>} contributes a pair under the
+  auto-generated name (\cref{sec:syntax:names});
+  the auto-name is treated as an ordinary attribute label in the
+  translation.
+A child whose suffix is \ff{+> name} contributes a \emph{test attribute}
+  (see \cref{sec:wf:atoms}); it is represented in the codomain as an
+  ordinary pair whose key marks it as a test, conventionally
+  \(\mathtt{+name}\).
+A child with no suffix (a master child --- a nested formation, atom, or
+  inline-phi formation) contributes a pair whose key is the master child's
+  own name.
+
+\subsection{Application}\label{sec:sem:application}
+
+A horizontal application \ff{h e\(_1\) e\(_2\) \ldots} translates to
+\begin{equation*}
+  \llbracket h\,e_1\,e_2\,\ldots \rrbracket\;=\;
+    \llbracket h \rrbracket\,
+    (\,
+      \alpha_0 \mapsto \llbracket e_1 \rrbracket,\
+      \alpha_1 \mapsto \llbracket e_2 \rrbracket,\
+      \ldots
+    \,).
+\end{equation*}
+A vertical application of the same arity translates identically:
+  positional indices are read from the source order of the deeper-indent
+  children.
+
+Inline bindings replace positional indices with explicit attribute
+  labels.
+The argument \ff{e:label} translates to the pair
+  \(\mathtt{label} \mapsto \llbracket e \rrbracket\);
+  the argument \ff{e:N} translates to the pair
+  \(\alpha_N \mapsto \llbracket e \rrbracket\).
+The well-formedness rules of \cref{sec:wf:bindings} guarantee that an
+  argument group is either uniformly positional or uniformly labelled
+  --- the translation never mixes \(\alpha_i\) labels with named pairs in
+  one application.
+
+\subsection{Dispatch and Locators}\label{sec:sem:dispatch}\label{sec:sem:special}
+
+A dispatch \(e.\mathtt{a}\) translates to a \(\varphi\)-dispatch
+  \(\llbracket e \rrbracket.\mathtt{a}\).
+Method chains expand left-to-right:
+  \(\llbracket e.\mathtt{a}_1.\mathtt{a}_2\ldots\rrbracket
+    = \llbracket e \rrbracket.\mathtt{a}_1.\mathtt{a}_2\ldots\).
+Reversed dispatch \(\mathtt{m.}\,r\,e_1\,\ldots\) translates to the
+  postfix form
+  \(\llbracket r \rrbracket.\mathtt{m}\,(\alpha_0 \mapsto \llbracket e_1 \rrbracket,\ldots)\):
+  reversed and postfix dispatch denote the same \(\varphi\)-term
+  (\cref{sec:over:reversed}).
+
+The four single-character locator tokens of \cref{sec:lexical:tokens}
+  are translated to the corresponding \(\varphi\)-calculus names:
+
+\begin{center}
+\begin{tabularx}{0.7\textwidth}{l X l}
+\toprule
+EO token & Role & \(\varphi\)-name \\
+\midrule
+\ff{Q} (\ff{ROOT}) & The global root namespace            & \(\Phi\) \\
+\ff{\$} (\ff{XI})  & The current scope (self)             & \(\xi\)  \\
+\ff{@} (\ff{PHI})  & The decoratee of the enclosing object & \(\varphi\) \\
+\ff{\textasciicircum} (\ff{RHO}) & The parent of the enclosing object & \(\rho\) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The locator \(\xi\) is the implicit prefix of any unqualified dispatch:
+  \(\llbracket .\mathtt{a} \rrbracket = \xi.\mathtt{a}\).
+The locator \(\rho\) refers to the formation one level outward;
+  it has no source-level counterpart at indent 0 (a top-level formation
+  has no parent).
+The locator \(\Phi\) anchors an absolute path:
+  \(\llbracket \mathtt{Q.io.stdout} \rrbracket = \Phi.\mathtt{io}.\mathtt{stdout}\).
+The locator \(\varphi\) is the \emph{decoratee}: a dispatch on a formation
+  that finds no local attribute falls through to the same dispatch on
+  the formation attached to \(\varphi\).
+This fall-through is the entire mechanism of behavioural reuse in EO ---
+  there is no class hierarchy and no implementation inheritance.
+
+\subsection{Atoms, Data, and Dataization}\label{sec:sem:atoms}
+
+An atom is a formation whose name suffix is \ff{> name /sig}.
+The signature \ff{sig} declares the atom's return type; the operational
+  behaviour is supplied by a host-language function attached to the
+  formation's \(\lambda\)-asset:
+\begin{equation*}
+  \llbracket \mathtt{[a\ b]\ >\ plus\ /number} \rrbracket\;=\;
+    \mathtt{plus}\,\mapsto\,
+    \llbracket\,
+      a \mapsto \varnothing,\ b \mapsto \varnothing,\
+      \lambda \mapsto \mathtt{Plus}
+    \,\rrbracket
+\end{equation*}
+where \(\mathtt{Plus}\) is a host-language function whose return matches
+  the signature.
+An atom's body may contain only test attributes (\cref{sec:wf:atoms}),
+  which translate to ordinary \(\mathtt{+name}\) pairs.
+
+Data literals (\ff{STRING}, \ff{TEXT}, \ff{INT}, \ff{FLOAT}, \ff{HEX},
+  \ff{BYTES}) translate to formations whose \(\Delta\)-asset carries the
+  byte sequence of the literal value, decorated by the appropriate canonical
+  object (\(\Phi.\mathtt{number}\), \(\Phi.\mathtt{string}\), \(\Phi.\mathtt{bytes}\)),
+  in accordance with the \(\varphi\)-calculus encoding of data primitives.
+The complete encoding is given in the \(\varphi\)-calculus
+  paper~\citep{bugayenko2021eolang}; the parser produces a \(\Delta\)-asset
+  whose bytes are the lexical value of the literal.
+
+Evaluating an EO program reduces it to a sequence of bytes via the
+  \(\varphi\)-calculus dataization operator
+\begin{equation*}
+  \mathbb{D}\,:\,\varphi\text{-expression}\,\to\,\text{bytes},
+\end{equation*}
+which normalises its argument and, if the normal form carries a
+  \(\Delta\)-asset, returns those bytes; otherwise it invokes the
+  \(\lambda\)-asset of the normal form and dataizes its result recursively.
+Dataizing the top-level program \(\Phi\) is the evaluation of the program.
+
+\subsection{Compact Tuple}\label{sec:sem:tuple}
+
+The compact-tuple line \ff{head *N} (\cref{sec:syntax:compact})
+  with vertical children \(c_1, \ldots, c_K\) translates to
+\begin{equation*}
+  \llbracket h \rrbracket\,(
+    \alpha_0 \mapsto \llbracket c_1 \rrbracket,\ \ldots,\
+    \alpha_{N-1} \mapsto \llbracket c_N \rrbracket,\
+    \alpha_N \mapsto \Phi.\mathtt{tuple}(
+      \llbracket c_{N+1} \rrbracket,\ \ldots,\ \llbracket c_K \rrbracket
+    )
+  ).
+\end{equation*}
+The first \(N\) children become direct positional arguments of the head;
+  the remaining \(K - N\) children fold into a single
+  \(\Phi.\mathtt{tuple}\) argument that takes the trailing positional
+  slot.
+The construct is pure syntactic sugar over the application form of
+  \cref{sec:sem:application};
+  it is included in the surface because tupling trailing arguments is
+  pervasive in practice
+  (e.g.\ argument lists of \ff{sprintf}, sequences of statements in
+  \ff{seq}).
+
+A bare \ff{*} appearing in head position is itself a
+  \(\Phi.\mathtt{tuple}\) constructor: an application whose head is \ff{*}
+  with horizontal arguments translates to
+  \(\Phi.\mathtt{tuple}(\llbracket e_1 \rrbracket, \ldots, \llbracket e_n \rrbracket)\).
+
+\subsection{Inline-phi Formation}\label{sec:sem:inline-phi}
+
+A line whose suffix is \ff{> [params] > name} introduces an
+  \emph{inline-phi formation}.
+The left-hand expression of the suffix becomes the body of a fresh
+  formation, bound to its \(\varphi\) attribute, and the right-hand name
+  binds the formation in the enclosing scope:
+\begin{equation*}
+  \llbracket \mathtt{e\ >\ [p_1\ p_2\ \ldots]\ >\ name} \rrbracket\;=\;
+    \mathtt{name}\,\mapsto\,
+      \llbracket\,
+        p_1 \mapsto \varnothing,\ p_2 \mapsto \varnothing,\ \ldots,\
+        \varphi \mapsto \llbracket e \rrbracket
+      \,\rrbracket.
+\end{equation*}
+The auto-named variant \ff{> [params] >>} replaces \ff{name} by the
+  generated name (\cref{sec:syntax:names});
+  the translation is otherwise identical.
+
+\subsection{Meta Directives}\label{sec:sem:meta}
+
+The meta directives recognised by the EO toolchain are listed in
+  \cref{tab:metas}.
+Meta directives do not contribute \(\varphi\)-expressions to the
+  translated program in the same way ordinary objects do;
+  they configure name resolution, attach metadata, or instruct downstream
+  tooling.
+
+\begin{table*}
+\capt{Meta directives recognised at the head of an EO source file.}
+\label{tab:metas}
+\small
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+Directive & Meaning \\
+\midrule
+\ff{+package} \(p\)         & Declares the dotted package path of the program. Every top-level object defined in the file is treated as a child of \(\Phi.p\). \\
+\ff{+alias} \(p\)           & Imports the canonical object at path \(\Phi.p\) and binds its final segment as an unqualified name in the source (\cref{sec:sem:alias}). \\
+\ff{+rt} \(\mathit{platform}\) \(\mathit{coords}\) &
+                              Declares a runtime dependency. \(\mathit{platform}\) is an identifier such as \ff{jvm} or \ff{node}; \(\mathit{coords}\) is the platform-specific dependency identifier. \\
+\ff{+architect} \(\mathit{email}\) &
+                              Author contact for the file. \\
+\ff{+home} \(\mathit{url}\) & Repository or project homepage. \\
+\ff{+version} \(v\)         & Source version; conventionally a semantic version. \\
+\ff{+spdx} \(\mathit{header}\) &
+                              An SPDX licence or copyright header preserved verbatim. \\
+\ff{+tests}                 & Marks the file as a test source; its top-level formation may carry \ff{+>} test attributes (\cref{sec:wf:atoms}). \\
+\ff{+decorate} \(a\) \(b\)  & Declares that the object \(a\) defined in the file is intended to decorate the canonical object at path \(b\). \\
+\ff{+unlint} \(\mathit{rule}\) &
+                              Suppresses a lint rule for the file. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Meta directives are legal only at the head of the source, before any
+  other object is declared (\cref{sec:syntax:meta});
+  the meta header is closed by exactly one blank line.
+Unrecognised meta directives are preserved verbatim for downstream
+  consumers; the parser does not reject an unknown \ff{+name} at the
+  meta-header position.
+
+\subsection{Aliases and Name Resolution}\label{sec:sem:alias}
+
+Identifiers in source come in three forms.
+A path rooted at \ff{Q} is absolute:
+  \ff{Q.org.eolang.io.stdout} translates to
+  \(\Phi.\mathtt{org}.\mathtt{eolang}.\mathtt{io}.\mathtt{stdout}\) with no
+  further resolution.
+A path rooted at \ff{\$} is scope-relative:
+  \ff{\$.x} translates to \(\xi.\mathtt{x}\).
+An unqualified identifier (a bare \ff{NAME} as the head of an expression)
+  is resolved according to the alias table established by the meta
+  header.
+
+The directive \ff{+alias p} imports the canonical object at path
+  \(\Phi.p\) and binds the final segment of \(p\) as an unqualified name
+  in the current source.
+For example, \ff{+alias io.stdout} makes the bare identifier \ff{stdout}
+  translate to \(\Phi.\mathtt{io}.\mathtt{stdout}\) wherever it appears
+  in the file.
+A bare identifier that matches no alias and is not a local attribute
+  resolves to \(\xi.\mathtt{name}\) ---
+  a dispatch on the current scope --- which is then subject to the
+  usual scope-walking rules of the \(\varphi\)-calculus.
+
+The \ff{+package} directive contributes the implicit prefix for the
+  file's top-level objects:
+  with \ff{+package org.eolang.examples}, a top-level \ff{[] > app}
+  contributes the binding
+  \(\Phi.\mathtt{org}.\mathtt{eolang}.\mathtt{examples}.\mathtt{app}\,
+    \mapsto\,\llbracket\mathtt{[]\ >\ app}\rrbracket\).

@@ -1,0 +1,78 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Introduction}\label{sec:introduction}
+
+Object-oriented programming is the dominant paradigm in industrial software
+  development, yet its mainstream realisations carry a long list of features
+  that have nothing to do with objects as such.
+Class hierarchies, static methods, implementation inheritance, mutable
+  state, \nospell{NULL} references, operators, type casts, reflection,
+  flow-control statements built into the syntax, and primitive scalar
+  types --- each of these complicates programs and obscures the
+  object-as-actor metaphor on which OOP rests.
+A language that took the object as its single primitive and rejected
+  every feature that is not strictly necessary would lay bare what OOP
+  actually \emph{is}.
+EO is such a language.
+
+EO has no types, no classes, no static methods, no implementation
+  inheritance, no \nospell{NULL}, no global scope, no type casting, no
+  reflection, no mutability, no scalar primitives, and no operators.
+Every entity in an EO program is an \emph{object} ---
+  a formation of named attributes ---
+  and the only mechanism for reusing behaviour is \emph{decoration}:
+  one object binds another to its special attribute \(\varphi\)
+  (written \ff{@} in source), and attribute dispatches that find no local
+  match fall through to the same dispatch on the decoratee.
+There are no control-flow keywords;
+  conditionals, loops, and sequences are themselves objects defined in
+  the standard library.
+
+The formal grounding of EO is the \(\varphi\)-calculus
+  introduced by \citet{bugayenko2021eolang}.
+The \(\varphi\)-calculus describes object formation, application,
+  dispatch, and dataization with a small set of reduction rules;
+  EO is a surface syntax for the same model with significant whitespace,
+  two equivalent notations for application (horizontal and vertical), and
+  conveniences such as method chains, reversed dispatch, compact tuples,
+  and inline-phi formations.
+The translation from EO to \(\varphi\) is the bridge between the surface
+  programmer can write and the calculus over which proofs and program
+  transformations can be carried out.
+
+This paper specifies EO precisely enough that two independent
+  implementations can agree on which programs are well-formed and on the
+  meaning of each well-formed program.
+The contributions of this paper are:
+
+\begin{itemize}
+  \item A complete lexical specification of EO source: encoding, indentation,
+    tokens, and literal forms (\cref{sec:lexical}).
+  \item A surface-syntax specification of every well-formed EO line and
+    multi-line construct, together with the line-shape decision table that
+    classifies any source line (\cref{sec:syntax}).
+  \item Cross-line well-formedness rules covering notation consistency,
+    naming, atoms and test attributes, comment attachment, blank-line
+    policy, and inline bindings (\cref{sec:wellformedness}).
+  \item A translation function \(\llbracket\,\cdot\,\rrbracket\) from
+    well-formed EO expressions to \(\varphi\)-calculus expressions,
+    construct-by-construct, together with the catalogue of meta directives
+    and the rules of name resolution under aliases
+    (\cref{sec:semantics}).
+\end{itemize}
+
+The remainder of the paper is organised as follows.
+\Cref{sec:overview} gives an informal tour with paired source and
+  \(\varphi\)-translation snippets.
+\Cref{sec:lexical} specifies the lexical layer.
+\Cref{sec:syntax} specifies the line shapes and the multi-line constructs
+  that compose them.
+\Cref{sec:wellformedness} states the cross-line rules that decide which
+  syntactic compositions are legal.
+\Cref{sec:semantics} maps every EO construct to a \(\varphi\)-calculus
+  expression and tabulates the recognised meta directives.
+\Cref{sec:related} positions EO against related languages and calculi.
+\Cref{sec:future} outlines directions that build on this specification.
+\Cref{app:outer-kinds,app:examples} are reference appendices:
+  the outer-kinds table and a collection of worked-through programs.

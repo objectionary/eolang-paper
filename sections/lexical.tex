@@ -1,0 +1,234 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Lexical Layer}\label{sec:lexical}
+
+EO source is read line by line.
+The lexer decides character encoding, validates indentation,
+  and turns each non-blank, non-comment line
+  into a sequence of tokens that the syntactic layer (\cref{sec:syntax}) consumes.
+This section specifies that surface: encoding, indentation, the token catalogue,
+  the literal sub-languages (numeric, string, text), and the multi-line bytes form.
+
+\subsection{Encoding and Line Endings}\label{sec:lexical:encoding}
+
+Source text is a stream of \nospell{UTF-8} bytes.
+Line terminators are either \ff{LF} (\ff{U+000A}) or
+  \ff{CR LF} (\ff{U+000D U+000A});
+  both are normalised to \ff{LF} before further processing.
+Other line-terminator forms (bare \ff{CR}, \ff{NEL}, \ff{LS}, \ff{PS}) are rejected.
+
+\subsection{Indentation}\label{sec:lexical:indent}
+
+EO uses significant whitespace.
+Indentation determines nesting:
+  a line whose leading-space count is greater than the previous non-blank line's
+  declares a child of that line's object.
+Three rules govern indentation:
+
+\begin{enumerate}
+  \item The indent unit is \emph{two spaces}.
+    The leading-space count of any non-blank line must be even;
+    odd counts are rejected.
+  \item Between two consecutive non-blank lines, the indent may increase
+    by \emph{at most one level} (two spaces).
+    A jump of two or more levels is rejected.
+  \item The indent may decrease by any amount in one step.
+    Decreasing closes one or more enclosing blocks at once.
+  \item Tab characters in the leading whitespace are rejected.
+    Tabs elsewhere on a line are permitted only inside string or text literals
+    via the \ff{\textbackslash t} escape (\cref{sec:lexical:strings}).
+\end{enumerate}
+
+A legal sequence of indents:
+\begin{ffcode}
+[] > foo
+  a > x          // indent 2 (level 1), parent foo at indent 0
+    b            // indent 4 (level 2), one level deeper than parent
+      c          // indent 6 (level 3)
+  d > y          // decrease from 6 to 2, allowed
+\end{ffcode}
+
+An illegal sequence:
+\begin{ffcode}
+[] > foo
+  a > x
+      b          // rejected: indent jumped from 2 to 6 (skipping 4)
+\end{ffcode}
+
+Comment lines (those beginning with \ff{\#}) also obey the even-indent constraint;
+  blank lines carry no indent of their own and never trigger a level change
+  (cross-line consequences are spelled out in \cref{sec:wellformedness}).
+
+\subsection{Tokens}\label{sec:lexical:tokens}
+
+\Cref{tab:tokens} lists every lexical class.
+Names of identifier-like tokens are written in \ff{UPPERCASE}
+  to distinguish them from the syntactic non-terminals of \cref{sec:syntax}.
+
+\begin{table*}
+\capt{Lexical tokens of EO.}
+\label{tab:tokens}
+\small
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+Token & Description \\
+\midrule
+\ff{META}        & \ff{+}\,\ff{NAME} followed by zero or more space-separated parts;
+                    each part is one or more non-whitespace characters,
+                    and parts may contain \ff{:}, \ff{.}, \ff{-}, \ff{/}
+                    (e.g.\ \ff{+rt jvm a.b.c:lib:1.0.0}). \\
+\ff{COMMENTARY}  & \ff{\#} followed by the rest of the line.
+                    Trailing whitespace is excluded at the token level. \\
+\ff{NAME}        & A lowercase Latin letter (\ff{[a-z]}) followed by characters
+                    other than space, line break, tab, and the punctuation set
+                    \ff{,}, \ff{.}, \ff{|}, \ff{'}, \ff{:}, \ff{;}, \ff{!}, \ff{?},
+                    \ff{]}, \ff{[}, \ff{\}}, \ff{\{}, \ff{)}, \ff{(},
+                    and the cactus codepoint \ff{U+1F335} (\(\mathtt{\Yright}\)).
+                    The cactus exclusion is structural: it is reserved for
+                    parser-generated auto-names and cannot collide with user input. \\
+\ff{PHI}         & The single character \ff{@}.
+                    Maps to \(\varphi\) in the \(\varphi\)-calculus translation
+                    (\cref{sec:semantics}). \\
+\ff{RHO}         & The single character \ff{\textasciicircum{}}.
+                    Maps to \(\rho\). \\
+\ff{ROOT}        & The single character \ff{Q}.
+                    Maps to \(\Phi\). \\
+\ff{XI}          & The single character \ff{\$}.
+                    Maps to \(\xi\). \\
+\ff{INT}         & A signed integer literal (\cref{sec:lexical:numeric}). \\
+\ff{FLOAT}       & A signed floating-point literal (\cref{sec:lexical:numeric}). \\
+\ff{HEX}         & A hexadecimal integer literal (\cref{sec:lexical:numeric}). \\
+\ff{STRING}      & A double-quoted string literal (\cref{sec:lexical:strings}). \\
+\ff{TEXT}        & A triple-quoted text block (\cref{sec:lexical:strings}). \\
+\ff{BYTES}       & A byte-sequence literal (\cref{sec:lexical:bytes}). \\
+\ff{STAR}        & The single character \ff{*}. \\
+\ff{ARROW}       & The single character \ff{>}. \\
+\ff{DOT}         & The single character \ff{.}. \\
+\ff{COLON}       & The single character \ff{:}. \\
+\ff{SLASH}       & The single character \ff{/}. \\
+\ff{CONST}       & The single character \ff{!}. \\
+\ff{LSQ},\,\ff{RSQ} & The brackets \ff{[} and \ff{]}. \\
+\ff{LB},\,\ff{RB}   & The parentheses \ff{(} and \ff{)}. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+The four single-character tokens \ff{PHI}, \ff{RHO}, \ff{ROOT}, and \ff{XI}
+  are \emph{locator} tokens.
+They denote, respectively,
+  the special \(\varphi\) attribute of the enclosing formation (decoratee),
+  the parent \(\rho\),
+  the root namespace \(\Phi\), and
+  the current scope \(\xi\) (self).
+The semantic role of each locator is detailed in \cref{sec:semantics}.
+
+Indentation is not a separate token: it is read directly from a line's leading
+  whitespace by the syntactic layer.
+There is no \ff{INDENT}/\ff{DEDENT} pair in the lexer.
+
+\subsection{Numeric Literals}\label{sec:lexical:numeric}
+
+Three numeric forms are recognised.
+
+\paragraph{Integer.}
+An \ff{INT} is an optional sign (\ff{+} or \ff{-}) followed by either
+  the single digit \ff{0} or a digit in \ff{[1-9]} followed by any number of
+  digits in \ff{[0-9]}.
+Leading zeros on multi-digit literals are forbidden: \ff{07}, \ff{007},
+  \ff{+07}, and \ff{-07} are all lexical errors.
+
+\paragraph{Floating-point.}
+A \ff{FLOAT} is an optional sign, one or more digits, a \ff{.},
+  one or more digits, and an optional exponent \ff{(e|E)(+|-)?digits}.
+
+\paragraph{Hexadecimal.}
+A \ff{HEX} is the literal prefix \ff{0x} (lowercase) followed by one or more
+  hexadecimal digits in \ff{[0-9a-fA-F]}.
+
+\subsection{String and Text Literals}\label{sec:lexical:strings}
+
+A \ff{STRING} is delimited by \ff{"} and may contain any character except an
+  unescaped \ff{"}, backslash, carriage return, or newline,
+  together with the escape sequences enumerated in \cref{tab:escapes}.
+A \ff{STRING} is a single-line construct: the lexer rejects a literal that
+  reaches end-of-line before the closing quote.
+
+A \ff{TEXT} is delimited by \ff{"""} markers spanning multiple lines.
+The opening \ff{"""} must appear with no other content on its line;
+  body lines must be indented at least as deep as the opening;
+  the closing \ff{"""} must appear on its own line at the opening indent.
+The body text is the body lines joined by newline, with the opening indent
+  stripped from each.
+Body characters may be any character except an unescaped backslash,
+  plus the escape sequences in \cref{tab:escapes}.
+
+An unclosed text block is reported at end-of-stream as a recoverable error.
+
+\begin{table*}
+\capt{Escape sequences recognised in \ff{STRING} and \ff{TEXT} literals.}
+\label{tab:escapes}
+\small
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+Sequence & Meaning \\
+\midrule
+\ff{\textbackslash b}      & \ff{U+0008} (backspace) \\
+\ff{\textbackslash t}      & \ff{U+0009} (horizontal tab) \\
+\ff{\textbackslash n}      & \ff{U+000A} (line feed) \\
+\ff{\textbackslash f}      & \ff{U+000C} (form feed) \\
+\ff{\textbackslash r}      & \ff{U+000D} (carriage return) \\
+\ff{\textbackslash "}      & \ff{"} \\
+\ff{\textbackslash '}      & \ff{'} \\
+\ff{\textbackslash \textbackslash} & \ff{\textbackslash} \\
+\ff{\textbackslash NNN}    & Octal byte. Pattern: a backslash followed by an
+                              optional digit in \ff{[0-3]}, an optional digit
+                              in \ff{[0-7]}, and a required digit in \ff{[0-7]}.
+                              The decoded value must not exceed \ff{0o377}
+                              (255 decimal). \\
+\ff{\textbackslash uXXXX}  & A Unicode codepoint as four hexadecimal digits.
+                              For legacy compatibility, a sequence of one or
+                              more \ff{u} characters between the backslash
+                              and the four digits is accepted on input; the
+                              canonical form has exactly one \ff{u}. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Any other backslash sequence is a lexical error.
+
+\subsection{Bytes Literals}\label{sec:lexical:bytes}
+
+A \ff{BYTES} literal denotes a sequence of zero or more 8-bit bytes,
+  written as pairs of hexadecimal digits separated by dashes.
+Three forms exist:
+
+\begin{itemize}
+  \item \ff{-{}-} --- the empty byte sequence.
+  \item \ff{BB-} --- a single byte (two hexadecimal digits) followed by a trailing dash.
+    The trailing dash distinguishes a one-byte literal from an \ff{INT} or \ff{HEX}.
+  \item \ff{BB-BB(-BB)*} --- two or more bytes joined by dashes.
+\end{itemize}
+
+The multi-byte form may continue across lines.
+If a multi-byte chunk ends a line with a trailing dash, the literal is incomplete
+  and continues on the next line with another \ff{BB(-BB)*} chunk.
+Continuation may repeat any number of times.
+The continuation indent of every chunk after the first must be at least as deep
+  as the indent of the line that began the literal;
+  a chunk at shallower indent terminates the literal and is a lexical error.
+A comment line, a blank line, or any non-bytes content interleaved between
+  continuation chunks is a lexical error.
+
+Example of a multi-line bytes literal:
+\begin{ffcode}
+size.
+  CA-FE-      // first chunk, ends with a trailing dash
+  BE-BE       // continuation chunk
+\end{ffcode}
+
+The two indented lines under \ff{size.} form a single \ff{BYTES} literal
+  \ff{CA-FE-BE-BE}, occupying one argument slot of the reversed dispatch
+  \ff{size.} (the latter construct is defined in \cref{sec:syntax}).
+A multi-line literal is one expression at one indent: the continuation
+  affects only the lexer, not the indent-driven syntactic layer.

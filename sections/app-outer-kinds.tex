@@ -1,0 +1,81 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Outer Kinds Reference}\label{app:outer-kinds}
+
+Every EO expression carries an \emph{outer kind} ---
+  the syntactic class of its outermost form ---
+  introduced construct-by-construct in \cref{sec:syntax}.
+This appendix collects every outer kind in one table for cross-reference,
+  together with two structural properties that govern how the construct
+  may be extended in the surrounding line stream:
+  whether the construct admits \emph{deeper-indent children},
+  and whether it may be \emph{wrapped} by a same-indent \ff{.method} continuation.
+
+A kind's \emph{openness} ---
+  one of \emph{open}, \emph{vertical-completed}, or \emph{horizontal-completed} ---
+  is a separate dimension from its kind name.
+The same kind progresses through openness states as more lines arrive;
+  the kind name itself does not change.
+Below, \enquote{after block closes} means the kind's openness has transitioned
+  from \emph{open} to \emph{vertical-completed}.
+The cross-line meaning of openness is given in \cref{sec:wf:notation}.
+
+In the table below, the column \emph{Children} answers \enquote{may receive deeper-indent children?}
+  and \emph{Wraps} answers \enquote{may be wrapped by a same-indent \ff{.method} continuation?}.
+A bare \enquote{yes} means the construct is always open in that direction;
+  \enquote{yes (after)} means only after the body block closes;
+  \enquote{no} means never.
+
+\begin{table*}
+\capt{The twelve outer kinds of EO expressions.}
+\label{tab:outer-kinds}
+\footnotesize
+\begin{tabularx}{\textwidth}{l l c c X}
+\toprule
+Outer kind & Cardinality & Children & Wraps & Notes \\
+\midrule
+\ff{head}                 & 1 line        & yes        & yes (after) &
+  Bare identifier, literal, paren group, or \ff{*}; no chain, no hargs. \\
+\ff{hmethod}              & 1 line        & yes\(^*\)  & yes (after) &
+  \ff{x.y.z} chained dispatch on one line. \(^*\)Children admitted only when the chain has zero horizontal args. \\
+\ff{happlication}         & 1 line        & no         & no &
+  Head + \(\geq\)1 horizontal args. Subsumes a chained head; the chain is inside, the outer kind is happlication. \\
+\ff{bare-formation}       & 1 line + body & yes        & yes (after) &
+  \ff{[params] [> name]}. Body is a deeper-indent block of children. \\
+\ff{bare-reversed}        & 1 line + body & yes        & yes (after) &
+  \ff{name.} vertical form. First deeper child is the receiver; siblings are method args. \\
+\ff{reversed-with-hargs}  & 1 line        & no         & no &
+  Horizontal form \ff{name. recv args\ldots}. \\
+\ff{compact-tuple}        & 1 line + body & yes        & yes (after) &
+  \ff{head *N}. First \(N\) children are direct positional args; the rest tupled into a \(\Phi.\mathtt{tuple}\) wrapper. \\
+\ff{inline-phi-formation} & 1 line        & no         & no &
+  \ff{expr > [params] > name}. LHS becomes the \(\varphi\)-body of the inline formation. \\
+\ff{vapplication}         & multi-line    & yes        & yes (after) &
+  Head line plus a deeper-indent block of vertical arguments. \\
+\ff{vmethod}              & multi-line    & yes\(^*\)  & yes\(^\dagger\) &
+  Chain of same-indent \ff{.method} continuations. \(^*\)Children allowed only if the last \ff{.method} has 0 hargs; \(^\dagger\)more \ff{.method}s extend the chain. \\
+\ff{vmethod-with-hargs}   & multi-line    & no         & no &
+  A \ff{.method} continuation carrying \(\geq\)1 horizontal args; closes the chain immediately. \\
+\ff{text-block}           & multi-line    & ---        & yes (after) &
+  \ff{"""}-delimited body. Body lines are lexical content, not children. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Four of the twelve outer kinds are \emph{horizontally-completed}:
+  they admit no deeper children and cannot be wrapped by a same-indent
+  \ff{.method} continuation.
+The set is
+
+\begin{equation*}
+  \mathcal{H} = \{\,
+    \mathtt{happlication},\
+    \mathtt{reversed\text{-}with\text{-}hargs},\
+    \mathtt{vmethod\text{-}with\text{-}hargs},\
+    \mathtt{inline\text{-}phi\text{-}formation}
+    \,\}.
+\end{equation*}
+
+The well-formedness rules of \cref{sec:wf:notation} are stated in terms of
+  membership in \(\mathcal{H}\).

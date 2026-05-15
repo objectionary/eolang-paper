@@ -1,0 +1,263 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Informal Overview}\label{sec:overview}
+
+EO is built around a single primitive --- the \emph{object formation} ---
+  and three operations on it: \emph{application}, \emph{dispatch}, and
+  \emph{decoration}.
+This section walks through each in turn,
+  pairing surface EO source with the \(\varphi\)-calculus
+  expression~\citep{bugayenko2021eolang} it represents.
+The formal mapping is given in \cref{sec:semantics};
+  the present section is intended as a reading-on-ramp.
+
+\subsection{Formations and Voids}\label{sec:over:formation}
+
+A formation gathers \emph{named attributes} between square brackets.
+An attribute may be a \emph{void} --- a slot with no value attached ---
+  or be bound to an expression.
+
+\begin{ffcode}
+[a b] > foo
+\end{ffcode}
+
+declares an abstract object \ff{foo} with two voids \(a\) and \(b\),
+  and translates to the \(\varphi\)-formation
+\begin{equation*}
+  \mathtt{foo}\;\mapsto\;
+    \llbracket\,
+      a \mapsto \varnothing,\ b \mapsto \varnothing
+    \,\rrbracket.
+\end{equation*}
+
+Bound attributes appear inside the formation's body block:
+
+\begin{ffcode}
+[] > pair
+  42 > x
+  "hi" > y
+\end{ffcode}
+
+translates to
+\begin{equation*}
+  \mathtt{pair}\;\mapsto\;
+    \llbracket\,
+      x \mapsto 42,\ y \mapsto \mathtt{"hi"}
+    \,\rrbracket.
+\end{equation*}
+
+\subsection{Application}\label{sec:over:application}
+
+Application attaches an expression to a void.
+A formation with all voids attached is \emph{closed}; a formation that
+  still carries voids after partial application is again abstract.
+EO offers two notations.
+\emph{Horizontal} application places the head and arguments on one line;
+  \emph{vertical} application puts each argument on a deeper-indent line.
+
+\begin{ffcode}
+foo 1 2 > closed-foo            // horizontal
+\end{ffcode}
+
+and
+
+\begin{ffcode}
+foo > closed-foo                // vertical (same meaning)
+  1
+  2
+\end{ffcode}
+
+both translate to
+\begin{equation*}
+  \mathtt{closed\text{-}foo}\;\mapsto\;
+    \mathtt{foo}\,(a \mapsto 1,\ b \mapsto 2).
+\end{equation*}
+
+An argument may carry an explicit binding (\cref{sec:syntax:binding}):
+  \ff{foo 1:a 2:b} binds \ff{a} and \ff{b} by name rather than position.
+The two notations are interchangeable up to whitespace;
+  the well-formedness rules of \cref{sec:wf:bindings} require an argument
+  group to use bindings uniformly or not at all.
+
+\subsection{Dispatch}\label{sec:over:dispatch}
+
+A dispatch retrieves the expression attached to a named attribute.
+EO writes a dispatch in dot notation; the left side is the scope being
+  inspected and the right side is the attribute name.
+
+\begin{ffcode}
+pair.x
+\end{ffcode}
+
+translates to
+\begin{equation*}
+  \mathtt{pair}.x.
+\end{equation*}
+
+Dispatches chain freely:
+\begin{ffcode}
+io.stdout
+\end{ffcode}
+
+translates to \(\mathtt{io}.\mathtt{stdout}\),
+  reading \enquote{the \ff{stdout} attribute of the \ff{io} object}.
+
+The locators \ff{Q}, \ff{\$}, \ff{@}, and \ff{\textasciicircum} stand for
+  the root namespace \(\Phi\), the current scope \(\xi\), the decoratee
+  \(\varphi\), and the parent \(\rho\), respectively.
+For example, \ff{Q.io.stdout} translates to \(\Phi.\mathtt{io}.\mathtt{stdout}\):
+  start at the root namespace, then dispatch into \ff{io}, then \ff{stdout}.
+
+\subsection{Decoration via \texorpdfstring{\(\varphi\)}{phi}}\label{sec:over:decoration}
+
+A formation that binds the special attribute \ff{@} \emph{decorates} the
+  object attached to that \(\varphi\) attribute.
+A dispatch on the decorating formation that finds no local match falls
+  through to the same dispatch on the decoratee.
+Decoration is EO's only mechanism for behavioural reuse;
+  there is no class hierarchy and no implementation inheritance.
+
+\begin{ffcode}
+[] > app
+  Q.io.stdout > @
+    "Hello, world!\n"
+\end{ffcode}
+
+The object \ff{app} decorates a copy of \ff{Q.io.stdout} applied to a
+  greeting string.
+A dispatch like \ff{app.write} (for any attribute of \ff{stdout} that
+  \ff{app} does not redefine) reduces to the same dispatch on the
+  decoratee.
+The \(\varphi\)-form is
+\begin{equation*}
+  \mathtt{app}\;\mapsto\;
+    \llbracket\,
+      \varphi \mapsto \Phi.\mathtt{io}.\mathtt{stdout}\,(\text{\ff{"Hello, world!\textbackslash n"}})
+    \,\rrbracket.
+\end{equation*}
+
+\subsection{Atoms}\label{sec:over:atom}
+
+Some operations cannot be expressed inside EO itself --- for example,
+  writing a byte to standard output, or adding two integers represented as
+  byte sequences.
+An \emph{atom} is a formation whose behaviour is supplied by a
+  host-language function.
+The signature suffix \ff{/sig} on the name declares the return type and
+  marks the formation as an atom.
+
+\begin{ffcode}
+[a b] > plus /number
+\end{ffcode}
+
+declares an atom \ff{plus} with two voids \(a\) and \(b\) and a return
+  signature \(\mathtt{number}\).
+Its \(\varphi\)-form attaches a \(\lambda\)-asset
+  (a host-language function reference) to the formation:
+\begin{equation*}
+  \mathtt{plus}\;\mapsto\;
+    \llbracket\,
+      a \mapsto \varnothing,\ b \mapsto \varnothing,\
+      \lambda \mapsto \mathtt{Plus}
+    \,\rrbracket.
+\end{equation*}
+
+The body of an atom contains only test attributes (\cref{sec:wf:atoms});
+  the operational meaning lives in the \(\lambda\)-asset.
+
+\subsection{Method Chains}\label{sec:over:chain}
+
+A chain of dispatches reads top-to-bottom in vertical notation:
+
+\begin{ffcode}
+tmpdir
+.tmpfile
+.deleted
+.open > @
+  "r"
+\end{ffcode}
+
+translates to
+\begin{equation*}
+  \mathtt{tmpdir}.\mathtt{tmpfile}.\mathtt{deleted}.\mathtt{open}\,(\alpha_0 \mapsto \mathtt{"r"}),
+\end{equation*}
+where the name on the last \ff{.method} line (here \ff{@}, indicating
+  decoration) is the name of the whole expression
+  (\cref{sec:wf:naming}).
+Intermediate links may carry their own optional names.
+
+\subsection{Reversed Dispatch}\label{sec:over:reversed}
+
+Some method names read more naturally in prefix position than in
+  postfix.
+EO offers a \emph{reversed dispatch}: the line begins with the method name
+  followed by a trailing dot, and the receiver is the first argument.
+
+\begin{ffcode}
+if. cond then else
+\end{ffcode}
+
+translates to \(\mathtt{cond}.\mathtt{if}\,(\alpha_0 \mapsto \mathtt{then},\ \alpha_1 \mapsto \mathtt{else})\) ---
+  exactly the same as the postfix \ff{cond.if then else} would denote.
+A vertical form spreads the receiver and arguments across deeper-indent
+  lines (\cref{sec:syntax:reversed}).
+
+\subsection{Compact Tuple}\label{sec:over:tuple}
+
+A tuple of values is built by the \ff{*} construct.
+A line of the form \ff{head *N} partitions its vertical children:
+  the first \(N\) are direct positional arguments of the head, and the
+  remaining children are collected into a single
+  \(\Phi.\mathtt{tuple}\) argument appended at the end.
+
+\begin{ffcode}
+sprintf *1 > greeting
+  "Hello, %s!"
+  "Jeffrey"
+  "extra"
+\end{ffcode}
+
+binds \ff{"Hello, \%s!"} as the first positional argument of \ff{sprintf};
+  the remaining children \ff{"Jeffrey"} and \ff{"extra"} fold into a
+  tuple argument.
+The \(\varphi\)-translation is
+\begin{equation*}
+  \mathtt{greeting}\;\mapsto\;
+    \mathtt{sprintf}\,(
+      \alpha_0 \mapsto \mathtt{"Hello, \%s!"},\
+      \alpha_1 \mapsto \Phi.\mathtt{tuple}(\mathtt{"Jeffrey"},\ \mathtt{"extra"})
+    ).
+\end{equation*}
+
+A bare \ff{*} in head position is itself a \(\Phi.\mathtt{tuple}\)
+  constructor over its arguments.
+
+\subsection{A Program}\label{sec:over:program}
+
+A complete EO program is a top-level formation that decorates the object
+  it should evaluate to.
+Reducing the program to a sequence of bytes ---
+  the operation called \emph{dataization} (\cref{sec:sem:atoms}) ---
+  follows the chain of decorations and dispatches until a \(\Delta\)-asset
+  is reached and its bytes are returned.
+
+\begin{ffcode}
++package org.eolang.examples
+
+# Greets Jeff.
+[] > app
+  Q.io.stdout > @
+    Q.tt.sprintf
+      "Hello, %s!"
+      * "Jeffrey"
+\end{ffcode}
+
+The program declares a single object \ff{app} whose decoratee is a copy of
+  \ff{Q.io.stdout} applied to the formatted greeting.
+Dataizing \ff{app} reduces the dispatch chain, evaluates the atom backing
+  \ff{stdout}, and writes the bytes of \enquote{Hello, Jeffrey!} to the
+  process's standard output.
+The complete \(\varphi\)-translation of this program is left to
+  \cref{sec:semantics}; the present overview has established what each
+  surface construct denotes.

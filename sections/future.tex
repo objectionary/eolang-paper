@@ -1,0 +1,46 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Future Studies}\label{sec:future}
+
+This paper specifies EO and its translation to the \(\varphi\)-calculus.
+It does not attempt to develop a theory of programs in EO, demonstrate
+  industrial scaling, or prove correctness properties of the reference
+  implementation.
+We see these as natural directions that build on the present
+  specification:
+
+\begin{itemize}
+  \item \emph{Type system.}
+    EO's surface is untyped; an optional type system layered on top
+    would mechanise common error checks without disturbing the
+    object-first surface.
+  \item \emph{Mechanised translation correctness.}
+    Formalising the translation function \(\llbracket\,\cdot\,\rrbracket\)
+    in a proof assistant (Coq, Lean, Agda) and proving its compositionality
+    would close the loop between EO and the \(\varphi\)-calculus.
+  \item \emph{Standard library specification.}
+    The canonical objects of the EO ecosystem
+    (\(\mathtt{bytes}\), \(\mathtt{number}\), \(\mathtt{string}\),
+    \(\mathtt{tuple}\), \(\mathtt{seq}\), \(\mathtt{if}\), \(\mathtt{while}\),
+    \ldots) deserve a precise contract document analogous to this one.
+  \item \emph{Module and package resolution.}
+    The aliasing rules of \cref{sec:sem:alias} are stated at the level
+    of a single source file; a multi-file resolution semantics with
+    visibility and override rules remains to be worked out.
+  \item \emph{Effect tracking for atoms.}
+    Atoms are the only source of side effects in an EO program.
+    A semantic discipline that separates pure formations from effectful
+    atoms would support equational reasoning over the pure subset.
+  \item \emph{Bidirectional translation.}
+    Mappings to and from mainstream object-oriented languages (Java,
+    Kotlin, Python) preserving observable behaviour would let EO serve
+    as a target for legacy modernisation as well as a source language.
+  \item \emph{Tooling.}
+    A formally-grounded language server, refactoring catalogue,
+    and equivalence checker would let practitioners exploit EO's
+    minimality directly.
+\end{itemize}
+
+The specification given here is intended as the foundation on which these
+  artefacts can be built without ambiguity about what the language is.

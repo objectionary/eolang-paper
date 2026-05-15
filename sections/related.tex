@@ -1,0 +1,73 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Related Work}\label{sec:related}
+
+EO occupies a deliberate position in the space of object-oriented languages
+  and the calculi that formalise them.
+This section positions the specification given here against neighbouring
+  work along three axes:
+  pure-OO and small-OO surface languages,
+  formal calculi of objects,
+  and the choice of an XML pivot for compilation.
+
+\paragraph{Pure-OO and small-OO surface languages.}
+Smalltalk~\citep{goldbergrobson1983smalltalk} is the historical touchstone
+  for pure-OO: every value is an object, every operation a message send.
+Smalltalk-80 still ships with classes and metaclasses, however, and its
+  imperative core retains assignment and mutable state.
+Self~\citep{ungar1987self} stripped classes from Smalltalk and replaced
+  inheritance with prototype-based delegation; EO continues the trajectory
+  by replacing prototypes with formations and delegation with decoration
+  (\cref{sec:sem:dispatch}).
+EO additionally removes flow-control keywords, scalar primitives, and
+  operators: \(\mathtt{if}\), \(\mathtt{while}\), arithmetic, and
+  comparison are themselves objects defined inside the language.
+
+\paragraph{Class-based mainstream languages.}
+Java, C++, C\#, and Python all model objects but build on type systems,
+  class hierarchies, and a large surface of features that EO drops.
+The list of omissions catalogued in \cref{sec:introduction} is not novel
+  --- each item has been argued elsewhere ---
+  but EO is, to the authors' knowledge, the first to drop all of them
+  simultaneously and ship a working compiler that does so.
+The trade-off is explicit: a programmer pays a notational cost (every
+  control construct is a method call) for the structural simplification
+  (one syntactic primitive, one reuse mechanism, no special cases).
+
+\paragraph{Formal calculi for objects.}
+The Abadi--Cardelli object calculus~\citep{abadi1995imperative} models
+  objects as records of methods with an imperative update operation.
+The calculus subsumes class-based features through encoding, but the
+  encoding itself is not the surface a programmer uses.
+Featherweight Java~\citep{igarashi2001featherweight} takes the opposite
+  approach: it formalises a small slice of an existing surface language,
+  retaining classes and types in an idealised form.
+Languages such as Obsidian~\citep{coblenz2019} and SJF~\citep{usov2020}
+  build on Featherweight Java for verification-oriented purposes.
+The \(\varphi\)-calculus of \citet{bugayenko2021eolang} sits at the same
+  level of formalisation as Abadi--Cardelli's calculus but takes
+  decoration rather than method update as its primitive.
+EO is the surface for the \(\varphi\)-calculus in the same sense that
+  Featherweight Java is a surface for its own model:
+  the present paper specifies how the surface and the calculus correspond
+  (\cref{sec:semantics}).
+
+\paragraph{XML pivots versus AST-based pipelines.}
+Mainstream compilers (LLVM, GCC, \nospell{javac}, Roslyn) build and
+  transform in-memory abstract syntax trees in the host language.
+EO compilers emit \emph{XMIR}, an XML representation of the parsed
+  program, after which every transformation
+  (normalisation, optimisation, code generation) is an XSL stylesheet
+  over XMIR.
+The XSD schema for XMIR is at \href{https://www.eolang.org/XMIR.xsd}{\texttt{https://www.eolang.org/XMIR.xsd}}.
+The advantages of an external, schema-validated pivot are well-known
+  in the source-to-source community
+  (Coccinelle's SmPL and TXL among the closest analogues):
+  every intermediate state is inspectable with standard XML tools,
+  every transformation step is replaceable in isolation,
+  and the schema serves as a normative contract between parser and
+  downstream consumers.
+The present paper specifies the language; the XMIR schema specifies the
+  parser's output for that language, and the two are aligned by
+  construction (\cref{sec:syntax:xmir}).

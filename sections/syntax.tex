@@ -1,0 +1,538 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Syntax}\label{sec:syntax}
+
+EO syntax is presented line by line.
+Every non-blank, non-comment line falls into exactly one \emph{line shape}
+  --- a syntactic category determined by the first non-space character of
+  the line and a small lookahead.
+Multi-line constructs are built by composition:
+  a head line at one indent, followed by a deeper-indent block of children
+  and possibly one or more same-indent continuation lines.
+
+This section catalogues the line shapes first (\cref{sec:syntax:lines}),
+  then the multi-line constructs that wrap them (\cref{sec:syntax:multi-line}),
+  then the name suffixes that may close a head line (\cref{sec:syntax:names}).
+The cross-line rules that decide which compositions are legal are deferred
+  to \cref{sec:wellformedness}.
+The complete enumeration of outer expression kinds with their structural
+  properties is given in \cref{app:outer-kinds}.
+
+\subsection{Line Shapes}\label{sec:syntax:lines}
+
+\Cref{tab:line-shapes} lists the eleven line shapes
+  and the lookahead that selects each.
+
+\begin{table*}
+\capt{Line shapes selected from the first non-space character of a line.}
+\label{tab:line-shapes}
+\small
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+First char (after indent) & Lookahead & Line shape \\
+\midrule
+\ff{+}      & followed by a digit             & Signed-number application (\cref{sec:syntax:app}) \\
+\ff{+}      & otherwise                       & Meta directive (\cref{sec:syntax:meta}) \\
+\ff{\#}     & ---                             & Comment line (\cref{sec:syntax:comment}) \\
+\ff{.}      & ---                             & Method-dispatch line (\cref{sec:syntax:method}) \\
+\ff{[}      & ---                             & Formation line (\cref{sec:syntax:formation}) \\
+\ff{"""}    & start of line, no other content & Text-block opener (\cref{sec:syntax:text}) \\
+identifier  & ends with \ff{.} + space/EOL    & Reversed-dispatch line (\cref{sec:syntax:reversed}) \\
+identifier  & otherwise                       & Application or just-an-identifier (\cref{sec:syntax:app}) \\
+literal     & ---                             & Application starting with a literal (\cref{sec:syntax:app}) \\
+\ff{*}      & ---                             & Star-tuple as application head (\cref{sec:syntax:app}) \\
+\ff{(}      & ---                             & Application starting with a paren group (\cref{sec:syntax:app}) \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsubsection{Meta directive}\label{sec:syntax:meta}
+
+A meta directive has the form
+  \ff{+name part\(_1\) part\(_2\) \ldots}.
+The name immediately follows the \ff{+}; each part is a maximal run of
+  non-whitespace characters separated from its neighbours by exactly one space.
+Parts may contain \ff{:}, \ff{.}, \ff{-}, and \ff{/} ---
+  for example \ff{+rt jvm a.b.c:lib:1.0.0}.
+
+Meta directives are legal only at indent 0 and only before any other object
+  has been declared in the source.
+The catalogue of recognised directive names
+  (\ff{+architect}, \ff{+version}, \ff{+package}, \ff{+alias}, \ff{+rt}, \ldots)
+  with their per-name argument shapes is given in \cref{sec:sem:meta}.
+
+A leading \ff{+} followed by a digit is not a meta directive ---
+  it is a signed-number literal opening an application line
+  (\cref{sec:syntax:app}).
+A \ff{+}-digit token whose digit-run does not form a valid \ff{INT} or
+  \ff{FLOAT} (e.g.\ \ff{+1foo} where the digit-run is followed by an
+  identifier letter with no intervening separator) is a lexical error;
+  the parser does not silently treat it as a meta directive.
+
+\subsubsection{Comment line}\label{sec:syntax:comment}
+
+A line whose first non-space character is \ff{\#} is a comment line.
+The \ff{\#} is followed by the rest of the line, which may contain any
+  characters except line terminators.
+Consecutive comment lines at the same indent form a \emph{comment block}.
+Comment blocks attach to the named object that follows them
+  (\cref{sec:wf:comments}).
+The cross-line rules of comment-block attachment, dangling comments, and
+  blank-line separation are given in \cref{sec:wellformedness}.
+
+\subsubsection{Formation line}\label{sec:syntax:formation}
+
+A formation line opens with \ff{[}.
+The bracketed list enumerates zero or more \emph{void parameters} ---
+  unbound attribute slots whose values are supplied by the caller at
+  application time.
+A void parameter name is a \ff{NAME} token or the \ff{PHI} token (\ff{@}).
+The \ff{RHO} token (\ff{\textasciicircum{}}) is rejected as a parameter name.
+
+The list contents must satisfy:
+  no leading or trailing space inside the brackets,
+  and exactly one space between parameter names.
+The closing \ff{]} may be followed by one of the optional name suffixes
+  catalogued in \cref{sec:syntax:names}.
+
+\begin{ffcode}
+[a b] > foo            // formation with two voids, named foo
+[] > bar               // formation with no voids, named bar
+[a b] > foo /number    // atom declaration (Section 3.3)
+\end{ffcode}
+
+The outer kind of a formation line is \ff{bare-formation}.
+After the head line, a deeper-indent block of children may follow;
+  the body's syntactic role is described in \cref{sec:syntax:vapp}
+  and its well-formedness in \cref{sec:wf:naming,sec:wf:atoms}.
+
+\subsubsection{Method-dispatch line}\label{sec:syntax:method}
+
+A line whose first non-space character is \ff{.} is a method-dispatch line.
+The leading dot consumes the dispatch position, and the method name follows.
+Inside a method-dispatch line the special names \ff{@} and \ff{\textasciicircum}
+  retain their token identities (\ff{PHI}, \ff{RHO}) and translate to
+  \(\varphi\) and \(\rho\) respectively (\cref{sec:semantics}).
+
+After the method name, zero or more horizontal arguments may follow,
+  separated by single spaces, and an optional name suffix may close the line.
+A method-dispatch line is always a continuation of an earlier expression
+  at the same indent: it has no meaning standing alone at top level,
+  appearing as a deeper child of an unrelated parent, or following an
+  expression that is already closed for further continuation.
+The three illegal positions are spelled out in \cref{sec:wf:notation}.
+
+The outer kind a method-dispatch line ultimately produces depends on whether
+  it carries horizontal arguments.
+With zero hargs the chain stays \ff{vmethod} and admits further continuations;
+  with one or more hargs the chain becomes \ff{vmethod-with-hargs} and is
+  closed for further extension (\cref{app:outer-kinds}).
+
+\subsubsection{Application line}\label{sec:syntax:app}
+
+An application line has the form \ff{head arg\(_1\) arg\(_2\) \ldots [suffix]}
+  with a head expression followed by zero or more horizontal arguments.
+The head is one of:
+
+\begin{itemize}
+  \item a paren group \ff{( \ldots )};
+  \item a data literal --- a \ff{STRING}, \ff{INT}, \ff{FLOAT}, \ff{HEX},
+    or \ff{BYTES}, optionally followed by a method chain;
+  \item a star tuple \ff{*};
+  \item a bare identifier (a \ff{NAME}, \ff{ROOT}, or \ff{XI}),
+    optionally followed by a chain of \ff{.method} segments on the same line.
+\end{itemize}
+
+Each argument is itself a small dispatch:
+  a paren group, a literal optionally followed by a method chain,
+  a \ff{*} tuple, or an identifier head with optional method chain.
+Arguments are separated by exactly one space.
+An argument may carry an inline binding \ff{:label} or \ff{:N}
+  (\cref{sec:syntax:binding}), subject to the all-or-nothing rule of
+  \cref{sec:wf:bindings}.
+
+The classifier of an application line ignores characters that live inside
+  parentheses or string literals: only top-level spaces and dots determine the
+  shape.
+
+A \emph{horizontal formation} of the form \ff{[x]} or \ff{[x] body}
+  is \textbf{not} a legal horizontal argument.
+A formation may appear only as the top-of-line construct
+  (\cref{sec:syntax:formation}), as a vertical argument at deeper indent,
+  or as the parameter list of an inline-phi formation
+  (\cref{sec:syntax:inline-phi}).
+
+\begin{ffcode}
+foo                          // head only
+foo.bar.baz                  // method chain, 0 hargs
+foo a b c                    // head + 3 horizontal args
+foo.bar 42 "x"               // chained head + 2 hargs
+(foo bar).baz x              // chained head over a paren group + 1 harg
+\end{ffcode}
+
+The outer kind produced depends on chain length and harg count:
+\begin{itemize}
+  \item Head only, no chain, no hargs: \ff{head}.
+    A bare \ff{*} in head position is also \ff{head}, but its semantic
+    expansion is to a \(\Phi.\mathtt{tuple}\)
+    (\cref{sec:sem:tuple}).
+  \item Head with chained \ff{.method} segments and 0 hargs: \ff{hmethod}.
+  \item Head with one or more horizontal arguments: \ff{happlication},
+    regardless of whether the head itself is chained.
+\end{itemize}
+
+\subsubsection{Reversed dispatch line}\label{sec:syntax:reversed}
+
+A line whose lead identifier ends with a trailing \ff{.} followed by a space
+  or end-of-line is a \emph{reversed dispatch}.
+The identifier preceding the dot must be a single \ff{NAME}, \ff{PHI}
+  (\ff{@}), or \ff{RHO} (\ff{\textasciicircum}) token ---
+  no dotted paths, no \ff{ROOT}, no literal-rooted prefixes.
+A trailing dot after a chain such as \ff{Q.x.foo.} is therefore not a
+  reversed dispatch but a lexical error.
+
+Two surface forms exist, and they are mutually exclusive on any one line.
+
+\paragraph{Horizontal form.}
+\ff{name. recv arg\(_1\) arg\(_2\) \ldots} ---
+  the first horizontal argument is the receiver of the dispatch,
+  the remaining horizontal arguments are method arguments of \ff{.name}.
+The line is closed for any deeper-indent continuation.
+Inline bindings on arguments follow the rules of \cref{sec:wf:bindings};
+  in particular the receiver itself may not carry a binding.
+The outer kind is \ff{reversed-with-hargs}.
+
+\paragraph{Vertical form.}
+\ff{name.} alone, with no horizontal arguments on the head line ---
+  the next non-blank line at indent \(+2\) is the receiver,
+  and subsequent siblings at that indent are method arguments.
+The first deeper line must not itself begin with \ff{.}.
+The outer kind is \ff{bare-reversed}.
+
+\begin{ffcode}
+if. > @                    // vertical bare-reversed, named @
+  cond                     //   receiver
+  then                     //   method arg 1
+  else                     //   method arg 2
+
+if. cond then else         // horizontal form: receiver=cond, args=then,else
+
+if. false 1:a 2:b > second // horizontal form, all-bound args
+\end{ffcode}
+
+A reversed-dispatch line in vertical form may carry the compact-tuple suffix
+  \ff{*N} (\cref{sec:syntax:compact}); for that case \(N\geq 1\) is required.
+
+\subsubsection{Compact tuple line}\label{sec:syntax:compact}
+
+The compact-tuple suffix \ff{*N} (with \(N\) defaulting to \(0\))
+  attaches to a head expression and partitions its vertical children:
+  the first \(N\) children are direct positional arguments of the head,
+  and the remaining children are collected into a single
+  \(\Phi.\mathtt{tuple}\) argument appended at the end.
+
+The head of a compact-tuple line is one of:
+\begin{itemize}
+  \item a \ff{head}-shape expression (bare identifier, \ff{*}, or literal);
+  \item an \ff{hmethod} chain with 0 horizontal arguments,
+    e.g.\ \ff{foo.bar *};
+  \item a \ff{bare-reversed} dispatch, e.g.\ \ff{name. *N}.
+\end{itemize}
+
+Heads that already carry horizontal arguments (\ff{happlication} or
+  \ff{reversed-with-hargs}) cannot also carry \ff{*N} ---
+  the compact-tuple marker comes after the head and before any arguments.
+
+If the head is a bare-reversed dispatch, \(N\geq 1\) is required:
+  the receiver occupies one direct slot,
+  so \ff{name. *} (defaulting to \(N=0\)) and \ff{name. *0} are rejected.
+For non-reversed heads, \(N=0\) is the default and legal:
+  the line \ff{seq * > @} followed by deeper children tuples every child
+  into a single \(\Phi.\mathtt{tuple}\) argument.
+
+\begin{ffcode}
+sprintf * > first         // N=0, all children tupled
+  x
+  y
+
+sprintf *1 > second       // N=1, first child direct, remainder tupled
+  x
+  y
+  z
+
+joined. *1 > sixth        // reversed-form compact tuple, N>=1
+  text ""                 //   receiver (the one direct slot)
+  x                       //   tuple element
+  y                       //   tuple element
+\end{ffcode}
+
+If the body of a compact-tuple line carries fewer than \(N\) children,
+  the line is rejected.
+
+\subsubsection{Text-block opener}\label{sec:syntax:text}
+
+A line consisting of \ff{"""} alone opens a triple-quoted text block.
+Body lines must be indented at least as deep as the opening line, and
+  the block closes when a line containing \ff{"""} alone appears at the
+  opening indent.
+After the closing \ff{"""}, a method chain is permitted on the same line
+  (\ff{""".as-bytes}), followed by an optional name suffix.
+
+The body of a text block is a lexical literal, not a sequence of EO
+  expressions: its content is the body lines joined by newline with the
+  opening indent stripped (\cref{sec:lexical:strings}).
+
+\begin{ffcode}
+"""
+hello
+world""" > text-value
+\end{ffcode}
+
+An unclosed text block is reported at end-of-stream as a recoverable error.
+
+\subsubsection{Inline binding}\label{sec:syntax:binding}
+
+After an argument in an application or reversed-dispatch line, the suffix
+  \ff{:label} (with \ff{label} a \ff{NAME}) or \ff{:N} (with \ff{N} a digit)
+  declares an explicit attribute binding for the argument.
+The form \ff{:label} attaches the argument to the named attribute;
+  the form \ff{:N} attaches it to the \(N\)th positional slot
+  (\(\alpha_0\), \(\alpha_1\), \ldots).
+
+Inline binding is forbidden inside a formation's body:
+  plain children of a formation carry their name via the name suffix,
+  not via inline binding (\cref{sec:wf:naming}).
+A same-indent group of arguments must obey the all-or-nothing binding rule
+  of \cref{sec:wf:bindings}.
+
+\subsection{Name Suffixes}\label{sec:syntax:names}
+
+A line carrying an EO object name closes with a \emph{name suffix}.
+There are four base forms (mutually exclusive on any one line)
+  and two composite forms that wrap a base form to introduce an
+  \emph{inline-phi} formation.
+
+\paragraph{Base forms.}
+\begin{itemize}
+  \item \ff{> name} --- an explicit name binding.
+    A trailing \ff{!} (\ff{> name!}) marks the name as a constant
+    (\cref{sec:sem:special}).
+    An optional \ff{/sig} (\ff{> name /sig}) declares the object as an
+    \emph{atom} with the given return signature (\cref{sec:wf:atoms}).
+  \item \ff{>>} --- an auto-generated name.
+    Auto-names are deterministic; their exact format is the prefix
+    \ff{U+1F335} (cactus) followed by line and column coordinates of the
+    suffix's source location, separated by \ff{-}.
+    The cactus exclusion in \ff{NAME} (\cref{sec:lexical:tokens}) makes
+    auto-names disjoint from user-defined names.
+    A trailing \ff{!} (\ff{>>!}) is permitted but rare;
+    \ff{>>} with a \ff{/sig} signature is rejected (an auto-named atom is
+    not meaningful).
+  \item \ff{+> name} --- a test attribute.
+    Test attributes are legal only at indent level 1 of a top-level object
+    (\cref{sec:wf:atoms}).
+    The \ff{name} must be a \ff{NAME} token; \ff{+> @} is rejected.
+  \item (none) --- no suffix.
+    The line is anonymous.
+    Permitted unless the object is a plain child of a formation
+    (\cref{sec:wf:naming}).
+\end{itemize}
+
+The combinations \ff{> name! /sig} and \ff{>> /sig} are both rejected
+  (const-marker and atom signature cannot combine, and an auto-named atom
+  is forbidden).
+
+\paragraph{Inline-phi composite forms.}
+The composite form \ff{> [params] > name} introduces an
+  \emph{inline-phi formation}:
+  the left-hand side of the leftmost \ff{> [} becomes the \(\varphi\)-bound
+  body of a fresh formation, and the right-hand side names the formation.
+The auto-named variant \ff{> [params] >>} replaces the right-hand
+  \ff{> name} with \ff{>>}; the auto-name attaches to the inline formation.
+
+\begin{ffcode}
+right x.neg > [x] > left              // explicit name
+f.put (f.as-number.plus 1) > [s] >>   // auto-named inline formation
+"x" > [a b] > pair                    // multi-parameter inline formation
+\end{ffcode}
+
+The left-hand side is horizontal by construction: the entire body must fit
+  on the line that carries the suffix.
+The line is closed for deeper-indent children ---
+  the body lives in the left-hand expression, not in a vertical block.
+Allowed left-hand kinds are \ff{head}, \ff{hmethod}, \ff{happlication},
+  and a paren group; a \ff{reversed-with-hargs} line or a horizontal
+  formation may not appear as the left-hand side.
+
+Exactly one \ff{> [params]} suffix may appear per line:
+  chained forms such as \ff{expr > [a] > [b] > name} are rejected.
+The right-hand side must carry a name --- bare \ff{> [params]} with
+  nothing after the parameter list is rejected.
+A test attribute may not stand at the right-hand side of inline-phi:
+  \ff{> [params] +> name} is rejected.
+
+\paragraph{Atom signature.}
+The signature \ff{sig} in the atom form \ff{> name /sig} is a single
+  \ff{NAME} or a dotted path of names, optionally rooted at \ff{Q}
+  (mapped to \(\Phi\) in the semantic translation):
+
+\begin{align*}
+\mathit{sig}\;\;::=\;\;& \mathit{NAME}\;(\,\mathtt{.}\;\mathit{NAME}\,)^{*}\\
+\;\;|\;\;& \mathtt{Q}\;(\,\mathtt{.}\;\mathit{NAME}\,)^{+}
+\end{align*}
+
+A bare \ff{Q} alone (with no dot-name) is rejected as a signature;
+  the signature must end in a \ff{NAME}.
+
+\subsection{Multi-line Constructs}\label{sec:syntax:multi-line}
+
+Multi-line constructs are built by composition.
+A head line at indent \(K\) admits zero or more deeper-indent child lines
+  at indent \(K+2\), and zero or more same-indent continuation lines at
+  indent \(K\), subject to the per-kind admissibility rules of
+  \cref{app:outer-kinds} and the cross-line rules of \cref{sec:wf:notation}.
+
+\subsubsection{Vertical application}\label{sec:syntax:vapp}
+
+A head line whose line shape is \ff{head} or \ff{hmethod} (with 0 horizontal
+  arguments) becomes a \emph{vertical application} as soon as a deeper-indent
+  child line appears.
+Each deeper child at indent \(K+2\) is an argument of the head.
+
+\begin{ffcode}
+malloc.for > @           // head line: hmethod with 0 hargs + name
+  0                      //   first vertical arg
+  [m] >>                 //   second vertical arg (a master formation)
+    body
+\end{ffcode}
+
+The name of a vertical application lives on the head line.
+The outer kind is \ff{vapplication}.
+
+\subsubsection{Vertical method chain}\label{sec:syntax:vmethod}
+
+A head line of kind \ff{head}, \ff{hmethod} (with 0 hargs), or
+  \ff{bare-formation} may be followed by a same-indent line beginning
+  with \ff{.method}.
+That continuation extends the expression into a \emph{vertical method chain}:
+  one chain link per same-indent \ff{.method} line, in source order.
+
+\begin{ffcode}
+tmpdir                   // head line
+.tmpfile                 //   continuation 1
+.deleted                 //   continuation 2
+.open > @                //   continuation 3, naming line
+  "r"                    //   vapp arg of .open
+  f > [f]                //   vapp arg of .open
+\end{ffcode}
+
+The name of the whole chain lives on the \emph{last} \ff{.method} line.
+If that last \ff{.method} line also carries deeper-indent children,
+  the chain's outer kind is \ff{vapplication} over a \ff{vmethod} head,
+  and the naming line is still the last \ff{.method} line.
+
+The outer kind is \ff{vmethod} when the last \ff{.method} carries no
+  horizontal arguments, and \ff{vmethod-with-hargs} when it does;
+  in the latter case the chain is closed for further extension.
+
+\subsubsection{Vertical reversed dispatch}\label{sec:syntax:vreversed}
+
+The vertical form of reversed dispatch is described in
+  \cref{sec:syntax:reversed}.
+After the receiver and method-argument children have been read, the outer
+  kind remains \ff{bare-reversed} but its openness transitions to
+  \emph{vertical-completed}: a same-indent \ff{.method} continuation may
+  still wrap the expression
+  (\cref{sec:wf:notation}).
+
+\subsubsection{Compact tuple body}\label{sec:syntax:vcompact}
+
+After the head line of a compact-tuple expression (\cref{sec:syntax:compact}),
+  the deeper-indent body is a single block of children.
+The first \(N\) children are direct positional arguments;
+  the remaining children fold into the synthesised \(\Phi.\mathtt{tuple}\)
+  argument that closes the head.
+The outer kind remains \ff{compact-tuple}.
+
+\subsubsection{Inline-phi formation}\label{sec:syntax:inline-phi}
+
+A line carrying the suffix \ff{> [params] > name} (or its auto-named
+  variant) is an \emph{inline-phi formation}.
+Its body is the left-hand expression of the suffix, not a deeper-indent block;
+  the line is therefore closed for deeper-indent children.
+The construct may freely appear as a vertical argument of an enclosing
+  expression --- its closure applies only to its own depth, not to whatever
+  it nests inside.
+
+\begin{ffcode}
+foo                            // vapplication head
+  a                            //   arg 1
+  b > [x] > bar                //   arg 2: inline-phi-formation
+                               //   with body=b, param=x, name=bar
+\end{ffcode}
+
+The outer kind is \ff{inline-phi-formation}.
+
+\subsubsection{Multi-line text block}\label{sec:syntax:vtext}
+
+A text block (\cref{sec:syntax:text}) spans multiple source lines but
+  presents to the syntactic layer as a single multi-line expression.
+After the closing \ff{"""} (and any same-line method chain and name suffix),
+  the outer kind is \ff{text-block};
+  its body is lexical content, not children of the expression.
+
+\subsection{XMIR Output}\label{sec:syntax:xmir}
+
+EO compilers emit a parse tree in \emph{XMIR}, an XML-based meta-representation
+  of EO.
+An XMIR document is an XML tree whose nodes are \ff{<o>} elements;
+  each element carries an object's name, base reference, and source position.
+The complete schema is given by the XSD at
+  \href{https://www.eolang.org/XMIR.xsd}{\texttt{https://www.eolang.org/XMIR.xsd}};
+  a human-readable description of element and attribute semantics is given
+  at \href{https://www.eolang.org/XMIR.html}{\texttt{https://www.eolang.org/XMIR.html}}.
+
+To illustrate the surface mapping, the source fragment
+
+\begin{ffcode}
+[] > foo
+  bar > x
+\end{ffcode}
+
+produces the XMIR
+
+\begin{ffcode}
+<o name="foo" line="1" pos="0">
+  <o name="x" base="bar" line="2" pos="2"/>
+</o>
+\end{ffcode}
+
+where \ff{line} is 1-indexed and \ff{pos} is 0-indexed.
+The \(\varphi\)-calculus translation of the same source is the subject of
+  \cref{sec:semantics};
+  XMIR is the on-disk realisation of that translation, and is used by
+  downstream toolchains for code generation and static analysis.
+
+\subsection{Outer Kinds}\label{sec:syntax:outer-kinds}
+
+Every well-formed EO expression has an \emph{outer kind} ---
+  the syntactic class of its outermost form.
+The twelve outer kinds are:
+\(\mathtt{head}\),
+\(\mathtt{hmethod}\),
+\(\mathtt{happlication}\),
+\(\mathtt{bare\text{-}formation}\),
+\(\mathtt{bare\text{-}reversed}\),
+\(\mathtt{reversed\text{-}with\text{-}hargs}\),
+\(\mathtt{compact\text{-}tuple}\),
+\(\mathtt{inline\text{-}phi\text{-}formation}\),
+\(\mathtt{vapplication}\),
+\(\mathtt{vmethod}\),
+\(\mathtt{vmethod\text{-}with\text{-}hargs}\), and
+\(\mathtt{text\text{-}block}\).
+The reference table in \cref{app:outer-kinds} pairs each kind with its
+  cardinality, whether it admits deeper-indent children, and whether it
+  may be wrapped by a same-indent method continuation.
+The well-formedness rules of \cref{sec:wf:notation} are stated in terms
+  of those properties.

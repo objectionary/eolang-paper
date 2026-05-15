@@ -1,0 +1,305 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Well-formedness Rules}\label{sec:wellformedness}
+
+\Cref{sec:syntax} described the per-line and multi-line shapes that EO admits.
+This section gives the \emph{cross-line} rules that decide whether a
+  syntactically-recognisable program is also legal:
+  when a line may extend a previous one,
+  when a name suffix is required,
+  what an atom may contain,
+  how comments attach,
+  where blank lines belong,
+  and how inline bindings may mix.
+Together with the per-line syntax of \cref{sec:syntax},
+  these rules form the complete well-formedness contract for EO source.
+
+\subsection{Notation Consistency}\label{sec:wf:notation}
+
+Each expression occupies a position in the \emph{openness lattice} ---
+  one of \emph{open}, \emph{vertical-completed}, or \emph{horizontal-completed}.
+The position is determined by the outer kind of the expression
+  (\cref{app:outer-kinds}) and by how many additional lines have already
+  attached.
+
+A \emph{horizontally-completed} expression
+  --- one whose outer kind lies in the set
+\begin{equation*}
+  \mathcal{H} = \{\,
+    \mathtt{happlication},\,
+    \mathtt{reversed\text{-}with\text{-}hargs},\,
+    \mathtt{vmethod\text{-}with\text{-}hargs},\,
+    \mathtt{inline\text{-}phi\text{-}formation}
+    \,\} ---
+\end{equation*}
+admits neither deeper-indent children nor a same-indent \ff{.method}
+  continuation.
+A line that attempts to extend a horizontally-completed expression in either
+  direction is rejected.
+
+An \emph{open} expression --- one whose outer kind is
+  \ff{head}, \ff{hmethod} (with 0 hargs), \ff{bare-formation},
+  \ff{bare-reversed}, \ff{compact-tuple}, a \ff{vapplication} still receiving
+  arguments, or a \ff{vmethod} chain whose latest \ff{.method} link has 0
+  hargs --- may receive deeper-indent children but may not yet be wrapped by
+  a same-indent \ff{.method}.
+
+A \emph{vertical-completed} expression --- one whose body block has ended ---
+  may no longer receive deeper-indent children, but a same-indent
+  \ff{.method} continuation may still wrap it.
+Wrapping transitions the expression into a \ff{vmethod} chain that is once
+  again open for further continuation lines, until a \ff{.method}-with-hargs
+  closes the chain horizontally.
+
+\begin{ffcode}
+foo                  // head, open
+  a                  //   deeper child: foo becomes vapplication-in-progress
+  b
+.method > result     // same-indent .method after block closed:
+                     // wraps as vmethod, naming-line carries the suffix
+
+foo a b              // happlication, horizontally-completed
+.method > result     // rejected: cannot wrap a horizontal application
+
+io.stdout            // hmethod (0 hargs), open
+  tt.sprintf         //   deeper child, fine
+
+x.put 2              // happlication, horizontally-completed
+  something          // rejected: closed for deeper-indent children
+\end{ffcode}
+
+\subsection{Naming Inside Formations}\label{sec:wf:naming}
+
+Every expression that is a \emph{plain child} of a formation must carry a
+  name suffix on its \emph{naming line}.
+A plain child is any child expression whose outer kind is not itself a
+  formation-introducing form
+  --- i.e., any \ff{head}, \ff{hmethod}, \ff{happlication},
+  \ff{vapplication}, \ff{vmethod}, \ff{bare-reversed},
+  \ff{reversed-with-hargs}, \ff{compact-tuple}, or \ff{text-block}.
+A child whose outer kind is \ff{bare-formation} or
+  \ff{inline-phi-formation}, or whose suffix is \ff{> name /sig} (an atom),
+  is a \emph{master child}; the bracket marker makes its role self-evident,
+  so a name suffix on a master child is optional.
+
+The naming line for each outer kind --- the line on which the suffix must
+  live --- is given in \cref{tab:naming-lines}.
+
+\begin{table*}
+\capt{Naming line per outer kind.}
+\label{tab:naming-lines}
+\small
+\begin{tabularx}{\textwidth}{X X}
+\toprule
+Outer kind & Naming line \\
+\midrule
+Single-line expression (\ff{head}, \ff{hmethod}, \ff{happlication}, \ff{reversed-with-hargs}, \ff{inline-phi-formation})
+  & The line itself. \\
+\ff{vapplication}
+  & The head line. \\
+\ff{vmethod} (a chain of same-indent \ff{.method} continuations)
+  & The \emph{last} \ff{.method} line of the chain. \\
+\ff{vapplication} whose head is a \ff{vmethod}
+  & The last \ff{.method} line (which is also the vapplication's head). \\
+\ff{bare-formation} (with a body)
+  & The \ff{[\ldots]} line. \\
+\ff{bare-reversed} (vertical form)
+  & The \ff{name.} line. \\
+\ff{compact-tuple}
+  & The head line carrying \ff{*N}. \\
+\ff{text-block}
+  & The closing-\ff{"""} line. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Intermediate lines of a multi-line expression may carry their own optional
+  names; these intermediate names bind sub-expressions and are independent
+  of the outer expression's name.
+
+\begin{ffcode}
+[] > foo
+  x.y.z > name        // single-line plain child, named on its line
+
+  tmpdir              // intermediate, no name (optional)
+  .tmpfile > file     // intermediate, named (optional)
+  .deleted            // intermediate, no name
+  .open > @           // naming line: outer vmethod is named @
+
+  malloc.for > result // vapplication head, naming line
+    0
+    [m] >>
+\end{ffcode}
+
+Illegal:
+\begin{ffcode}
+[] > foo
+  x.y.z               // rejected: plain child has no name
+
+  tmpdir              // outer vmethod starts here
+  .tmpfile
+  .open               // rejected: vmethod's naming line carries no suffix
+\end{ffcode}
+
+\subsection{Atoms and Test Attributes}\label{sec:wf:atoms}
+
+A formation whose suffix is \ff{> name /sig} is an \emph{atom}.
+The signature \ff{sig} declares the atom's return type;
+  the atom's behaviour is supplied by a host-language function via the
+  \(\lambda\)-asset of the formation (\cref{sec:sem:atoms}).
+A non-atom formation may contain any mix of plain children, master children,
+  and test attributes; an atom may contain \emph{only} test attributes.
+A plain child or master child appearing inside an atom is rejected.
+
+A \emph{test attribute} is a child whose suffix is \ff{+> name}.
+Test attributes are legal only at indent level 1 of a top-level object ---
+  that is, as a direct child of a formation that itself sits at indent 0.
+A \ff{+>} attribute at any other depth is rejected.
+The \ff{name} of a test attribute must be a \ff{NAME} token;
+  \ff{+> @} is rejected.
+
+A nested atom --- an atom that does not sit at indent 0 --- inherits two
+  restrictions.
+Tests are admissible only as direct children of a top-level object, so a
+  nested atom cannot hold tests;
+  and an atom admits no plain or master children, so a nested atom cannot
+  hold those either.
+The body of a nested atom must therefore be \emph{empty}.
+
+A nested atom inside another atom is rejected outright:
+  the outer atom admits only test attributes, and an atom (a master child)
+  is not a test attribute, so its presence violates the outer atom's body
+  contract regardless of the inner atom's body shape.
+
+\begin{ffcode}
+[] > foo                // top-level formation
+  bar > attr1           //   plain child
+  [] > inner-formation  //   master child (regular)
+  [] +> test-foo        //   test attribute, legal at indent 2
+
+[] > foo /number        // top-level atom
+  [] +> test-foo        //   only test attributes allowed inside
+
+[] > foo
+  [] > bar
+    [] > baz /number    // nested atom at indent 4; legal but body must be empty
+\end{ffcode}
+
+Illegal:
+\begin{ffcode}
+[] > foo /number
+  bar > attr            // rejected: atom cannot have regular children
+
+[] > foo
+  [] > inner
+    [] +> test-inner    // rejected: tests must be at indent 2 of top-level
+\end{ffcode}
+
+\subsection{Comment Attachment}\label{sec:wf:comments}
+
+A comment block (\cref{sec:syntax:comment}) attaches to the next named
+  object at the same indent.
+The attachment is structural: a comment block at indent \(K\) may attach
+  only to a named object at indent \(K\), and there must be no blank line
+  between the block and the object it documents.
+A comment block followed by a blank line, by an object at a different
+  indent, or by no named object at all, is \emph{dangling}
+  and is rejected.
+
+Two comment blocks at the same indent separated by one or more blank lines
+  are not merged: the earlier block is dangling
+  (no named object follows it directly),
+  and only the later block attaches.
+Inside an open formation body, a comment block is deferred until the next
+  named child appears at that indent.
+
+\begin{ffcode}
+# Tests that while loop dataizes only the first cycle.
+[] +> tests-while-dataizes    // comment attaches to this formation
+
+# This comment leads nowhere.
+                              // blank line breaks attachment
+[] > foo                      // comment above is dangling -- rejected
+\end{ffcode}
+
+\subsection{Blank-line Policy}\label{sec:wf:blanks}
+
+Blank lines have no indent and no kind of their own; their legality is
+  decided by the lines they separate.
+
+\begin{itemize}
+  \item Inside a comment block: blank lines are forbidden.
+  \item Between a comment block and the named object it documents:
+    blank lines are forbidden.
+  \item Before a master object (a formation, an atom, an inline-phi
+    formation, or a \ff{+>} test attribute) ---
+    or before its preceding comment block, if any ---
+    zero or one blank line is permitted.
+  \item Between two plain siblings: blank lines are forbidden.
+  \item After the meta header: exactly one blank line separates metas from
+    the rest of the program.
+  \item At end-of-file: zero or one trailing blank line; more than one is
+    an error.
+\end{itemize}
+
+\begin{ffcode}
++architect yegor256@gmail.com
++version 0.0.0
+                              // exactly one blank after metas
+# Top-level comment.
+[] > foo
+  a > attr1
+  b > attr2                   // no blank between plain siblings
+                              // blank legal before next master
+  # Inner comment block.
+  [] > inner
+    body > x
+\end{ffcode}
+
+Illegal:
+\begin{ffcode}
+[] > foo
+  a > attr1
+                              // rejected: blank between plain siblings
+  b > attr2
+\end{ffcode}
+
+\subsection{Bindings}\label{sec:wf:bindings}
+
+An inline binding \ff{:label} or \ff{:N} (\cref{sec:syntax:binding}) names
+  the attribute slot the argument attaches to.
+Without a binding, arguments attach by positional index (\(\alpha_0\),
+  \(\alpha_1\), \ldots).
+
+Three constraints govern the use of bindings.
+
+\paragraph{All-or-nothing.}
+Within a same-indent group of application arguments, bindings must be
+  either all present or all absent.
+A mixed group is rejected.
+
+\paragraph{Receiver exclusion.}
+The receiver of a reversed-dispatch line is the dispatch target, not an
+  argument, and cannot carry a binding.
+The remaining arguments of the dispatch form an ordinary application-argument
+  group, governed independently by the all-or-nothing rule.
+
+\paragraph{Last-link-only on method chains.}
+An inline binding on a method dispatch is permitted only when the method
+  is the last link in its chain.
+A binding on an intermediate chain link is rejected.
+
+\begin{ffcode}
+if. true x y               // legal: all unbound
+if. true x:a y:b           // legal: receiver unbound, args all bound
+foo a:1 b:2                // legal: all bound
+foo a b                    // legal: all unbound
+\end{ffcode}
+
+Illegal:
+\begin{ffcode}
+foo a:1 b                  // rejected: mixed binding
+if. true:a x y             // rejected: receiver carries binding
+if. true x:a y             // rejected: args mixed
+\end{ffcode}
