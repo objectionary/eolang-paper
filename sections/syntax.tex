@@ -532,23 +532,115 @@ The \(\varphi\)-calculus translation of the same source is the subject of
 
 \subsection{Outer Kinds}\label{sec:syntax:outer-kinds}
 
-Every well-formed EO expression has an \emph{outer kind} ---
-  the syntactic class of its outermost form.
-The twelve outer kinds are:
-\(\mathtt{head}\),
-\(\mathtt{hmethod}\),
-\(\mathtt{happlication}\),
-\(\mathtt{bare\text{-}formation}\),
-\(\mathtt{bare\text{-}reversed}\),
-\(\mathtt{reversed\text{-}with\text{-}hargs}\),
-\(\mathtt{compact\text{-}tuple}\),
-\(\mathtt{inline\text{-}phi\text{-}formation}\),
-\(\mathtt{vapplication}\),
-\(\mathtt{vmethod}\),
-\(\mathtt{vmethod\text{-}with\text{-}hargs}\), and
-\(\mathtt{text\text{-}block}\).
-The reference table in \cref{app:outer-kinds} pairs each kind with its
-  cardinality, whether it admits deeper-indent children, and whether it
-  may be wrapped by a same-indent method continuation.
-The well-formedness rules of \cref{sec:wf:notation} are stated in terms
-  of those properties.
+An EO expression may be one line long or span many lines.
+In either case it has a single \emph{outer kind}:
+  the syntactic class of its outermost form, that is, the form that the
+  whole expression would be folded under if the source were parsed into
+  a tree.
+A nested sub-expression has its own outer kind, independent of the
+  enclosing expression's outer kind; the qualifier \enquote{outer}
+  emphasises that we name the class of the whole expression, not of any
+  sub-expression embedded inside it.
+
+Outer kinds carry the structural information the rest of the
+  specification depends on:
+\begin{itemize}
+  \item which constructs may attach as deeper-indent children
+    (\cref{sec:syntax:multi-line});
+  \item when a name suffix is required, and on which line of the
+    expression it must appear (\cref{sec:wf:naming});
+  \item whether the expression may be wrapped by a same-indent
+    \ff{.method} continuation (\cref{sec:wf:notation});
+  \item how the expression translates to the \(\varphi\)-calculus
+    (\cref{sec:semantics}).
+\end{itemize}
+Two implementations agree on the meaning of an EO program iff they agree
+  on the outer kind of every expression in it.
+
+\paragraph{Openness as a separate dimension.}
+An expression's outer kind does not change as more lines arrive.
+What changes is its \emph{openness}, an orthogonal property that records
+  whether the expression is still receiving new lines:
+\begin{description}
+  \item[\emph{open}] --- the expression may still receive deeper-indent
+    children, or, depending on its kind, a same-indent \ff{.method}
+    continuation.
+  \item[\emph{vertical-completed}] --- the body block has ended.
+    The expression admits no further deeper-indent children, but a
+    same-indent \ff{.method} may still wrap it, in which case it
+    transitions into an open \ff{vmethod}.
+  \item[\emph{horizontal-completed}] --- the expression admits neither
+    deeper children nor a same-indent \ff{.method} continuation.
+\end{description}
+The openness state machine is:
+\begin{equation*}
+  \mathit{open}
+    \;\xrightarrow{\text{body ends}}\;
+  \mathit{vertical{\text -}completed}
+    \;\xrightarrow{\text{\ff{.method} wraps}}\;
+  \mathit{open}\ \text{(as \ff{vmethod})}.
+\end{equation*}
+Horizontally-completed expressions are born horizontally-completed and
+  do not transition; they form the set \(\mathcal{H}\) of
+  \cref{sec:wf:notation}.
+
+\paragraph{Catalogue.}
+The twelve outer kinds fall into six structural families.
+
+\emph{Heads and method chains.}
+\ff{head} --- a single-line expression consisting of a bare identifier,
+  literal, paren group, or \ff{*}, with no method chain and no
+  horizontal arguments.
+\ff{hmethod} --- a single-line method chain \ff{x.y.z\(\ldots\)} with
+  zero horizontal arguments;
+  treated as an extended head when its chain length is zero or more.
+\ff{vmethod} --- a multi-line method chain built by same-indent
+  \ff{.method} continuations of an earlier head;
+  the chain remains open as long as its latest \ff{.method} link
+  carries no horizontal arguments.
+\ff{vmethod-with-hargs} --- a \ff{vmethod} whose latest \ff{.method}
+  link carries at least one horizontal argument;
+  the chain is closed for further extension.
+
+\emph{Applications.}
+\ff{happlication} --- a single-line application: a head followed by one
+  or more horizontal arguments.
+A chained head (e.g.\ \ff{foo.bar 42}) does not change the outer kind:
+  the chain is embedded inside the application.
+\ff{vapplication} --- a multi-line application: a head line followed by
+  a deeper-indent block of vertical arguments.
+
+\emph{Formations.}
+\ff{bare-formation} --- a formation introduced by \ff{[params]} on a
+  line, optionally with a name suffix and a deeper-indent body block.
+\ff{inline-phi-formation} --- a formation introduced by the composite
+  suffix \ff{> [params] > name} on a line whose left-hand side is the
+  formation's body.
+The line is horizontally-completed: there is no body block, because the
+  body lives in the left-hand expression.
+
+\emph{Reversed dispatch.}
+\ff{bare-reversed} --- the vertical form \ff{name.} alone on a line,
+  with the receiver and method arguments living on deeper-indent
+  children.
+\ff{reversed-with-hargs} --- the horizontal form
+  \ff{name. recv arg\(_1\) arg\(_2\) \ldots} on one line.
+
+\emph{Compact tuple.}
+\ff{compact-tuple} --- a head line carrying the suffix \ff{*N} that
+  partitions its deeper-indent children: the first \(N\) as direct
+  positional arguments and the rest as a tupled trailing argument.
+
+\emph{Text block.}
+\ff{text-block} --- a triple-quoted text literal whose body lines are
+  lexical content rather than child expressions.
+
+\paragraph{Reference.}
+\Cref{app:outer-kinds} pairs each outer kind with its cardinality,
+  whether it admits deeper-indent children, and whether it may be
+  wrapped by a same-indent method continuation, in one at-a-glance
+  table.
+The remaining sub-sections of this paper rely on outer kinds as a
+  vocabulary;
+  \cref{sec:wf:notation,sec:wf:naming,sec:semantics} state their rules
+  by kind.

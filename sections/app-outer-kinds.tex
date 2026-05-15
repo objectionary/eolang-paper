@@ -3,23 +3,21 @@
 
 \section{Outer Kinds Reference}\label{app:outer-kinds}
 
-Every EO expression carries an \emph{outer kind} ---
-  the syntactic class of its outermost form ---
-  introduced construct-by-construct in \cref{sec:syntax}.
-This appendix collects every outer kind in one table for cross-reference,
-  together with two structural properties that govern how the construct
-  may be extended in the surrounding line stream:
+This appendix is an at-a-glance reference for the twelve outer kinds of
+  EO expressions.
+The conceptual treatment --- what an outer kind is, why it matters, and
+  how the openness state machine works --- is in
+  \cref{sec:syntax:outer-kinds}.
+The per-kind table below collects two structural properties that govern
+  how each construct may be extended in the surrounding line stream:
   whether the construct admits \emph{deeper-indent children},
-  and whether it may be \emph{wrapped} by a same-indent \ff{.method} continuation.
+  and whether it may be \emph{wrapped} by a same-indent
+  \ff{.method} continuation.
 
-A kind's \emph{openness} ---
-  one of \emph{open}, \emph{vertical-completed}, or \emph{horizontal-completed} ---
-  is a separate dimension from its kind name.
-The same kind progresses through openness states as more lines arrive;
-  the kind name itself does not change.
-Below, \enquote{after block closes} means the kind's openness has transitioned
-  from \emph{open} to \emph{vertical-completed}.
-The cross-line meaning of openness is given in \cref{sec:wf:notation}.
+Below, \enquote{after block closes} means the kind's openness has
+  transitioned from \emph{open} to \emph{vertical-completed} ---
+  i.e., its deeper-indent body block has ended but a \ff{.method}
+  wrap is still permissible (\cref{sec:wf:notation}).
 
 The column \emph{Cardinality} records how the construct occupies the
   source:
