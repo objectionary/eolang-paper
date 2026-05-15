@@ -21,11 +21,21 @@ Below, \enquote{after block closes} means the kind's openness has transitioned
   from \emph{open} to \emph{vertical-completed}.
 The cross-line meaning of openness is given in \cref{sec:wf:notation}.
 
-In the table below, the column \emph{Children} answers \enquote{may receive deeper-indent children?}
-  and \emph{Wraps} answers \enquote{may be wrapped by a same-indent \ff{.method} continuation?}.
-A bare \enquote{yes} means the construct is always open in that direction;
-  \enquote{yes (after)} means only after the body block closes;
-  \enquote{no} means never.
+The column \emph{Cardinality} records how the construct occupies the
+  source:
+  \enquote{1 line} means the entire expression lives on a single source
+  line with no deeper-indent block;
+  \enquote{1 line + body} means a head line followed by a deeper-indent
+  body block;
+  \enquote{multi-line} means a multi-line construct without a single
+  syntactic head (a method chain, a multi-line text block, or a vertical
+  application).
+The column \emph{Children} answers \enquote{may receive deeper-indent
+  children?} and \emph{Wraps} answers \enquote{may be wrapped by a
+  same-indent \ff{.method} continuation?}.
+A bare \enquote{yes} means the construct is always open in that
+  direction; \enquote{yes (after)} means only after the body block
+  closes; \enquote{no} means never.
 
 \begin{table*}
 \capt{The twelve outer kinds of EO expressions.}

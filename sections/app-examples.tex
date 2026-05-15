@@ -82,6 +82,10 @@ Line-by-line classification (each line is annotated with the outer kind of
   \item \ff{[args] > main} --- \ff{bare-formation},
     top-level master child of the package root.
     The comment block above attaches to this formation.
+    By convention, the runtime applies a top-level \ff{main} to the
+    program's command-line arguments, supplied as a tuple bound to the
+    \ff{args} void; the convention is independent of the language and
+    is honoured by the runtime, not by the parser.
   \item \ff{mem.alloc > @} --- \ff{hmethod} chain with 0 horizontal
     arguments and the name suffix \ff{> @}. As soon as the deeper-indent
     children appear, the outer kind transitions to \ff{vapplication}
@@ -159,8 +163,8 @@ Construct highlights:
     top-level formation, naming the decoratee of \ff{main}.
   \item \ff{(args.at 0).as-int > year!} --- an \ff{hmethod} chain whose
     head is a paren group, with the const-marked name \ff{year!}.
-    The intermediate vapp argument is named, demonstrating that vapp
-    arguments may each carry their own optional names.
+    The intermediate vapplication argument is named, demonstrating that
+    vertical-application arguments may each carry their own optional names.
   \item \ff{if (leap year:y) "" "not "} --- an \ff{happlication} with
     three horizontal arguments. The first argument is the paren group
     \ff{(leap year:y)}, an application of \ff{leap} to \ff{year} with

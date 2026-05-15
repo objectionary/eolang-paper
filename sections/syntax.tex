@@ -107,6 +107,22 @@ After the head line, a deeper-indent block of children may follow;
   the body's syntactic role is described in \cref{sec:syntax:vapp}
   and its well-formedness in \cref{sec:wf:naming,sec:wf:atoms}.
 
+Children of a formation come in two structural roles
+  (\cref{sec:wf:naming}):
+\begin{itemize}
+  \item a \emph{master child} introduces a sub-formation visible in the
+    source via brackets --- a nested \ff{bare-formation}, an atom, or an
+    \ff{inline-phi-formation}. Its bracket marker makes the role
+    self-evident, so a name suffix is optional.
+  \item a \emph{plain child} is any other child expression
+    (a head, application, dispatch, reversed dispatch, compact tuple, or
+    text block). A plain child of a formation must carry a name suffix
+    (\cref{sec:wf:naming}) to be distinguishable from sibling lines.
+\end{itemize}
+A third role --- the \emph{test attribute} --- is reserved for direct
+  children of top-level formations and is introduced by the \ff{+>} name
+  suffix (\cref{sec:syntax:names}, \cref{sec:wf:atoms}).
+
 \subsubsection{Method-dispatch line}\label{sec:syntax:method}
 
 A line whose first non-space character is \ff{.} is a method-dispatch line.
@@ -317,7 +333,7 @@ There are four base forms (mutually exclusive on any one line)
 \begin{itemize}
   \item \ff{> name} --- an explicit name binding.
     A trailing \ff{!} (\ff{> name!}) marks the name as a constant
-    (\cref{sec:sem:special}).
+    (\cref{sec:sem:const}).
     An optional \ff{/sig} (\ff{> name /sig}) declares the object as an
     \emph{atom} with the given return signature (\cref{sec:wf:atoms}).
   \item \ff{>>} --- an auto-generated name.
@@ -403,7 +419,7 @@ Each deeper child at indent \(K+2\) is an argument of the head.
 \begin{ffcode}
 malloc.for > @           // head line: hmethod with 0 hargs + name
   0                      //   first vertical arg
-  [m] >>                 //   second vertical arg (a master formation)
+  [m] >>                 //   second vertical arg (a master child)
     body
 \end{ffcode}
 
@@ -423,8 +439,8 @@ tmpdir                   // head line
 .tmpfile                 //   continuation 1
 .deleted                 //   continuation 2
 .open > @                //   continuation 3, naming line
-  "r"                    //   vapp arg of .open
-  f > [f]                //   vapp arg of .open
+  "r"                    //   vapplication arg of .open
+  f > [f]                //   vapplication arg of .open
 \end{ffcode}
 
 The name of the whole chain lives on the \emph{last} \ff{.method} line.

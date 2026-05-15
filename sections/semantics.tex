@@ -90,6 +90,13 @@ A child with no suffix (a master child --- a nested formation, atom, or
 
 \subsection{Application}\label{sec:sem:application}
 
+Throughout the translation, the labels
+  \(\alpha_0, \alpha_1, \ldots\)
+  denote successive positional attribute slots of a formation, in the
+  convention of the \(\varphi\)-calculus.
+They name the slot a positional argument fills, not the argument value
+  itself.
+
 A horizontal application \ff{h e\(_1\) e\(_2\) \ldots} translates to
 \begin{equation*}
   \llbracket h\,e_1\,e_2\,\ldots \rrbracket\;=\;
@@ -114,6 +121,12 @@ The well-formedness rules of \cref{sec:wf:bindings} guarantee that an
   argument group is either uniformly positional or uniformly labelled
   --- the translation never mixes \(\alpha_i\) labels with named pairs in
   one application.
+
+An application that fills only some voids of its head is a \emph{partial
+  application}: its result is a fresh formation that retains the
+  unfilled voids and closes the filled ones.
+The reduction is part of the \(\varphi\)-calculus and is not duplicated
+  here; \citet{bugayenko2021eolang} gives the formal rule.
 
 \subsection{Dispatch and Locators}\label{sec:sem:dispatch}\label{sec:sem:special}
 
@@ -157,12 +170,51 @@ The locator \(\varphi\) is the \emph{decoratee}: a dispatch on a formation
 This fall-through is the entire mechanism of behavioural reuse in EO ---
   there is no class hierarchy and no implementation inheritance.
 
-\subsection{Atoms, Data, and Dataization}\label{sec:sem:atoms}
+\subsection{Assets, Data, and Atoms}\label{sec:sem:atoms}
 
+A formation may, in addition to its ordinary attribute pairs, carry one
+  or both of two reserved \emph{assets}:
+\begin{itemize}
+  \item a \emph{$\Delta$-asset}, holding a finite sequence of 8-bit
+    bytes (raw data);
+  \item a \emph{$\lambda$-asset}, holding a host-language function
+    (a hook into a function implemented outside EO).
+\end{itemize}
+An asset is keyed by the reserved name $\Delta$ or $\lambda$ and does
+  not occupy an ordinary attribute slot.
+Assets are not introduced by any surface construct directly;
+  they are produced by the translation of data literals and atoms,
+  described below.
+
+\paragraph{Data primitives.}
+Data literals (\ff{STRING}, \ff{TEXT}, \ff{INT}, \ff{FLOAT}, \ff{HEX},
+  \ff{BYTES}) translate to formations whose $\Delta$-asset carries the
+  byte sequence of the literal value, decorated by the appropriate
+  canonical object
+  ($\Phi.\mathtt{number}$, $\Phi.\mathtt{string}$, $\Phi.\mathtt{bytes}$),
+  following the encoding of \citet{bugayenko2021eolang}.
+The parser produces the $\Delta$-asset whose bytes are the lexical
+  value of the literal; the surrounding canonical-object decoration is
+  determined by the literal's type.
+
+\paragraph{Tuples.}
+The canonical object $\Phi.\mathtt{tuple}$ represents a finite, ordered
+  sequence of objects.
+A tuple value $\Phi.\mathtt{tuple}(e_1, \ldots, e_n)$ is a copy of the
+  canonical $\mathtt{tuple}$ formation with $n$ positional attributes
+  filled, indexed by $\alpha_0, \ldots, \alpha_{n-1}$.
+The standard library provides attributes such as $\mathtt{at}$ (indexed
+  access) and $\mathtt{length}$ on $\Phi.\mathtt{tuple}$, but these are
+  ordinary canonical attributes and are not part of the language proper.
+Tuples are used to represent the trailing-arguments form of compact
+  tuple lines (\cref{sec:sem:tuple}) and the result of a bare \ff{*}
+  application head.
+
+\paragraph{Atoms.}
 An atom is a formation whose name suffix is \ff{> name /sig}.
-The signature \ff{sig} declares the atom's return type; the operational
-  behaviour is supplied by a host-language function attached to the
-  formation's \(\lambda\)-asset:
+The signature \ff{sig} declares the atom's return type;
+  the operational behaviour is supplied by a host-language function
+  attached to the formation's $\lambda$-asset:
 \begin{equation*}
   \llbracket \mathtt{[a\ b]\ >\ plus\ /number} \rrbracket\;=\;
     \mathtt{plus}\,\mapsto\,
@@ -171,29 +223,22 @@ The signature \ff{sig} declares the atom's return type; the operational
       \lambda \mapsto \mathtt{Plus}
     \,\rrbracket
 \end{equation*}
-where \(\mathtt{Plus}\) is a host-language function whose return matches
+where $\mathtt{Plus}$ is a host-language function whose return matches
   the signature.
 An atom's body may contain only test attributes (\cref{sec:wf:atoms}),
-  which translate to ordinary \(\mathtt{+name}\) pairs.
+  which translate to ordinary $\mathtt{+name}$ pairs.
 
-Data literals (\ff{STRING}, \ff{TEXT}, \ff{INT}, \ff{FLOAT}, \ff{HEX},
-  \ff{BYTES}) translate to formations whose \(\Delta\)-asset carries the
-  byte sequence of the literal value, decorated by the appropriate canonical
-  object (\(\Phi.\mathtt{number}\), \(\Phi.\mathtt{string}\), \(\Phi.\mathtt{bytes}\)),
-  in accordance with the \(\varphi\)-calculus encoding of data primitives.
-The complete encoding is given in the \(\varphi\)-calculus
-  paper~\citep{bugayenko2021eolang}; the parser produces a \(\Delta\)-asset
-  whose bytes are the lexical value of the literal.
-
+\paragraph{Dataization.}
 Evaluating an EO program reduces it to a sequence of bytes via the
   \(\varphi\)-calculus dataization operator
 \begin{equation*}
   \mathbb{D}\,:\,\varphi\text{-expression}\,\to\,\text{bytes},
 \end{equation*}
 which normalises its argument and, if the normal form carries a
-  \(\Delta\)-asset, returns those bytes; otherwise it invokes the
-  \(\lambda\)-asset of the normal form and dataizes its result recursively.
-Dataizing the top-level program \(\Phi\) is the evaluation of the program.
+  $\Delta$-asset, returns those bytes;
+  otherwise it invokes the $\lambda$-asset of the normal form and
+  dataizes its result recursively.
+Dataizing the top-level program $\Phi$ is the evaluation of the program.
 
 \subsection{Compact Tuple}\label{sec:sem:tuple}
 
@@ -223,6 +268,16 @@ A bare \ff{*} appearing in head position is itself a
   \(\Phi.\mathtt{tuple}\) constructor: an application whose head is \ff{*}
   with horizontal arguments translates to
   \(\Phi.\mathtt{tuple}(\llbracket e_1 \rrbracket, \ldots, \llbracket e_n \rrbracket)\).
+
+\subsection{Const-marker}\label{sec:sem:const}
+
+A name suffix that ends in \ff{!} (\ff{> name!} or \ff{>>!}) marks the
+  attribute as a \emph{constant}: once bound, the binding may not be
+  rebound by application.
+Const-marking does not change the \(\varphi\)-translation of the formation
+  itself --- the pair $\mathtt{name} \mapsto e$ is emitted unchanged.
+It is a hint to downstream tooling that the binding is final and may be
+  cached or rewritten under the assumption that it will not change.
 
 \subsection{Inline-phi Formation}\label{sec:sem:inline-phi}
 

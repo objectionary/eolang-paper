@@ -166,6 +166,34 @@ Its \(\varphi\)-form attaches a \(\lambda\)-asset
 The body of an atom contains only test attributes (\cref{sec:wf:atoms});
   the operational meaning lives in the \(\lambda\)-asset.
 
+\subsection{Inline-phi Formation}\label{sec:over:inline-phi}
+
+Some formations exist only to carry a single body expression and a few
+  voids around it.
+EO provides a compact form for this case: the suffix \ff{> [params] > name}
+  introduces a fresh formation whose \(\varphi\) attribute is the
+  expression to the left of the suffix, and whose name is given on the
+  right.
+
+\begin{ffcode}
+x.lt 6 > [i] > predicate
+\end{ffcode}
+
+translates to
+\begin{equation*}
+  \mathtt{predicate}\;\mapsto\;
+    \llbracket\,
+      i \mapsto \varnothing,\
+      \varphi \mapsto \mathtt{x}.\mathtt{lt}\,(\alpha_0 \mapsto 6)
+    \,\rrbracket.
+\end{equation*}
+
+The whole line is closed for deeper-indent children: the body of the
+  fresh formation is the left-hand expression, not a vertical block.
+Inline-phi formations are common as arguments of \ff{while} and similar
+  control objects, where a single-expression predicate or step needs to
+  be parameterised and named in one line.
+
 \subsection{Method Chains}\label{sec:over:chain}
 
 A chain of dispatches reads top-to-bottom in vertical notation:
@@ -203,12 +231,19 @@ translates to \(\mathtt{cond}.\mathtt{if}\,(\alpha_0 \mapsto \mathtt{then},\ \al
 A vertical form spreads the receiver and arguments across deeper-indent
   lines (\cref{sec:syntax:reversed}).
 
-\subsection{Compact Tuple}\label{sec:over:tuple}
+\subsection{Tuples}\label{sec:over:tuple}
 
-A tuple of values is built by the \ff{*} construct.
-A line of the form \ff{head *N} partitions its vertical children:
-  the first \(N\) are direct positional arguments of the head, and the
-  remaining children are collected into a single
+The canonical object \(\Phi.\mathtt{tuple}\) represents a finite, ordered
+  sequence of objects, with attributes \(\mathtt{at}\) (indexed access)
+  and \(\mathtt{length}\) provided by the standard library.
+A tuple value is built by the \ff{*} construct.
+With horizontal arguments, \ff{* x y z} denotes the tuple
+  \(\Phi.\mathtt{tuple}(\mathtt{x},\mathtt{y},\mathtt{z})\) directly.
+With vertical children, \ff{*} folds the entire deeper-indent block into
+  one tuple.
+A line of the form \ff{head *N} (a \emph{compact tuple}) partitions its
+  vertical children: the first \(N\) become direct positional arguments
+  of the head, and the remaining children are collected into a single
   \(\Phi.\mathtt{tuple}\) argument appended at the end.
 
 \begin{ffcode}
@@ -230,8 +265,9 @@ The \(\varphi\)-translation is
     ).
 \end{equation*}
 
-A bare \ff{*} in head position is itself a \(\Phi.\mathtt{tuple}\)
-  constructor over its arguments.
+The partition is purely syntactic sugar over the application form of
+  \cref{sec:over:application}; \cref{sec:sem:tuple} gives the full
+  translation rule.
 
 \subsection{A Program}\label{sec:over:program}
 
@@ -253,11 +289,15 @@ Reducing the program to a sequence of bytes ---
       * "Jeffrey"
 \end{ffcode}
 
-The program declares a single object \ff{app} whose decoratee is a copy of
-  \ff{Q.io.stdout} applied to the formatted greeting.
-Dataizing \ff{app} reduces the dispatch chain, evaluates the atom backing
-  \ff{stdout}, and writes the bytes of \enquote{Hello, Jeffrey!} to the
-  process's standard output.
+The program declares a single object \ff{app}.
+Its \ff{@} attribute is a copy of \ff{Q.io.stdout} applied to one
+  argument: a copy of \ff{Q.tt.sprintf} applied in turn to a format
+  string and a single-element tuple \ff{* "Jeffrey"}.
+Dataizing \ff{app} reduces the outer decoration to its decoratee
+  (\ff{stdout}), then dataizes \ff{stdout}'s argument (which evaluates
+  \ff{sprintf} into the formatted string), then invokes the
+  \(\lambda\)-asset of \ff{stdout} to write the resulting bytes ---
+  \enquote{Hello, Jeffrey!} --- to the host's standard output.
 The complete \(\varphi\)-translation of this program is left to
   \cref{sec:semantics}; the present overview has established what each
   surface construct denotes.
