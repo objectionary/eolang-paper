@@ -1,0 +1,139 @@
+% SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+% SPDX-License-Identifier: MIT
+
+\section{Reading the Specification}\label{sec:preamble}
+
+This section is a brief guide to the rest of the paper.
+It states what each chapter and appendix contains, suggests reading
+  orders for three audiences, distinguishes normative from informative
+  material, and fixes the typographic and mathematical conventions used
+  throughout.
+
+\subsection{What Each Chapter Contains}\label{sec:preamble:chapters}
+
+\begin{description}
+  \item[\cref{sec:overview}, \emph{Informal Overview}.]
+    A tour of EO's constructs paired with their \(\varphi\)-calculus
+    translations. Informal: examples drive the prose, no construct is
+    given its full surface contract here. Read this first.
+  \item[\cref{sec:lexical}, \emph{Lexical Layer}.]
+    Encoding, indentation, token catalogue, numeric and string literal
+    grammars, the multi-line bytes form. Normative.
+  \item[\cref{sec:syntax}, \emph{Syntax}.]
+    Per-line shapes (\cref{sec:syntax:lines}), name suffixes
+    (\cref{sec:syntax:names}), multi-line constructs
+    (\cref{sec:syntax:multi-line}), the XMIR output mapping
+    (\cref{sec:syntax:xmir}), and the twelve outer kinds
+    (\cref{sec:syntax:outer-kinds}). Normative.
+    The line-shape decision table at the head of \cref{sec:syntax:lines}
+    is the entry point for classifying any source line.
+  \item[\cref{sec:wellformedness}, \emph{Well-formedness Rules}.]
+    The cross-line rules that decide which syntactically-recognisable
+    programs are legal: notation consistency
+    (\cref{sec:wf:notation}), naming inside formations
+    (\cref{sec:wf:naming}), atoms and tests (\cref{sec:wf:atoms}),
+    comment attachment (\cref{sec:wf:comments}), blank-line policy
+    (\cref{sec:wf:blanks}), inline bindings (\cref{sec:wf:bindings}).
+    Normative.
+  \item[\cref{sec:semantics}, \emph{Semantics via \(\varphi\)-Calculus}.]
+    The translation function \(\llbracket\,\cdot\,\rrbracket\) from
+    well-formed EO expressions to \(\varphi\)-calculus expressions,
+    construct-by-construct.
+    Reserved attributes, assets (\(\Delta\), \(\lambda\)),
+    dataization, meta directives, and aliases also live here.
+    Normative; reads against the \(\varphi\)-calculus surface defined
+    by \citet{bugayenko2021eolang}.
+  \item[\cref{sec:related}, \emph{Related Work}.]
+    EO's position among pure-OO languages, mainstream OO languages, and
+    object calculi. Informative.
+  \item[\cref{sec:future}, \emph{Future Studies}.]
+    Directions that build on this specification. Informative.
+  \item[\cref{app:outer-kinds}.]
+    At-a-glance reference table for the twelve outer kinds. Normative.
+  \item[\cref{app:examples}.]
+    Worked-through EO programs covering most surface constructs in
+    combination, each paired with prose and selected \(\varphi\)-form
+    translations. Informative.
+\end{description}
+
+\subsection{Reading Orders}\label{sec:preamble:orders}
+
+\begin{description}
+  \item[Curious reader.]
+    \Cref{sec:overview} is self-contained; finish there and read the
+    rest only if the syntax appears arbitrary.
+  \item[Practitioner writing EO programs.]
+    \Cref{sec:overview} for orientation, \cref{sec:syntax} for the
+    surface forms, \cref{sec:wellformedness} for the rules that decide
+    which compositions are accepted, \cref{app:examples} for canned
+    patterns.
+  \item[Compiler or tool implementer.]
+    Read in document order: \cref{sec:lexical} drives lexing,
+    \cref{sec:syntax} drives the line classifier and outer-kind
+    assignment, \cref{sec:wellformedness} drives the cross-line
+    validator, \cref{sec:semantics} fixes the translation contract.
+    \Cref{app:outer-kinds} is the cross-reference table to keep open
+    on the side.
+  \item[Theorist.]
+    \Cref{sec:semantics} is the bridge to the \(\varphi\)-calculus;
+    read it alongside \citet{bugayenko2021eolang}.
+\end{description}
+
+\subsection{Normative versus Informative}\label{sec:preamble:status}
+
+A chapter or appendix is \emph{normative} if a conforming implementation
+  is obliged to honour every rule it states.
+A chapter is \emph{informative} if it expounds, motivates, or
+  illustrates but does not add obligations.
+\Cref{sec:lexical,sec:syntax,sec:wellformedness,sec:semantics} and
+  \cref{app:outer-kinds} are normative.
+The abstract, \cref{sec:introduction,sec:overview,sec:related,sec:future},
+  and \cref{app:examples} are informative.
+Where a normative chapter introduces an example, the example is
+  illustrative; the prose around it states the normative rule.
+
+\subsection{Typographic and Notational Conventions}\label{sec:preamble:conventions}
+
+\paragraph{Code and tokens.}
+EO source and lexical tokens are typeset in a fixed-width face:
+  \ff{[a b] > foo}, \ff{NAME}, \ff{BYTES}.
+The same face is used for canonical objects of the standard library
+  (\ff{Q.io.stdout}, \ff{Q.tt.sprintf}) and for XMIR markup
+  (\ff{<o>}, \ff{@name}).
+
+\paragraph{\texorpdfstring{\(\varphi\)-calculus}{phi-calculus} terms.}
+The translation function is \(\llbracket\,\cdot\,\rrbracket\).
+Greek-letter names from the \(\varphi\)-calculus
+  (\(\Phi\), \(\xi\), \(\varphi\), \(\rho\), \(\Delta\), \(\lambda\))
+  are typeset in math italic, with \(\Phi\) reserved for the global
+  root namespace, \(\xi\) for the current scope, \(\varphi\) for the
+  decoratee, \(\rho\) for the parent, and \(\Delta\), \(\lambda\) for
+  the two reserved asset slots.
+Positional attribute labels are \(\alpha_0, \alpha_1, \ldots\),
+  generated by the translation in source order.
+
+\paragraph{Cross-references.}
+Internal references use the \texttt{cleveref} \texttt{\textbackslash cref}
+  macro: \enquote{see \cref{sec:wf:atoms}} rather than
+  \enquote{see Section X.Y}.
+A cross-reference to an entire chapter cites its top-level label
+  (\cref{sec:syntax}); references to subsections cite the more specific
+  label (\cref{sec:syntax:outer-kinds}).
+
+\paragraph{Examples.}
+Examples are presented as fenced \ff{ffcode} blocks.
+Line comments inside an example use \ff{//} and are not part of EO
+  source; they are typographical annotations of the example.
+Where an example is illegal, the offending line is annotated
+  \enquote{\ff{rejected}} in its trailing comment.
+
+\paragraph{Indent depths.}
+Indent depths are stated in spaces (\enquote{indent 4}) when the
+  absolute count matters, or as levels (\enquote{indent level 1},
+  meaning indent 2) when only the nesting depth matters.
+
+\paragraph{Outer kinds and openness.}
+The vocabulary of \emph{outer kinds} and \emph{openness} from
+  \cref{sec:syntax:outer-kinds} is used throughout
+  \cref{sec:wellformedness,sec:semantics} and the appendices;
+  the reference table is \cref{app:outer-kinds}.
