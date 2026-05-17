@@ -236,18 +236,42 @@ A vertical form spreads the receiver and arguments across deeper-indent
 
 \subsection{Tuples}\label{sec:over:tuple}
 
-The canonical object \(\Phi.\mathtt{tuple}\) represents a finite, ordered
-  sequence of objects, with attributes \(\mathtt{at}\) (indexed access)
-  and \(\mathtt{length}\) provided by the standard library.
-A tuple value is built by the \ff{*} construct.
-With horizontal arguments, \ff{* x y z} denotes the tuple
-  \(\Phi.\mathtt{tuple}(\mathtt{x},\mathtt{y},\mathtt{z})\) directly.
-With vertical children, \ff{*} folds the entire deeper-indent block into
-  one tuple.
-A line of the form \ff{head *N} (a \emph{compact tuple}) partitions its
-  vertical children: the first \(N\) become direct positional arguments
-  of the head, and the remaining children are collected into a single
-  \(\Phi.\mathtt{tuple}\) argument appended at the end.
+The canonical object \(\Phi.\mathtt{tuple}\) is a single recursive
+  cons-cell --- a formation with three voids \(\mathtt{tail}\),
+  \(\mathtt{head}\), and \(\mathtt{length}\).
+A non-empty tuple is built by applying \(\Phi.\mathtt{tuple}\) with
+  \(\mathtt{tail}\) bound to a shorter tuple,
+  \(\mathtt{head}\) bound to the new element, and
+  \(\mathtt{length}\) bound to the resulting length.
+The empty tuple is the canonical object
+  \(\Phi.\mathtt{tuple}.\mathtt{empty}\).
+The \(\mathtt{length}\) void is set explicitly at each cell, not
+  computed at dispatch time, so that \(\mathtt{length}\) costs
+  constant time.
+
+In source, a tuple value is built by the \ff{*} construct.
+\ff{* x y z} unfolds to the right-associated chain
+\begin{equation*}
+  \Phi.\mathtt{tuple}\,(\,
+    \mathtt{tail} \mapsto \Phi.\mathtt{tuple}\,(\,
+      \mathtt{tail} \mapsto \Phi.\mathtt{tuple}\,(\,
+        \mathtt{tail} \mapsto \Phi.\mathtt{tuple}.\mathtt{empty},\
+        \mathtt{head} \mapsto \mathtt{x},\
+        \mathtt{length} \mapsto 1
+      \,),\
+      \mathtt{head} \mapsto \mathtt{y},\
+      \mathtt{length} \mapsto 2
+    \,),\
+    \mathtt{head} \mapsto \mathtt{z},\
+    \mathtt{length} \mapsto 3
+  \,).
+\end{equation*}
+With vertical children, \ff{*} folds the entire deeper-indent block
+  into one such chain.
+A line of the form \ff{head *N} (a \emph{compact tuple}) partitions
+  its vertical children: the first \(N\) become direct positional
+  arguments of the head, and the remaining children are collected
+  into a single \(\Phi.\mathtt{tuple}\) chain appended at the end.
 
 \begin{ffcode}
 sprintf *1 > greeting
@@ -256,10 +280,9 @@ sprintf *1 > greeting
   "extra"
 \end{ffcode}
 
-binds \ff{"Hello, \%s!"} as the first positional argument of \ff{sprintf};
-  the remaining children \ff{"Jeffrey"} and \ff{"extra"} fold into a
-  tuple argument.
-The \(\varphi\)-translation is
+binds \ff{"Hello, \%s!"} as the first positional argument of
+  \ff{sprintf}; the remaining children \ff{"Jeffrey"} and
+  \ff{"extra"} fold into a tuple argument:
 \begin{equation*}
   \mathtt{greeting}\;\mapsto\;
     \mathtt{sprintf}\,(
@@ -268,9 +291,12 @@ The \(\varphi\)-translation is
     ).
 \end{equation*}
 
-The partition is purely syntactic sugar over the application form of
-  \cref{sec:over:application}; \cref{sec:sem:tuple} gives the full
-  translation rule.
+In equations like the one above we write
+  \(\Phi.\mathtt{tuple}(e_1, \ldots, e_n)\) as shorthand for the
+  unrolled cons-cell chain when its internal structure is not the
+  point of the discussion;
+  \cref{sec:sem:tuple} gives the full translation rule with the
+  shorthand discharged.
 
 \subsection{A Program}\label{sec:over:program}
 
