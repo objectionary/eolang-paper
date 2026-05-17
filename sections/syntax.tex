@@ -21,8 +21,20 @@ The complete enumeration of outer expression kinds with their structural
 
 \subsection{Line Shapes}\label{sec:syntax:lines}
 
-\Cref{tab:line-shapes} lists the eleven line shapes
-  and the lookahead that selects each.
+\Cref{tab:line-shapes} lists the eleven \emph{line shapes} ---
+  classes of source lines selected by the first non-space character of
+  the line and a small lookahead.
+Line shapes are a per-line classification: each non-blank, non-comment
+  source line falls into exactly one row of the table.
+They are distinct from \emph{outer kinds} (\cref{sec:syntax:outer-kinds}),
+  which classify whole \emph{expressions}.
+Several outer kinds --- \ff{vapplication}, \ff{vmethod},
+  \ff{vmethod-with-hargs}, and \ff{inline-phi-formation} ---
+  are composition-derived: they arise when a head line is followed by
+  deeper-indent children or same-indent \ff{.method} continuations,
+  not from any single first-character rule.
+The line-shape table therefore has eleven rows while the outer-kind
+  catalogue has twelve.
 
 \begin{table*}
 \capt{Line shapes selected from the first non-space character of a line.}
@@ -337,9 +349,16 @@ There are four base forms (mutually exclusive on any one line)
     An optional \ff{/sig} (\ff{> name /sig}) declares the object as an
     \emph{atom} with the given return signature (\cref{sec:wf:atoms}).
   \item \ff{>>} --- an auto-generated name.
-    Auto-names are deterministic; their exact format is the prefix
-    \ff{U+1F335} (cactus) followed by line and column coordinates of the
-    suffix's source location, separated by \ff{-}.
+    Auto-names are deterministic.
+    Given a \ff{>>} suffix whose first character (the first \ff{>}) is
+    at line \(L\) (1-indexed) and column \(C\) (0-indexed),
+    the generated name is the literal string
+    \ff{a} followed by \ff{U+1F335} (cactus)
+    followed by the decimal digits of \(L\),
+    a literal \ff{-},
+    and the decimal digits of \(C\).
+    For example, a \ff{>>} whose first \ff{>} sits at line 12, column 5
+    generates the name \ff{a\(\Yright\)12-5}.
     The cactus exclusion in \ff{NAME} (\cref{sec:lexical:tokens}) makes
     auto-names disjoint from user-defined names.
     A trailing \ff{!} (\ff{>>!}) is permitted but rare;
@@ -351,8 +370,11 @@ There are four base forms (mutually exclusive on any one line)
     The \ff{name} must be a \ff{NAME} token; \ff{+> @} is rejected.
   \item (none) --- no suffix.
     The line is anonymous.
-    Permitted unless the object is a plain child of a formation
-    (\cref{sec:wf:naming}).
+    Permitted only when the object's enclosing context does not require
+    a name: i.e., when it is a master child of a formation, or any
+    intermediate sub-expression of a multi-line construct.
+    A plain child of a formation, or a top-level object, must carry a
+    name (\cref{sec:wf:naming}).
 \end{itemize}
 
 The combinations \ff{> name! /sig} and \ff{>> /sig} are both rejected

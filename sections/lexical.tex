@@ -227,8 +227,9 @@ size.
   BE-BE       // continuation chunk
 \end{ffcode}
 
-The two indented lines under \ff{size.} form a single \ff{BYTES} literal
-  \ff{CA-FE-BE-BE}, occupying one argument slot of the reversed dispatch
-  \ff{size.} (the latter construct is defined in \cref{sec:syntax}).
+The two indented lines under the head expression on the line above
+  form a single \ff{BYTES} literal \ff{CA-FE-BE-BE}, occupying one
+  argument slot of that head.
 A multi-line literal is one expression at one indent: the continuation
-  affects only the lexer, not the indent-driven syntactic layer.
+  affects only the lexer, not the indent-driven syntactic layer
+  (\cref{sec:syntax}).

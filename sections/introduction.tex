@@ -42,27 +42,16 @@ The translation from EO to \(\varphi\) is the bridge between the surface
   transformations can be carried out.
 
 This paper specifies EO precisely enough that two independent
-  implementations can agree on which programs are well-formed and on the
-  meaning of each well-formed program.
-The contributions of this paper are:
-
-\begin{itemize}
-  \item A complete lexical specification of EO source: encoding, indentation,
-    tokens, and literal forms (\cref{sec:lexical}).
-  \item A surface-syntax specification of every well-formed EO line and
-    multi-line construct, together with the line-shape decision table that
-    classifies any source line (\cref{sec:syntax}).
-  \item Cross-line well-formedness rules covering notation consistency,
-    naming, atoms and test attributes, comment attachment, blank-line
-    policy, and inline bindings (\cref{sec:wellformedness}).
-  \item A translation function \(\llbracket\,\cdot\,\rrbracket\) from
-    well-formed EO expressions to \(\varphi\)-calculus expressions,
-    construct-by-construct, together with the catalogue of meta directives
-    and the rules of name resolution under aliases
-    (\cref{sec:semantics}).
-\end{itemize}
-
-\Cref{sec:preamble} is a guide to the rest of the paper: it states what
-  each chapter contains, suggests reading orders for different audiences,
-  distinguishes normative from informative material, and fixes the
-  typographic conventions used throughout.
+  implementations can agree on which programs are well-formed and on
+  the meaning of each well-formed program.
+Its contribution is a single end-to-end contract:
+  a lexical layer, a surface syntax classifying every legal line and
+  multi-line composition, the cross-line rules that decide which
+  compositions are accepted, and a translation function
+  \(\llbracket\,\cdot\,\rrbracket\) from accepted programs to
+  \(\varphi\)-calculus expressions.
+The structural layout that delivers this contract is summarised in
+  \cref{sec:preamble}, which states what each chapter contains,
+  suggests reading orders for different audiences, distinguishes
+  normative from informative material, and fixes the typographic
+  conventions used throughout.

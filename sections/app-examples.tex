@@ -226,3 +226,128 @@ sprintf *1 > greeting
 
 binds \ff{"Hello, \%s!"} as \(\alpha_0\) and folds the remaining two
   strings into \(\alpha_1 \mapsto \Phi.\mathtt{tuple}(\mathtt{"Jeff"},\,\mathtt{"extra"})\).
+
+\subsection{Wrapping a Vertical-completed Expression}\label{app:ex:vmethod-wrap}
+
+A same-indent \ff{.method} line may wrap a multi-line expression whose
+  body block has already closed.
+The wrap transitions the underlying expression from
+  \emph{vertical-completed} back to \emph{open} as a \ff{vmethod}
+  (\cref{sec:wf:notation}).
+
+\begin{ffcode}
+[] > foo
+  bar
+    a
+    b
+  .baz > result
+\end{ffcode}
+
+The head line \ff{bar} opens a \ff{vapplication} whose body is the
+  block \ff{a, b}.
+The deeper-indent block closes when the next line at indent 2 arrives;
+  that line is \ff{.baz > result}.
+The dispatch on \ff{.baz} wraps the just-closed \ff{vapplication} into
+  a \ff{vmethod}, naming the chain \ff{result}.
+The \(\varphi\)-translation is
+\begin{equation*}
+  \mathtt{result}\;\mapsto\;
+    \mathtt{bar}\,(\alpha_0 \mapsto \mathtt{a},\,\alpha_1 \mapsto \mathtt{b})\,.\,\mathtt{baz}.
+\end{equation*}
+
+A second same-indent \ff{.method} would extend the chain further.
+A \emph{horizontally-completed} expression cannot be wrapped this way:
+  the line \ff{bar a b} followed by a same-indent \ff{.baz} is rejected
+  because \ff{happlication} is in the set \(\mathcal{H}\)
+  (\cref{sec:wf:notation}).
+
+\subsection{Inline Binding on Non-final Chain Link}\label{app:ex:binding-chain}
+
+An inline binding \ff{:label} or \ff{:N} on a method dispatch is legal
+  only when the method is the \emph{last} link in its chain
+  (\cref{sec:wf:bindings}).
+A binding on an intermediate link is rejected.
+
+\begin{ffcode}
+foo (bar.baz:0 1)        // rejected: :0 attaches to bar.baz,
+                         //   but .baz is not the chain's last link
+foo (bar.baz 1):0        // legal: :0 attaches to the whole bar.baz 1
+foo (bar.baz.qux:0 1)    // rejected: .baz is mid-chain, :0 forbidden
+foo (bar.baz.qux 1:0)    // legal: :0 attaches to the harg 1 of .qux,
+                         //   the last link
+\end{ffcode}
+
+The rule prevents an ambiguity in argument attachment: a binding on a
+  mid-chain link could plausibly refer to that link's receiver or to
+  the chain's tail.
+Restricting the binding to the last link makes the attachment
+  unambiguous.
+
+\subsection{Nested Atom with Empty Body}\label{app:ex:nested-atom}
+
+An atom that does not sit at indent 0 is a \emph{nested atom}.
+Test attributes are admissible only at indent level 1 of a top-level
+  object (\cref{sec:wf:atoms}), so a nested atom cannot hold tests;
+  an atom admits only test children, so a nested atom cannot hold
+  plain or master children either.
+The body of a nested atom is therefore \emph{empty}.
+
+\begin{ffcode}
+[] > outer
+  [] > middle
+    [a b] > inner /number   // legal nested atom; body must be empty
+\end{ffcode}
+
+The line \ff{[a b] > inner /number} declares a formation with two
+  voids and the atom signature \ff{/number}.
+Its body is absent; the formation closes at end-of-block.
+The \(\varphi\)-translation binds \ff{inner} inside \ff{middle} with
+  the two voids and a \(\lambda\)-asset whose host-language function
+  returns a value of type \ff{number}.
+
+A nested atom inside another atom is rejected outright:
+
+\begin{ffcode}
+[] > outer /number
+  [] > inner /integer       // rejected: atom inside an atom
+\end{ffcode}
+
+The outer atom admits only test attributes; an atom is a master child,
+  not a test attribute, and is therefore inadmissible.
+
+\subsection{Dangling Comment}\label{app:ex:dangling-comment}
+
+A comment block must be immediately followed by a named object at the
+  same indent (\cref{sec:wf:comments}).
+A block followed by a blank line, by a deeper- or shallower-indent
+  object, or by no named object at all, is \emph{dangling} and is
+  rejected.
+
+\begin{ffcode}
+# This comment leads nowhere.
+
+[] > app                     // rejected: blank line breaks attachment;
+                             //   the comment above is dangling.
+\end{ffcode}
+
+A blank line between the comment block and the following object breaks
+  attachment regardless of indent.
+Two comment blocks separated by a blank line at the same indent are
+  not merged: the earlier block is dangling, and only the later block
+  attaches.
+
+\begin{ffcode}
+# First block.
+
+# Second block.
+[] > app                     // legal: second block attaches; first dangling
+\end{ffcode}
+
+A comment block at indent \(K\) followed by a named object at a
+  different indent is also dangling:
+
+\begin{ffcode}
+# Attached to whom?
+  [] > inner                 // rejected: comment at indent 0 cannot
+                             //   attach to an object at indent 2
+\end{ffcode}

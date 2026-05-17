@@ -82,8 +82,8 @@ A child whose suffix is \ff{>>} contributes a pair under the
   translation.
 A child whose suffix is \ff{+> name} contributes a \emph{test attribute}
   (see \cref{sec:wf:atoms}); it is represented in the codomain as an
-  ordinary pair whose key marks it as a test, conventionally
-  \(\mathtt{+name}\).
+  ordinary pair whose key is \(\mathtt{+name}\)
+  --- i.e., the user-supplied \ff{name} with a literal \ff{+} prefix.
 A child with no suffix (a master child --- a nested formation, atom, or
   inline-phi formation) contributes a pair whose key is the master child's
   own name.
@@ -128,7 +128,7 @@ An application that fills only some voids of its head is a \emph{partial
 The reduction is part of the \(\varphi\)-calculus and is not duplicated
   here; \citet{bugayenko2021eolang} gives the formal rule.
 
-\subsection{Dispatch and Locators}\label{sec:sem:dispatch}\label{sec:sem:special}
+\subsection{Dispatch and Locators}\label{sec:sem:dispatch}
 
 A dispatch \(e.\mathtt{a}\) translates to a \(\varphi\)-dispatch
   \(\llbracket e \rrbracket.\mathtt{a}\).
@@ -187,15 +187,38 @@ Assets are not introduced by any surface construct directly;
   described below.
 
 \paragraph{Data primitives.}
-Data literals (\ff{STRING}, \ff{TEXT}, \ff{INT}, \ff{FLOAT}, \ff{HEX},
-  \ff{BYTES}) translate to formations whose $\Delta$-asset carries the
-  byte sequence of the literal value, decorated by the appropriate
-  canonical object
-  ($\Phi.\mathtt{number}$, $\Phi.\mathtt{string}$, $\Phi.\mathtt{bytes}$),
-  following the encoding of \citet{bugayenko2021eolang}.
-The parser produces the $\Delta$-asset whose bytes are the lexical
-  value of the literal; the surrounding canonical-object decoration is
-  determined by the literal's type.
+Data literals translate to formations whose $\Delta$-asset carries a
+  fixed byte encoding of the literal value, decorated by the
+  appropriate canonical object.
+The encodings, by lexical class, are:
+
+\begin{itemize}
+  \item \ff{INT} --- 8 bytes, big-endian, two's-complement signed
+    64-bit integer.
+    Decorated by $\Phi.\mathtt{number}$.
+  \item \ff{FLOAT} --- 8 bytes, big-endian, IEEE-754 binary64
+    (double-precision) floating point.
+    Decorated by $\Phi.\mathtt{number}$.
+  \item \ff{HEX} --- the same 8-byte two's-complement integer
+    encoding as \ff{INT}, after the hex digits are interpreted as a
+    signed 64-bit integer.
+    Decorated by $\Phi.\mathtt{number}$.
+  \item \ff{STRING} --- the UTF-8 byte sequence of the string content
+    after escape sequences are resolved (\cref{sec:lexical:strings}).
+    Decorated by $\Phi.\mathtt{string}$.
+  \item \ff{TEXT} --- the UTF-8 byte sequence of the text block's
+    body, joined by \(\backslash\)n with the opening indent stripped
+    and with escape sequences resolved.
+    Decorated by $\Phi.\mathtt{string}$.
+  \item \ff{BYTES} --- the byte sequence written literally, in order.
+    Decorated by $\Phi.\mathtt{bytes}$.
+\end{itemize}
+
+For example, the integer literal \ff{42} translates to
+  $\Phi.\mathtt{number}\,(\Phi.\mathtt{bytes}\,(\,
+    \llbracket \Delta \mapsto \mathtt{40{-}45{-}00{-}00{-}00{-}00{-}00{-}00} \rrbracket
+  \,))$,
+  matching the encoding given by \citet{bugayenko2021eolang}.
 
 \paragraph{Tuples.}
 The canonical object $\Phi.\mathtt{tuple}$ represents a finite, ordered
@@ -325,7 +348,6 @@ Directive & Meaning \\
 \ff{+version} \(v\)         & Source version; conventionally a semantic version. \\
 \ff{+spdx} \(\mathit{header}\) &
                               An SPDX licence or copyright header preserved verbatim. \\
-\ff{+tests}                 & Marks the file as a test source; its top-level formation may carry \ff{+>} test attributes (\cref{sec:wf:atoms}). \\
 \ff{+decorate} \(a\) \(b\)  & Declares that the object \(a\) defined in the file is intended to decorate the canonical object at path \(b\). \\
 \ff{+unlint} \(\mathit{rule}\) &
                               Suppresses a lint rule for the file. \\
