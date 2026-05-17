@@ -45,9 +45,13 @@ The \(\varphi\)-translation is
       \varphi \mapsto \Phi.\mathtt{io}.\mathtt{stdout}\,(\alpha_0 \mapsto \text{\ff{"Hello, world!\textbackslash n"}})
     \,\rrbracket.
 \end{equation*}
-Dataizing the program (\cref{sec:sem:atoms}) reduces the dispatch chain,
-  invokes the \(\lambda\)-asset of \ff{stdout}, and writes the greeting
-  bytes to the host's standard output.
+Dataizing the program (\cref{sec:sem:atoms}) reduces the dispatch chain
+  through \ff{stdout}'s decoratee (a sequence that calls
+  \ff{console.write} on the supplied text), and ultimately reaches the
+  atom that writes the greeting bytes to the host's standard output.
+The atom that touches the host lives inside the \ff{console} object,
+  not inside \ff{stdout} itself --- \ff{stdout} is a regular
+  formation that decorates a \ff{console}-based output sequence.
 
 \subsection{Mixed-construct Walkthrough}\label{app:ex:mixed}
 
@@ -261,27 +265,29 @@ A \emph{horizontally-completed} expression cannot be wrapped this way:
   because \ff{happlication} is in the set \(\mathcal{H}\)
   (\cref{sec:wf:notation}).
 
-\subsection{Inline Binding on Non-final Chain Link}\label{app:ex:binding-chain}
+\subsection{Bindings in a Reversed Dispatch}\label{app:ex:binding-chain}
 
-An inline binding \ff{:label} or \ff{:N} on a method dispatch is legal
-  only when the method is the \emph{last} link in its chain
-  (\cref{sec:wf:bindings}).
-A binding on an intermediate link is rejected.
+Inline bindings (\ff{:label}, \ff{:N}) on a horizontal application group
+  are governed by two rules of \cref{sec:wf:bindings}:
+  the all-or-nothing rule (R-6.6.2) and the receiver-exclusion rule
+  (R-6.6.3).
+A reversed dispatch line exercises both at once: its first horizontal
+  argument is the receiver, the remaining horizontal arguments form an
+  ordinary argument group.
+The receiver cannot carry a binding;
+  the rest of the arguments must be uniformly bound or uniformly
+  unbound.
 
 \begin{ffcode}
-foo (bar.baz:0 1)        // rejected: :0 attaches to bar.baz,
-                         //   but .baz is not the chain's last link
-foo (bar.baz 1):0        // legal: :0 attaches to the whole bar.baz 1
-foo (bar.baz.qux:0 1)    // rejected: .baz is mid-chain, :0 forbidden
-foo (bar.baz.qux 1:0)    // legal: :0 attaches to the harg 1 of .qux,
-                         //   the last link
+if. true x y              // legal: all unbound, receiver `true' bare
+if. true x:a y:b          // legal: receiver `true' bare, args all bound
+if. true:a x y            // rejected: receiver cannot carry a binding
+if. true x:a y            // rejected: arg group mixes bound and unbound
 \end{ffcode}
 
-The rule prevents an ambiguity in argument attachment: a binding on a
-  mid-chain link could plausibly refer to that link's receiver or to
-  the chain's tail.
-Restricting the binding to the last link makes the attachment
-  unambiguous.
+The same rules apply to any horizontal application:
+  \ff{foo a:1 b:2} is legal (all bound), \ff{foo a b} is legal (all
+  unbound), and \ff{foo a:1 b} is rejected (mixed).
 
 \subsection{Nested Atom with Empty Body}\label{app:ex:nested-atom}
 

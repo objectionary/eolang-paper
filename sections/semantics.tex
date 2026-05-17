@@ -20,6 +20,16 @@ The translation is defined construct-by-construct over the outer kinds of
 
 \subsection{Translation Schema}\label{sec:sem:schema}
 
+In equations that show how a rule expands, we write $\llbracket e \rrbracket$
+  whenever $e$ is a sub-expression that is itself translated by the
+  rules of this chapter.
+In worked examples (\cref{app:examples} and the equations within this
+  chapter), when the operand is a bare identifier or literal whose
+  translation is the identity, we drop the brackets and write the
+  identifier directly --- $\mathtt{foo}\,(\alpha_0 \mapsto \mathtt{a})$
+  rather than $\llbracket \mathtt{foo} \rrbracket\,(\alpha_0 \mapsto
+  \llbracket \mathtt{a} \rrbracket)$.
+
 \Cref{tab:translation} summarises the translation per outer kind;
   the subsections that follow expand each row in turn.
 A program in source is a top-level object whose translation
@@ -123,10 +133,18 @@ The well-formedness rules of \cref{sec:wf:bindings} guarantee that an
   one application.
 
 An application that fills only some voids of its head is a \emph{partial
-  application}: its result is a fresh formation that retains the
-  unfilled voids and closes the filled ones.
-The reduction is part of the \(\varphi\)-calculus and is not duplicated
-  here; \citet{bugayenko2021eolang} gives the formal rule.
+  application}.
+Its result is a fresh formation whose voids are the head's voids
+  \emph{minus} the filled ones, with the filled ones replaced by their
+  argument expressions in the binding list.
+For instance, if \ff{foo} is \(\llbracket\,a \mapsto \varnothing,\ b \mapsto \varnothing\,\rrbracket\),
+  then
+  \(\llbracket \mathtt{foo}\,e \rrbracket = \mathtt{foo}\,(a \mapsto \llbracket e \rrbracket)\)
+  reduces to
+  \(\llbracket\,a \mapsto \llbracket e \rrbracket,\ b \mapsto \varnothing\,\rrbracket\) ---
+  an abstract formation with one void remaining.
+The full reduction system is the \(\varphi\)-calculus's;
+  \citet{bugayenko2021eolang} gives the rule.
 
 \subsection{Dispatch and Locators}\label{sec:sem:dispatch}
 
@@ -221,17 +239,53 @@ For example, the integer literal \ff{42} translates to
   matching the encoding given by \citet{bugayenko2021eolang}.
 
 \paragraph{Tuples.}
-The canonical object $\Phi.\mathtt{tuple}$ represents a finite, ordered
-  sequence of objects.
-A tuple value $\Phi.\mathtt{tuple}(e_1, \ldots, e_n)$ is a copy of the
-  canonical $\mathtt{tuple}$ formation with $n$ positional attributes
-  filled, indexed by $\alpha_0, \ldots, \alpha_{n-1}$.
-The standard library provides attributes such as $\mathtt{at}$ (indexed
-  access) and $\mathtt{length}$ on $\Phi.\mathtt{tuple}$, but these are
-  ordinary canonical attributes and are not part of the language proper.
-Tuples are used to represent the trailing-arguments form of compact
-  tuple lines (\cref{sec:sem:tuple}) and the result of a bare \ff{*}
-  application head.
+The canonical object $\Phi.\mathtt{tuple}$ is a single recursive cons-cell:
+  a formation with three voids $\mathtt{tail}$, $\mathtt{head}$, and
+  $\mathtt{length}$.
+A non-empty tuple is built by applying $\Phi.\mathtt{tuple}$ with
+  $\mathtt{tail}$ bound to a shorter tuple, $\mathtt{head}$ bound to the
+  new element, and $\mathtt{length}$ bound to the resulting length.
+The empty tuple is the canonical object $\Phi.\mathtt{tuple}.\mathtt{empty}$.
+The $\mathtt{length}$ void is set explicitly, not computed at dispatch
+  time, so that $\mathtt{length}$ has constant-time cost.
+
+A surface form \ff{* e\(_1\) e\(_2\) \ldots e\(_n\)} unrolls into the
+  right-associated chain
+\begin{equation*}
+  \Phi.\mathtt{tuple}\,(\,
+    \mathtt{tail} \mapsto \cdots\Phi.\mathtt{tuple}\,(\,
+      \mathtt{tail} \mapsto \Phi.\mathtt{tuple}.\mathtt{empty},\
+      \mathtt{head} \mapsto \llbracket e_1 \rrbracket,\
+      \mathtt{length} \mapsto 1
+    \,)\cdots,\
+    \mathtt{head} \mapsto \llbracket e_n \rrbracket,\
+    \mathtt{length} \mapsto n
+  \,).
+\end{equation*}
+Concretely, \ff{* x y z} translates to
+\begin{equation*}
+  \Phi.\mathtt{tuple}\,(\,
+    \mathtt{tail} \mapsto \Phi.\mathtt{tuple}\,(\,
+      \mathtt{tail} \mapsto \Phi.\mathtt{tuple}\,(\,
+        \mathtt{tail} \mapsto \Phi.\mathtt{tuple}.\mathtt{empty},\
+        \mathtt{head} \mapsto \mathtt{x},\
+        \mathtt{length} \mapsto 1
+      \,),\
+      \mathtt{head} \mapsto \mathtt{y},\
+      \mathtt{length} \mapsto 2
+    \,),\
+    \mathtt{head} \mapsto \mathtt{z},\
+    \mathtt{length} \mapsto 3
+  \,).
+\end{equation*}
+The standard library provides $\mathtt{at}$ (indexed access),
+  $\mathtt{length}$ (the void retrieved as-is), and similar canonical
+  attributes on $\Phi.\mathtt{tuple}$ that walk the chain;
+  these are ordinary canonical attributes and are not part of the
+  language proper.
+We write $\Phi.\mathtt{tuple}(e_1, \ldots, e_n)$ as shorthand for the
+  unrolled chain above when the internal structure is not the point of
+  the discussion (e.g.\ in \cref{sec:sem:tuple}).
 
 \paragraph{Atoms.}
 An atom is a formation whose name suffix is \ff{> name /sig}.
@@ -239,10 +293,10 @@ The signature \ff{sig} declares the atom's return type;
   the operational behaviour is supplied by a host-language function
   attached to the formation's $\lambda$-asset:
 \begin{equation*}
-  \llbracket \mathtt{[a\ b]\ >\ plus\ /number} \rrbracket\;=\;
+  \llbracket \mathtt{[x]\ >\ plus\ /number} \rrbracket\;=\;
     \mathtt{plus}\,\mapsto\,
     \llbracket\,
-      a \mapsto \varnothing,\ b \mapsto \varnothing,\
+      x \mapsto \varnothing,\
       \lambda \mapsto \mathtt{Plus}
     \,\rrbracket
 \end{equation*}

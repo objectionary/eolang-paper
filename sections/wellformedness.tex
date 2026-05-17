@@ -69,6 +69,10 @@ x.put 2              // happlication, horizontally-completed
   something          // rejected: closed for deeper-indent children
 \end{ffcode}
 
+A wrap of a vertical-completed multi-line expression into a fresh
+  \ff{vmethod} chain is worked through in
+  \cref{app:ex:vmethod-wrap}.
+
 \subsection{Naming Inside Formations}\label{sec:wf:naming}
 
 Every expression that is a \emph{plain child} of a formation must carry a
@@ -196,6 +200,9 @@ Illegal:
     [] +> test-inner    // rejected: tests must be at indent 2 of top-level
 \end{ffcode}
 
+A nested atom with an empty body is worked through in
+  \cref{app:ex:nested-atom}.
+
 \subsection{Comment Attachment}\label{sec:wf:comments}
 
 A comment block (\cref{sec:syntax:comment}) attaches to the next named
@@ -222,6 +229,10 @@ Inside an open formation body, a comment block is deferred until the next
                               // blank line breaks attachment
 [] > foo                      // comment above is dangling -- rejected
 \end{ffcode}
+
+Further dangling-comment patterns (a comment block at a different
+  indent from the following object, or two blocks separated by a
+  blank line) are worked through in \cref{app:ex:dangling-comment}.
 
 \subsection{Blank-line Policy}\label{sec:wf:blanks}
 
@@ -303,3 +314,7 @@ foo a:1 b                  // rejected: mixed binding
 if. true:a x y             // rejected: receiver carries binding
 if. true x:a y             // rejected: args mixed
 \end{ffcode}
+
+The interaction between all-or-nothing binding and receiver
+  exclusion in a reversed dispatch is worked through in
+  \cref{app:ex:binding-chain}.

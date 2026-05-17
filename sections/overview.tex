@@ -148,17 +148,20 @@ The signature suffix \ff{/sig} on the name declares the return type and
   marks the formation as an atom.
 
 \begin{ffcode}
-[a b] > plus /number
+[x] > plus /number
 \end{ffcode}
 
-declares an atom \ff{plus} with two voids \(a\) and \(b\) and a return
-  signature \(\mathtt{number}\).
-Its \(\varphi\)-form attaches a \(\lambda\)-asset
+declares an atom \ff{plus} with one void \(x\) and a return signature
+  \(\mathtt{number}\) ---
+  matching the canonical \ff{plus} method on the \ff{number} object,
+  whose receiver is the number itself (the implicit \(\xi\)) and whose
+  one argument is the other operand.
+The \(\varphi\)-form attaches a \(\lambda\)-asset
   (a host-language function reference) to the formation:
 \begin{equation*}
   \mathtt{plus}\;\mapsto\;
     \llbracket\,
-      a \mapsto \varnothing,\ b \mapsto \varnothing,\
+      x \mapsto \varnothing,\
       \lambda \mapsto \mathtt{Plus}
     \,\rrbracket.
 \end{equation*}
@@ -293,11 +296,16 @@ The program declares a single object \ff{app}.
 Its \ff{@} attribute is a copy of \ff{Q.io.stdout} applied to one
   argument: a copy of \ff{Q.tt.sprintf} applied in turn to a format
   string and a single-element tuple \ff{* "Jeffrey"}.
-Dataizing \ff{app} reduces the outer decoration to its decoratee
-  (\ff{stdout}), then dataizes \ff{stdout}'s argument (which evaluates
-  \ff{sprintf} into the formatted string), then invokes the
-  \(\lambda\)-asset of \ff{stdout} to write the resulting bytes ---
-  \enquote{Hello, Jeffrey!} --- to the host's standard output.
+The canonical \ff{stdout} object is itself a formation that decorates
+  a sequence built around \ff{console.write text}, where \ff{text} is
+  its void parameter and \ff{console} is a sibling canonical object
+  whose \ff{write} method writes to the operating-system console;
+  the atom that touches the host therefore lives inside \ff{console}'s
+  call chain, not in \ff{stdout} itself.
+Dataizing \ff{app} unfolds these decorations until an atom is reached,
+  evaluates \ff{sprintf} into the formatted bytes
+  \enquote{Hello, Jeffrey!}, and writes them to the host's standard
+  output.
 The complete \(\varphi\)-translation of this program is left to
   \cref{sec:semantics}; the present overview has established what each
   surface construct denotes.
