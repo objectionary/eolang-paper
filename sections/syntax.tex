@@ -168,8 +168,13 @@ The head is one of:
   \item a data literal --- a \ff{STRING}, \ff{INT}, \ff{FLOAT}, \ff{HEX},
     or \ff{BYTES}, optionally followed by a method chain;
   \item a star tuple \ff{*};
-  \item a bare identifier (a \ff{NAME}, \ff{ROOT}, or \ff{XI}),
-    optionally followed by a chain of \ff{.method} segments on the same line.
+  \item a single identifier or locator token --- a \ff{NAME},
+    \ff{PHI} (\ff{@}), \ff{RHO} (\ff{\textasciicircum}), \ff{ROOT}
+    (\ff{Q}), or \ff{XI} (\ff{\$}) --- optionally followed by a chain
+    of \ff{.method} segments on the same line.
+    Lines such as \ff{\textasciicircum.m.put 1} (a chain rooted at the
+    parent \(\rho\)) or \ff{@.write x} (a chain rooted at the
+    enclosing object's decoratee) follow this shape.
 \end{itemize}
 
 Each argument is itself a small dispatch:
