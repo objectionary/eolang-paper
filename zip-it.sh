@@ -24,7 +24,7 @@ for d in _tex sections; do
     cp -r "../${d}" .
 done
 
-version=$(curl --silent -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${REPO}/releases/latest" | jq -r '.tag_name')
+version=$(curl --silent --fail -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${REPO}/releases/latest" | jq -er '.tag_name')
 echo "Version is: ${version}"
 
 if ! sed --version; then
