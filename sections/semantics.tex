@@ -211,15 +211,16 @@ Data literals translate to formations whose $\Delta$-asset carries a
 The encodings, by lexical class, are:
 
 \begin{itemize}
-  \item \ff{INT} --- 8 bytes, big-endian, two's-complement signed
-    64-bit integer.
+  \item \ff{INT} --- 8 bytes, big-endian, IEEE-754 binary64
+    (double-precision) floating point, after the integer is
+    converted to a number.
     Decorated by $\Phi.\mathtt{number}$.
   \item \ff{FLOAT} --- 8 bytes, big-endian, IEEE-754 binary64
     (double-precision) floating point.
     Decorated by $\Phi.\mathtt{number}$.
-  \item \ff{HEX} --- the same 8-byte two's-complement integer
-    encoding as \ff{INT}, after the hex digits are interpreted as a
-    signed 64-bit integer.
+  \item \ff{HEX} --- the same 8-byte IEEE-754 binary64
+    encoding as \ff{INT}, after the hex digits are interpreted as an
+    integer and converted to a number.
     Decorated by $\Phi.\mathtt{number}$.
   \item \ff{STRING} --- the UTF-8 byte sequence of the string content
     after escape sequences are resolved (\cref{sec:lexical:strings}).
